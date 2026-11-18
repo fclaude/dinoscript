@@ -195,6 +195,15 @@ kbd {
 .download-card:hover .download-icon { background: var(--green); color: var(--white); }
 .install-help { color: var(--muted); margin-top: 1.1rem; font-size: 0.9rem; }
 .download-meta { display: flex; flex-wrap: wrap; gap: 0.4rem 1.1rem; margin-top: 0.6rem; font-size: 0.875rem; }
+.linux-downloads { margin-top: 2rem; }
+.linux-card {
+  padding: 0.9rem 1.1rem;
+  border: 1px solid var(--border);
+  border-radius: 0.8rem;
+  background: var(--white);
+}
+.linux-card a { display: inline-block; margin: 0.5rem 0.9rem 0.5rem 0; font-weight: 650; }
+.linux-card code { display: block; overflow-wrap: anywhere; font-size: 0.82rem; }
 
 .learn-section > div > p { max-width: 56ch; }
 .code-example, .lesson pre {

@@ -15,6 +15,7 @@ from PIL import Image
 ROOT = Path(__file__).resolve().parents[1]
 SITE = ROOT / "site"
 REPOSITORY = "https://github.com/fclaude/dinoscript"
+PACKAGES = "https://github.com/fclaude/fclaude-packages"
 
 
 def render_art(book_dir, output, guide):
@@ -84,7 +85,37 @@ def render_workbook(guide, art):
     return "\n".join(contents), "\n".join(chapters)
 
 
-def build(tag, book_dir, output):
+def render_linux_downloads(release):
+    tag = release.get("tag_name", "")
+    if not re.fullmatch(r"packages-[0-9]{4}-[0-9]{2}-[0-9]{2}-[0-9]+", tag):
+        return ""
+    assets = {asset["name"] for asset in release.get("assets", []) if asset["state"] == "uploaded"}
+    versions = [
+        match[1] for name in assets
+        if (match := re.fullmatch(r"dinoscript_([0-9]+\.[0-9]+\.[0-9]+-[0-9]+)_amd64\.deb", name))
+    ]
+    if len(versions) != 1:
+        return ""
+    version, = versions
+    files = {
+        "ubuntu_x64": f"dinoscript_{version}_amd64.deb",
+        "ubuntu_arm64": f"dinoscript_{version}_arm64.deb",
+        "fedora_x64": f"dinoscript-{version}.x86_64.rpm",
+        "fedora_arm64": f"dinoscript-{version}.aarch64.rpm",
+        "arch_x64": f"dinoscript-{version}-x86_64.pkg.tar.zst",
+        "x64_checksums": "SHA256SUMS-linux-amd64",
+        "arm64_checksums": "SHA256SUMS-linux-arm64",
+        "arch_checksums": "SHA256SUMS-archlinux-x86_64",
+    }
+    if not set(files.values()) <= assets:
+        return ""
+    download = f"{PACKAGES}/releases/download/{tag}"
+    urls = {key: f"{download}/{name}" for key, name in files.items()}
+    template = Template((SITE / "linux-downloads.html").read_text(encoding="utf-8"))
+    return template.substitute(urls, version=version, release=f"{PACKAGES}/releases/tag/{tag}")
+
+
+def build(tag, book_dir, output, linux_release):
     guide = json.loads((book_dir / "book.json").read_text(encoding="utf-8"))
     art = render_art(book_dir, output, guide)
     cover, cover_width, cover_height = art[guide["cover_art"]]
@@ -94,6 +125,8 @@ def build(tag, book_dir, output):
         "repository": REPOSITORY,
         "release": f"{REPOSITORY}/releases/tag/{tag}",
         "download": f"{REPOSITORY}/releases/download/{tag}",
+        "linux_releases": f"{PACKAGES}/releases/latest",
+        "linux_downloads": render_linux_downloads(linux_release),
         "cover": escape(cover),
         "cover_alt": escape(guide["cover_alt"]),
         "cover_width": cover_width,
@@ -114,10 +147,12 @@ def main():
     parser.add_argument("tag", help="release tag such as v0.1.0")
     parser.add_argument("--book-dir", type=Path, default=ROOT / "book")
     parser.add_argument("--output", type=Path, default=ROOT / "build" / "site")
+    parser.add_argument("--linux-release", type=Path, help="GitHub API metadata for the published Linux package set")
     args = parser.parse_args()
     if not re.fullmatch(r"v[0-9]+\.[0-9]+\.[0-9]+", args.tag):
         parser.error("tag must be a version such as v0.1.0")
-    build(args.tag, args.book_dir, args.output)
+    linux_release = json.loads(args.linux_release.read_text(encoding="utf-8")) if args.linux_release else {}
+    build(args.tag, args.book_dir, args.output, linux_release)
 
 
 if __name__ == "__main__":

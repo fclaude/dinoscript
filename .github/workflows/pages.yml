@@ -51,7 +51,13 @@ jobs:
           RELEASE_TAG: ${{ steps.release.outputs.tag }}
         run: |
           python -m pip install Pillow
-          python scripts/build-site.py "$RELEASE_TAG" --book-dir build/released/book
+          args=()
+          if curl --fail --silent --show-error --retry 2 --max-time 20 \
+              https://api.github.com/repos/fclaude/fclaude-packages/releases/latest \
+              --output build/linux-release.json; then
+            args=(--linux-release build/linux-release.json)
+          fi
+          python scripts/build-site.py "$RELEASE_TAG" --book-dir build/released/book "${args[@]}"
       - name: Upload GitHub Pages artifact
         uses: actions/upload-pages-artifact@v4
         with:
