@@ -20,6 +20,8 @@ import (
 //go:embed examples/*.ds examples/*/*.ds
 var examples embed.FS
 
+const numberMagicExample = 5
+
 var lessons = []struct {
 	title     string
 	file      string
@@ -30,6 +32,7 @@ var lessons = []struct {
 	{"Count with a loop", "counting.ds", map[locale.Language]string{locale.Spanish: "contar.ds"}},
 	{"Fibonacci numbers", "fibonacci.ds", map[locale.Language]string{locale.Spanish: "serie-fibonacci.ds"}},
 	{"Is it prime?", "prime.ds", map[locale.Language]string{locale.Spanish: "primo.ds"}},
+	numberMagicExample: {"Pip Reads Your Mind", "number-magic.ds", map[locale.Language]string{locale.Spanish: "numero-secreto.ds"}},
 }
 
 type editor struct {
@@ -172,7 +175,9 @@ func (e *editor) configureFields() {
 	e.input.SetEnabled(false)
 	e.input.KeyDownCallback = func(key unison.KeyCode, mods mod.Modifiers, repeat bool) bool {
 		if key == unison.KeyReturn || key == unison.KeyNumPadEnter {
-			e.submitInput()
+			if !repeat {
+				e.submitInput()
+			}
 			return true
 		}
 		return e.input.DefaultKeyDown(key, mods, repeat)
@@ -180,7 +185,7 @@ func (e *editor) configureFields() {
 	e.input.ModifiedCallback = func(before, after *unison.FieldState) {
 		if len(after.Text) > dino.MaxInputBytes {
 			e.input.ApplyFieldState(before)
-			e.setStatus("Please enter one whole number.")
+			e.setStatus("That input is too long.")
 		}
 	}
 

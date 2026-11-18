@@ -13,7 +13,7 @@ import (
 // MaxSourceBytes bounds source input for the interpreter and its callers.
 const MaxSourceBytes = 64 * 1024
 
-// MaxInputBytes bounds each line read by readint().
+// MaxInputBytes bounds numeric input.
 const MaxInputBytes = 1024
 
 const (
@@ -24,10 +24,12 @@ const (
 	executionTime  = 2 * time.Second
 )
 
-// Console connects a program to its host. Input waits for one line and must
-// return when its context is canceled. Calls are serialized during a run.
+// Console connects a program to its host. Input waits for one line. Pause is
+// optional and lets interactive hosts handle Enter separately. If Pause is nil,
+// a pause consumes a line from Input. Both callbacks must respect cancellation.
 type Console struct {
 	Input  func(context.Context) (string, error)
+	Pause  func(context.Context) error
 	Output func(string)
 }
 
@@ -205,6 +207,12 @@ func (r *runner) call(expr *expression, locals map[string]value) (value, error) 
 		return r.readInt(expr.at.span)
 	}
 	function, found := r.functions[name]
+	if name == "pause" && !found {
+		if len(expr.args) != 0 {
+			return value{}, problem(expr.at.span, "Use pause() with nothing inside the parentheses.")
+		}
+		return value{}, r.pause(expr.at.span)
+	}
 	if name != "print" {
 		if !found {
 			return value{}, problem(expr.at.span, "I can't find the function %q. Define it above this call.", name)
@@ -256,21 +264,38 @@ func (r *runner) print(at Span, arguments []value) error {
 	return nil
 }
 
-func (r *runner) readInt(at Span) (value, error) {
-	if r.console.Input == nil {
-		return value{}, problem(at, "readint() needs a whole number, but there is no input.")
+func (r *runner) readLine(at Span, input func(context.Context) (string, error), missing, exhausted string) (string, error) {
+	if input == nil {
+		return "", &Diagnostic{Span: at, Message: missing, format: missing}
 	}
 	start := time.Now()
-	line, err := r.console.Input(r.ctx)
+	line, err := input(r.ctx)
 	r.deadline = r.deadline.Add(time.Since(start))
 	if r.ctx.Err() != nil {
-		return value{}, r.ctx.Err()
+		return "", r.ctx.Err()
 	}
 	if errors.Is(err, io.EOF) {
-		return value{}, problem(at, "readint() needs another line with a whole number.")
+		return "", &Diagnostic{Span: at, Message: exhausted, format: exhausted}
 	}
 	if err != nil {
-		return value{}, problem(at, "Couldn't read input. Try running the program again.")
+		return "", problem(at, "Couldn't read input. Try running the program again.")
+	}
+	return line, nil
+}
+
+func (r *runner) pause(at Span) error {
+	input := r.console.Input
+	if r.console.Pause != nil {
+		input = func(ctx context.Context) (string, error) { return "", r.console.Pause(ctx) }
+	}
+	_, err := r.readLine(at, input, "pause() needs input so it can wait for Enter.", "pause() needs another input line to continue.")
+	return err
+}
+
+func (r *runner) readInt(at Span) (value, error) {
+	line, err := r.readLine(at, r.console.Input, "readint() needs a whole number, but there is no input.", "readint() needs another line with a whole number.")
+	if err != nil {
+		return value{}, err
 	}
 	if len(line) > MaxInputBytes {
 		return value{}, problem(at, "That answer is too long. Enter one whole number.")

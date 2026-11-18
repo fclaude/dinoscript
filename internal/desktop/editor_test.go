@@ -77,10 +77,30 @@ func TestDesktopEditor(t *testing.T) {
 		screen.Type(source)
 	}
 	run := func() { screen.KeyPress(unison.KeyF5, mod.None) }
+	playMagic := func(pauseStatus, numberStatus, finishedStatus, reveal string, prompts ...string) {
+		t.Helper()
+		click(app.tabs[3].button)
+		run()
+		for _, prompt := range prompts {
+			wait(pauseStatus)
+			assert("the game should wait for Enter after each instruction", func() bool {
+				return app.input.Enabled() && app.input.Text() == "" && strings.HasSuffix(app.output.Text(), prompt+"\n")
+			})
+			screen.KeyPress(unison.KeyReturn, mod.None)
+		}
+		wait(numberStatus)
+		screen.Type("20")
+		screen.KeyPress(unison.KeyReturn, mod.None)
+		wait(finishedStatus)
+		assert("the game should reveal the secret number after the final answer", func() bool {
+			return strings.HasSuffix(app.output.Text(), "> 20\n"+reveal+"\n")
+		})
+	}
 
 	assert("the source field should have startup focus", func() bool { return app.window.CurrentFocus() == app.source.AsPanel() })
-	assert("the editor should open with Pip and three file tabs", func() bool {
-		return len(app.window.TitleIcons()) == 1 && len(app.tabs) == 3 && app.tabTitle(app.document) == "hello.ds"
+	assert("the editor should open with Pip, Hello, and the number trick", func() bool {
+		return len(app.window.TitleIcons()) == 1 && len(app.tabs) == 4 &&
+			app.tabTitle(app.document) == "hello.ds" && app.tabTitle(app.tabs[3]) == "number-magic.ds"
 	})
 	click(app.run)
 	wait("Finished.")
@@ -98,6 +118,9 @@ func TestDesktopEditor(t *testing.T) {
 		return app.output.Text() == "Hello, dinosaur!\n"
 	})
 
+	playMagic("Press Enter to continue.", "Enter a whole number", "Finished.", "Your secret number was 7!",
+		"Press Enter when you're ready.", "Multiply it by 2, then press Enter.", "Add 10, then press Enter.", "Subtract 4, then press Enter.")
+	click(app.tabs[0].button)
 	replaceCode("print(\"🦖\", missing)")
 	run()
 	wait("Fix the error")
@@ -215,7 +238,7 @@ func TestDesktopEditor(t *testing.T) {
 	click(reader.next)
 	click(reader.previous)
 	assert("Next and Previous should move one lesson at a time", func() bool {
-		return reader.page == 1 && reader.status.String() == "Lesson 1 of 14"
+		return reader.page == 1 && reader.status.String() == "Lesson 1 of 15"
 	})
 	click(reader.tryCode)
 	assert("Try code should open the lesson separately and give the editor focus", func() bool {
@@ -263,7 +286,7 @@ func TestDesktopEditor(t *testing.T) {
 		return app.language == locale.Spanish && app.source.Text() == "print(\"Pip\", missing)" && app.dirty() &&
 			app.run.Text.String() == "Ejecutar  F5" && app.source.Accessibility.Name == "Código" &&
 			strings.Contains(app.output.Text(), "Línea 1, columna 14: Todavía no conozco \"missing\"") &&
-			app.jump.Enabled() && app.reader == reader && reader.page == 1 && reader.status.String() == "Lección 1 de 14"
+			app.jump.Enabled() && app.reader == reader && reader.page == 1 && reader.status.String() == "Lección 1 de 15"
 	})
 	click(app.learn)
 	click(reader.save)
@@ -307,8 +330,11 @@ func TestDesktopEditor(t *testing.T) {
 	}
 	assert("a fresh installation on a Spanish system should open with Spanish examples", func() bool {
 		return app.preference == systemLanguage && app.language == locale.Spanish &&
-			app.tabTitle(app.document) == "hola.ds" && strings.Contains(app.source.Text(), "¡Hola, dinosaurio!")
+			app.tabTitle(app.document) == "hola.ds" && strings.Contains(app.source.Text(), "¡Hola, dinosaurio!") &&
+			len(app.tabs) == 4 && app.tabTitle(app.tabs[3]) == "numero-secreto.ds"
 	})
+	playMagic("Presiona Enter para continuar.", "Ingresa un número entero", "Ejecución terminada.", "¡Tu número secreto era 7!",
+		"Presiona Enter cuando estés listo.", "Multiplícalo por 2 y presiona Enter.", "Súmale 10 y presiona Enter.", "Réstale 4 y presiona Enter.")
 }
 
 type testDialogs struct {

@@ -27,7 +27,7 @@ func checkLessonPrograms(t *testing.T, language locale.Language) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if guide.Author != "Francisco Claude-Faust" || len(guide.Pages) != 14 {
+	if guide.Author != "Francisco Claude-Faust" || len(guide.Pages) != 15 {
 		t.Fatalf("unexpected author or lesson count: %q, %d", guide.Author, len(guide.Pages))
 	}
 	for _, lesson := range guide.Pages {

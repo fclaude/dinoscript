@@ -21,7 +21,7 @@ Open Dinoscript and press <kbd>F5</kbd> to run the starter program. **Output** s
 print("Hello, dinosaur!")
 ```
 
-- **Try another program.** Choose one from **Examples** or save your own as a `.ds` file. When a program calls `readint()`, type your answer in **Output** and press <kbd>Enter</kbd>.
+- **Try another program.** Choose **Pip Reads Your Mind** or another program from **Examples**, or save your own as a `.ds` file. When a program calls `pause()`, press <kbd>Enter</kbd> to continue. When it calls `readint()`, type your answer in **Output** and press <kbd>Enter</kbd>.
 - **Keep your work organized.** Use **New** for a blank tab, **Open** to add a file, and **My files** to switch between programs. Switching tabs stops the current run. Dinoscript restores your tabs and edits when you reopen the editor.
 - **Learn with Pip.** Choose **Learn** or press <kbd>F1</kbd> to browse the illustrated lessons offline. **Try code** opens the lesson example in the editor, and **Save PDF** exports the book. The print edition also comes with the release packages.
 - **Choose your language.** The editor opens in Spanish when your system language is Spanish and in English otherwise. Use the language menu to choose English, Español, or your system language. The website opens in English at the main address, with an Español link on every page.
@@ -36,7 +36,7 @@ go run ./cmd/dinoscript-run internal/desktop/examples/hello.ds
 go test ./...
 ```
 
-For programs that use `readint()`, pass `-input answers.txt` before the source path. Put one answer on each line of the input file.
+For programs that use `readint()` or `pause()`, pass `-input answers.txt` before the source path. Put each answer on its own line and include a blank line for each pause.
 
 On Linux, install the Ubuntu, Fedora, or Arch package and open **Dinoscript** from the GNOME or KDE app menu. The editor uses Xorg or XWayland, including XWayland sessions that expose their X11 socket only in Linux's abstract socket namespace. [Linux downloads](https://dinoscript.org/#downloads)
 

@@ -328,6 +328,72 @@
       ],
       "art": "",
       "alt": ""
+    },
+    {
+      "chapter": "Math puzzles",
+      "title": "Pip Reads Your Mind",
+      "pip": "Do the math in your head. I bet I can still guess your number.",
+      "body": [
+        "Play once before you peek at the code. Press Enter at each pause. Type your answer only when Pip asks for your final total.",
+        "Each pause() waits for Enter. The last step uses readint() to get the total. Pip subtracts 6 to undo the extra 10 minus 4, then uses // 2 to undo the doubling."
+      ],
+      "code": "print(\"Think of a whole number from 1 to 100. Keep it secret!\")\nprint(\"Press Enter when you're ready.\")\npause()\nprint(\"Multiply it by 2, then press Enter.\")\npause()\nprint(\"Add 10, then press Enter.\")\npause()\nprint(\"Subtract 4, then press Enter.\")\npause()\nprint(\"What number did you arrive at?\")\nlet total = readint()\nif total < 8 or total > 206 or total % 2 != 0 then\n  print(\"Check your math, then run the trick again.\")\nelse\n  print(\"Your secret number was \", (total - 6) // 2, \"!\")\nend if\n",
+      "challenge": "Try it on a friend. Then change the addition step to 12. What else in the code must change for the trick to work?",
+      "hint": "Now there are 8 extra. Subtract 8 in the formula and change the allowed totals to 10 through 208.",
+      "checks": [
+        {
+          "input": [
+            "",
+            "",
+            "",
+            "",
+            "20"
+          ],
+          "output": "Think of a whole number from 1 to 100. Keep it secret!\nPress Enter when you're ready.\nMultiply it by 2, then press Enter.\nAdd 10, then press Enter.\nSubtract 4, then press Enter.\nWhat number did you arrive at?\nYour secret number was 7!\n"
+        },
+        {
+          "input": [
+            "",
+            "",
+            "",
+            "",
+            "8"
+          ],
+          "output": "Think of a whole number from 1 to 100. Keep it secret!\nPress Enter when you're ready.\nMultiply it by 2, then press Enter.\nAdd 10, then press Enter.\nSubtract 4, then press Enter.\nWhat number did you arrive at?\nYour secret number was 1!\n"
+        },
+        {
+          "input": [
+            "",
+            "",
+            "",
+            "",
+            "206"
+          ],
+          "output": "Think of a whole number from 1 to 100. Keep it secret!\nPress Enter when you're ready.\nMultiply it by 2, then press Enter.\nAdd 10, then press Enter.\nSubtract 4, then press Enter.\nWhat number did you arrive at?\nYour secret number was 100!\n"
+        },
+        {
+          "input": [
+            "",
+            "",
+            "",
+            "",
+            "21"
+          ],
+          "output": "Think of a whole number from 1 to 100. Keep it secret!\nPress Enter when you're ready.\nMultiply it by 2, then press Enter.\nAdd 10, then press Enter.\nSubtract 4, then press Enter.\nWhat number did you arrive at?\nCheck your math, then run the trick again.\n"
+        },
+        {
+          "input": [
+            "",
+            "",
+            "",
+            "",
+            "208"
+          ],
+          "output": "Think of a whole number from 1 to 100. Keep it secret!\nPress Enter when you're ready.\nMultiply it by 2, then press Enter.\nAdd 10, then press Enter.\nSubtract 4, then press Enter.\nWhat number did you arrive at?\nCheck your math, then run the trick again.\n"
+        }
+      ],
+      "art": "",
+      "alt": ""
     }
   ]
 }

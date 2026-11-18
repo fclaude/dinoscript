@@ -43,6 +43,7 @@ version="${tag#v}"
 cat > "$staging/notes.md" <<'NOTES'
 Dinoscript is an offline coding editor for kids. Open the editor and press F5 to run a program. Press F1 to learn with Pip the triceratops.
 
+- Try **Pip Reads Your Mind** from the Examples menu in English or Chilean Spanish. Keep your number secret until Pip reveals it.
 - On Apple silicon, use the arm64 disk image. On Intel Macs, use the amd64 disk image. Drag Dinoscript to Applications.
 - On Windows x64, extract the ZIP and open Dinoscript.exe.
 - Read the workbook online in [English](https://dinoscript.org/workbook.html) or [Español](https://dinoscript.org/es/workbook.html), or download a printable PDF below.

@@ -243,6 +243,72 @@
       ],
       "art": "",
       "alt": ""
+    },
+    {
+      "chapter": "Desafíos matemáticos",
+      "title": "Pip te lee la mente",
+      "pip": "Haz la cuenta en tu cabeza. Apuesto a que igual adivino tu número.",
+      "body": [
+        "Juega una vez antes de mirar el código. Presiona Enter en cada pausa. Escribe tu respuesta solo cuando Pip te pida el total final.",
+        "Cada pause() espera a que presiones Enter. Al final, readint() recoge el total. Pip resta 6 para quitar lo que quedó de sumar 10 y restar 4, y usa // 2 para deshacer la multiplicación por 2."
+      ],
+      "code": "print(\"Piensa en un número entero del 1 al 100. ¡No me lo digas!\")\nprint(\"Presiona Enter cuando estés listo.\")\npause()\nprint(\"Multiplícalo por 2 y presiona Enter.\")\npause()\nprint(\"Súmale 10 y presiona Enter.\")\npause()\nprint(\"Réstale 4 y presiona Enter.\")\npause()\nprint(\"¿A qué número llegaste?\")\nlet total = readint()\nif total < 8 or total > 206 or total % 2 != 0 then\n  print(\"Revisa tus cálculos y vuelve a probar el truco.\")\nelse\n  print(\"¡Tu número secreto era \", (total - 6) // 2, \"!\")\nend if\n",
+      "challenge": "Invita a alguien a jugar. Después cambia la instrucción para que sume 12. ¿Qué más debes cambiar en el código para que el truco funcione?",
+      "hint": "Ahora sobran 8. Resta 8 en la fórmula y cambia los límites del total a 10 y 208.",
+      "checks": [
+        {
+          "input": [
+            "",
+            "",
+            "",
+            "",
+            "20"
+          ],
+          "output": "Piensa en un número entero del 1 al 100. ¡No me lo digas!\nPresiona Enter cuando estés listo.\nMultiplícalo por 2 y presiona Enter.\nSúmale 10 y presiona Enter.\nRéstale 4 y presiona Enter.\n¿A qué número llegaste?\n¡Tu número secreto era 7!\n"
+        },
+        {
+          "input": [
+            "",
+            "",
+            "",
+            "",
+            "8"
+          ],
+          "output": "Piensa en un número entero del 1 al 100. ¡No me lo digas!\nPresiona Enter cuando estés listo.\nMultiplícalo por 2 y presiona Enter.\nSúmale 10 y presiona Enter.\nRéstale 4 y presiona Enter.\n¿A qué número llegaste?\n¡Tu número secreto era 1!\n"
+        },
+        {
+          "input": [
+            "",
+            "",
+            "",
+            "",
+            "206"
+          ],
+          "output": "Piensa en un número entero del 1 al 100. ¡No me lo digas!\nPresiona Enter cuando estés listo.\nMultiplícalo por 2 y presiona Enter.\nSúmale 10 y presiona Enter.\nRéstale 4 y presiona Enter.\n¿A qué número llegaste?\n¡Tu número secreto era 100!\n"
+        },
+        {
+          "input": [
+            "",
+            "",
+            "",
+            "",
+            "21"
+          ],
+          "output": "Piensa en un número entero del 1 al 100. ¡No me lo digas!\nPresiona Enter cuando estés listo.\nMultiplícalo por 2 y presiona Enter.\nSúmale 10 y presiona Enter.\nRéstale 4 y presiona Enter.\n¿A qué número llegaste?\nRevisa tus cálculos y vuelve a probar el truco.\n"
+        },
+        {
+          "input": [
+            "",
+            "",
+            "",
+            "",
+            "208"
+          ],
+          "output": "Piensa en un número entero del 1 al 100. ¡No me lo digas!\nPresiona Enter cuando estés listo.\nMultiplícalo por 2 y presiona Enter.\nSúmale 10 y presiona Enter.\nRéstale 4 y presiona Enter.\n¿A qué número llegaste?\nRevisa tus cálculos y vuelve a probar el truco.\n"
+        }
+      ],
+      "art": "",
+      "alt": ""
     }
   ]
 }

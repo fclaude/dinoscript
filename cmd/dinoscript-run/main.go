@@ -12,7 +12,7 @@ import (
 )
 
 func main() {
-	input := flag.String("input", "", "file containing one answer per line for readint()")
+	input := flag.String("input", "", "file with one line per readint() or pause()")
 	flag.Usage = func() { fmt.Fprintln(os.Stderr, "Usage: dinoscript-run [-input answers.txt] program.ds") }
 	flag.Parse()
 	if flag.NArg() != 1 {

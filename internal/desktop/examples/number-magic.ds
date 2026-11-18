@@ -1,0 +1,16 @@
+print("Think of a whole number from 1 to 100. Keep it secret!")
+print("Press Enter when you're ready.")
+pause()
+print("Multiply it by 2, then press Enter.")
+pause()
+print("Add 10, then press Enter.")
+pause()
+print("Subtract 4, then press Enter.")
+pause()
+print("What number did you arrive at?")
+let total = readint()
+if total < 8 or total > 206 or total % 2 != 0 then
+  print("Check your math, then run the trick again.")
+else
+  print("Your secret number was ", (total - 6) // 2, "!")
+end if

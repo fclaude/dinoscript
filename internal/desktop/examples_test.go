@@ -2,10 +2,13 @@ package desktop
 
 import (
 	"context"
+	"slices"
 	"strings"
 	"testing"
 
+	"github.com/fclaude/dinoscript/book"
 	"github.com/fclaude/dinoscript/internal/dino"
+	"github.com/fclaude/dinoscript/internal/locale"
 )
 
 func TestLessons(t *testing.T) {
@@ -39,6 +42,22 @@ func TestLessons(t *testing.T) {
 			}
 			if err != nil || output.String() != want {
 				t.Fatalf("lesson output = %q, error = %v; want %q", output.String(), err, want)
+			}
+		})
+	}
+}
+
+func TestNumberMagicWorkbookCode(t *testing.T) {
+	for _, language := range locale.Languages() {
+		t.Run(string(language), func(t *testing.T) {
+			guide, err := book.LoadLanguage(language)
+			if err != nil {
+				t.Fatal(err)
+			}
+			app := editor{language: language}
+			_, source := app.sample(numberMagicExample)
+			if !slices.ContainsFunc(guide.Pages, func(lesson book.Lesson) bool { return lesson.Code == source }) {
+				t.Fatal("the bundled example and workbook code differ")
 			}
 		})
 	}

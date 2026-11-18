@@ -46,7 +46,7 @@ func tintedLine(source string, font unison.Font) *unison.Text {
 			switch token {
 			case "let", "while", "do", "end", "function", "output", "if", "then", "else", "true", "false", "and", "or", "not":
 				color = 0xff824477
-			case "print", "readint":
+			case "print", "readint", "pause":
 				color = 0xff884b2d
 			default:
 				if token[0] < '0' || token[0] > '9' {

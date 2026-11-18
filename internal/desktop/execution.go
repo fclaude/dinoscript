@@ -11,9 +11,16 @@ import (
 	"github.com/richardwilkes/unison"
 )
 
+type inputKind uint8
+
+const (
+	numberInput inputKind = iota + 1
+	continueInput
+)
+
 type runEvent struct {
-	text      string
-	readInput bool
+	text  string
+	input inputKind
 }
 
 type execution struct {
@@ -22,6 +29,8 @@ type execution struct {
 	input  chan string
 	cancel context.CancelFunc
 	err    error // read after events has been closed
+
+	inputKind inputKind // used on the UI thread
 }
 
 func (e *editor) startRun() {
@@ -55,18 +64,23 @@ func (r *execution) execute(ctx context.Context) {
 			return false
 		}
 	}
+	readInput := func(ctx context.Context, kind inputKind) (string, error) {
+		if !emit(runEvent{input: kind}) {
+			return "", ctx.Err()
+		}
+		select {
+		case answer := <-r.input:
+			return answer, nil
+		case <-ctx.Done():
+			return "", ctx.Err()
+		}
+	}
 	r.err = dino.Run(ctx, r.source, dino.Console{
 		Output: func(line string) { emit(runEvent{text: line}) },
-		Input: func(ctx context.Context) (string, error) {
-			if !emit(runEvent{readInput: true}) {
-				return "", ctx.Err()
-			}
-			select {
-			case answer := <-r.input:
-				return answer, nil
-			case <-ctx.Done():
-				return "", ctx.Err()
-			}
+		Input:  func(ctx context.Context) (string, error) { return readInput(ctx, numberInput) },
+		Pause: func(ctx context.Context) error {
+			_, err := readInput(ctx, continueInput)
+			return err
 		},
 	})
 }
@@ -85,9 +99,14 @@ func (e *editor) poll(run *execution) {
 				return
 			}
 			batch.WriteString(event.text)
-			if event.readInput && e.stop.Enabled() {
+			if event.input != 0 && e.stop.Enabled() {
+				run.inputKind = event.input
 				e.setInputEnabled(true)
-				e.setStatus("Enter a whole number in Output and press Enter.")
+				if event.input == continueInput {
+					e.setStatus("Press Enter to continue.")
+				} else {
+					e.setStatus("Enter a whole number in Output and press Enter.")
+				}
 			}
 		default:
 			e.appendOutput(batch.String())
@@ -176,7 +195,7 @@ func (e *editor) submitInput() {
 	text := e.input.Text()
 	e.active.input <- text
 	e.setInputEnabled(false)
-	if e.outputText.Len() < 64*1024 {
+	if e.active.inputKind == numberInput && e.outputText.Len() < 64*1024 {
 		e.appendOutput("> " + text + "\n")
 	}
 	e.setStatus("Running…")

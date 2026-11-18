@@ -37,6 +37,7 @@
   "contents_heading": "Índice",
   "example_run": "Ejemplo de ejecución",
   "example_input": "Prueba ingresando {entries}.",
+  "example_press_enter": "Presiona Enter en cada pausa.",
   "example_input_then": ", luego ",
   "try_it": "Ponlo a prueba.",
   "hint": "Pista de Pip",

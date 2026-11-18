@@ -37,6 +37,7 @@
   "contents_heading": "Contents",
   "example_run": "Example run",
   "example_input": "Try entering {entries}.",
+  "example_press_enter": "Press Enter at each pause.",
   "example_input_then": ", then ",
   "try_it": "Try it.",
   "hint": "Pip’s hint",

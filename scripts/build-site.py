@@ -48,8 +48,10 @@ def render_lesson(index, lesson, art, copy):
     if lesson["checks"]:
         example = lesson["checks"][0]
         parts.append(f'<details><summary>{escape(copy["example_run"])}</summary>')
-        if example["input"]:
-            entries = copy["example_input_then"].join(example["input"])
+        if "" in example["input"]:
+            parts.append(f'<p>{escape(copy["example_press_enter"])}</p>')
+        entries = copy["example_input_then"].join(answer for answer in example["input"] if answer)
+        if entries:
             parts.append(f'<p>{escape(copy["example_input"].format(entries=entries))}</p>')
         parts.append(f'<pre><samp>{escape(example["output"].rstrip())}</samp></pre></details>')
     if lesson["art"]:

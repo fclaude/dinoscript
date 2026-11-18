@@ -29,7 +29,7 @@ func (e *editor) tabTitle(t *fileTab) string {
 func (e *editor) restoreTabs() {
 	session, ok := readWorkspace(e.draftPath)
 	if !ok {
-		for i, index := range []int{0, 2, 1} {
+		for i, index := range []int{0, 2, 1, numberMagicExample} {
 			name, source := e.sample(index)
 			session.Tabs = append(session.Tabs, draft{Name: name, Color: i, Text: source, SavedText: source})
 		}

@@ -43,6 +43,7 @@ func TestRunPrograms(t *testing.T) {
 			"print(fib(8), \" \", countTo(4), \" \", count)",
 		), "21 4 1\n"},
 		{"function without result", lines("function sayHi()", "  print(\"Hi\")", "end function", "sayHi()"), "Hi\n"},
+		{"user-defined pause", lines("function pause(n)", "  output n", "end function", "print(pause(7))"), "7\n"},
 	} {
 		t.Run(tt.name, func(t *testing.T) {
 			got, err := collect(context.Background(), tt.source, nil)
@@ -72,6 +73,8 @@ func TestDiagnostics(t *testing.T) {
 		{"malformed string", "print(\"hello", "closing double quote", 1, 7},
 		{"invalid exponent", "print(1e)", "valid decimal number", 1, 7},
 		{"missing input", "readint()", "there is no input", 1, 1},
+		{"missing pause input", "pause()", "needs input", 1, 1},
+		{"pause arity", "pause(1)", "nothing inside the parentheses", 1, 1},
 	} {
 		t.Run(tt.name, func(t *testing.T) {
 			_, err := collect(context.Background(), tt.source, nil)
