@@ -1,0 +1,9 @@
+# Try printing another Fibonacci number from 0 to 12.
+function fib(n)
+  if n <= 1 then
+    output n
+  end if
+  output fib(n - 1) + fib(n - 2)
+end function
+
+print("Fibonacci number 8 is ", fib(8))

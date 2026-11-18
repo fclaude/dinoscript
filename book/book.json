@@ -1,0 +1,333 @@
+{
+  "title": "Dinoscript with Pip",
+  "subtitle": "Write your first program, make three games, and solve math puzzles.",
+  "author": "Francisco Claude-Faust",
+  "cover_art": "pip-at-the-computer.png",
+  "cover_alt": "Pip, a little green triceratops with a yellow scarf, sits at a computer among ferns.",
+  "welcome": "I'm Pip, a triceratops with three horns and a keyboard. Open Dinoscript and come learn with me. Each page gives you one small thing to type, run, or change.",
+  "pages": [
+    {
+      "chapter": "Start coding",
+      "title": "Make a dinosaur talk",
+      "pip": "My first program said hello. My second program asked for snacks.",
+      "body": [
+        "Open Dinoscript. Type the line below in Code, or choose Try code when you read this page in the app.",
+        "Click Run or press F5. The word print tells Dinoscript to show something. The words between the double quotes show up in Output."
+      ],
+      "code": "print(\"Hello, dinosaur!\")\n",
+      "challenge": "Change the words between the quotes. Run it again. Can you make Pip introduce herself in two lines?",
+      "hint": "Try putting print(\"I am Pip!\") on a new line under the first print.",
+      "checks": [
+        {
+          "input": [],
+          "output": "Hello, dinosaur!\n"
+        }
+      ],
+      "art": "",
+      "alt": ""
+    },
+    {
+      "chapter": "Start coding",
+      "title": "Give words and numbers a home",
+      "pip": "My bag has one sandwich and three rocks. Guess which I meant to pack.",
+      "body": [
+        "Text in double quotes is called a string. A number goes in bare. Put commas between the pieces you want to print on one line.",
+        "A line starting with # is a comment. It's a note you can leave for the next person who reads the code. Dinoscript skips it."
+      ],
+      "code": "# Pip checks her pockets.\nprint(\"Rocks in my pocket: \", 3)\nprint(\"If I pick up two more: \", 3 + 2)\n",
+      "challenge": "Put double quotes around 3 + 2 and run again. What changed? Then add a comment that tells me where the rocks came from.",
+      "hint": "With quotes, Dinoscript prints the characters 3 + 2. Without quotes, it adds and prints 5.",
+      "checks": [
+        {
+          "input": [],
+          "output": "Rocks in my pocket: 3\nIf I pick up two more: 5\n"
+        }
+      ],
+      "art": "",
+      "alt": ""
+    },
+    {
+      "chapter": "Start coding",
+      "title": "Keep score with let",
+      "pip": "I can count berries on my claws. Beyond that, I need a variable.",
+      "body": [
+        "A variable is a name for a value you want to keep. The first line puts 4 in a variable called berries.",
+        "The next line reads the value first, adds 3, and puts the new value back under the same name. The last line reads it again."
+      ],
+      "code": "let berries = 4\nlet berries = berries + 3\nprint(\"I have \", berries, \" berries.\")\n",
+      "challenge": "Pip eats two berries before she counts them. Add a line above print that takes two away. What should the new total be?",
+      "hint": "Write let berries = berries - 2. You should see 5 berries.",
+      "checks": [
+        {
+          "input": [],
+          "output": "I have 7 berries.\n"
+        }
+      ],
+      "art": "",
+      "alt": ""
+    },
+    {
+      "chapter": "Start coding",
+      "title": "Ask for an answer",
+      "pip": "If you type 4, I promise I will count the four imaginary dinosaurs.",
+      "body": [
+        "print asks the question. The empty parentheses in readint() tell you it takes no pieces of its own. It waits for you to type a whole number.",
+        "Click Run. When the input box lights up in Output, type your answer and press Enter. You can use Stop if your program is still waiting."
+      ],
+      "code": "print(\"How many dinosaurs are coming?\")\nlet guests = readint()\nprint(\"We need \", guests * 2, \" leaf plates.\")\n",
+      "challenge": "Run with 4 guests. Then make each guest need three leaf plates. Try 0 guests, too.",
+      "hint": "With the original code, 4 guests need 8 plates. With three plates each, they need 12.",
+      "checks": [
+        {
+          "input": [
+            "4"
+          ],
+          "output": "How many dinosaurs are coming?\nWe need 8 leaf plates.\n"
+        },
+        {
+          "input": [
+            "0"
+          ],
+          "output": "How many dinosaurs are coming?\nWe need 0 leaf plates.\n"
+        }
+      ],
+      "art": "",
+      "alt": ""
+    },
+    {
+      "chapter": "Start coding",
+      "title": "Choose what happens",
+      "pip": "I can reach the picnic branch if I have at least two stepping stones.",
+      "body": [
+        "if tests something that can be true or false. Here, >= means greater than or equal to. When the test is true, the lines after then run.",
+        "When the test is false, the lines after else run instead. end if closes the whole choice."
+      ],
+      "code": "let stones = 2\nif stones >= 2 then\n  print(\"Across we go!\")\nelse\n  print(\"Find another stepping stone.\")\nend if\n",
+      "challenge": "Try 1, 2, and 3 stones. Can you predict which message each number will show?",
+      "hint": "With 1 you need another stone. With 2 or 3 you can cross.",
+      "checks": [
+        {
+          "input": [],
+          "output": "Across we go!\n"
+        }
+      ],
+      "art": "",
+      "alt": ""
+    },
+    {
+      "chapter": "Start coding",
+      "title": "Count fireflies with a loop",
+      "pip": "One, two, three, four, five. Please stay still, fireflies.",
+      "body": [
+        "while checks its test before each trip through the block. The loop continues as long as the test is true.",
+        "The last line inside the loop changes fly, so the test eventually becomes false. You can click Stop if you forget to make the number change."
+      ],
+      "code": "let fly = 1\nwhile fly <= 5 do\n  print(\"Firefly \", fly)\n  let fly = fly + 1\nend while\n",
+      "challenge": "Count backward from 5 to 1. Change where fly starts, the test, and the update.",
+      "hint": "Start at 5, use fly >= 1, and subtract 1 each trip.",
+      "checks": [
+        {
+          "input": [],
+          "output": "Firefly 1\nFirefly 2\nFirefly 3\nFirefly 4\nFirefly 5\n"
+        }
+      ],
+      "art": "",
+      "alt": ""
+    },
+    {
+      "chapter": "Start coding",
+      "title": "Make your own command",
+      "pip": "A slope for three dinosaurs needs six bricks. I use that trick a lot.",
+      "body": [
+        "A function is a few lines you give a name. bricksFor has one input, guests. Calling bricksFor(3) gives guests the value 3.",
+        "Inside a function, output sends a value back to the line that called it. print is how you show that value in the Output pane."
+      ],
+      "code": "function bricksFor(guests)\n  output guests * 2\nend function\n\nprint(bricksFor(3))\nprint(bricksFor(5))\n",
+      "challenge": "Each dinosaur now needs two bricks and the ramp needs one extra. Change the function once to fix both answers.",
+      "hint": "Use output guests * 2 + 1. The two lines should say 7 and 11.",
+      "checks": [
+        {
+          "input": [],
+          "output": "6\n10\n"
+        }
+      ],
+      "art": "",
+      "alt": ""
+    },
+    {
+      "chapter": "Start coding",
+      "title": "Follow a bug to its hiding place",
+      "pip": "A bug is a clue. Some are small enough to hide behind one quote.",
+      "body": [
+        "Run this program once. Then remove end if and run it again. Read the message in Output and click Go to error.",
+        "Dinoscript jumps to the line that starts the unfinished block. Put end if back below the print line, then run again."
+      ],
+      "code": "let hungry = true\nif hungry then\n  print(\"Snack time!\")\nend if\n",
+      "challenge": "Next, remove the closing double quote on the print line. What does the new message ask you to fix?",
+      "hint": "Put the quote back after the exclamation point and before the closing parenthesis.",
+      "checks": [
+        {
+          "input": [],
+          "output": "Snack time!\n"
+        }
+      ],
+      "art": "",
+      "alt": ""
+    },
+    {
+      "chapter": "Text games",
+      "title": "Fork in the Ferns",
+      "pip": "I packed a map. It says the fern on the left looks a lot like the fern on the right.",
+      "body": [
+        "Use the numbers as buttons. The game waits for a choice and uses an if block to tell a different ending for each path."
+      ],
+      "code": "print(\"1. Crystal trail\")\nprint(\"2. Mossy cave\")\nlet path = readint()\nif path = 1 then\n  print(\"You spot amber crystals!\")\nelse\n  if path = 2 then\n    print(\"A shy bat shows you a secret door.\")\n  else\n    print(\"The trail map only shows 1 and 2.\")\n  end if\nend if\n",
+      "challenge": "Try 1, 2, and 9. Then make the bat ask a second question. What happens if the player says yes by typing 1?",
+      "hint": "Add a new print and readint() inside the cave branch, before its end if. Use another if to check the answer.",
+      "checks": [
+        {
+          "input": [
+            "1"
+          ],
+          "output": "1. Crystal trail\n2. Mossy cave\nYou spot amber crystals!\n"
+        },
+        {
+          "input": [
+            "2"
+          ],
+          "output": "1. Crystal trail\n2. Mossy cave\nA shy bat shows you a secret door.\n"
+        },
+        {
+          "input": [
+            "9"
+          ],
+          "output": "1. Crystal trail\n2. Mossy cave\nThe trail map only shows 1 and 2.\n"
+        }
+      ],
+      "art": "fork-in-the-ferns.png",
+      "alt": "Pip holds a map at a fork between amber crystals and a mossy cave."
+    },
+    {
+      "chapter": "Text games",
+      "title": "The Secret Fossil",
+      "pip": "I hid a fossil under a numbered rock. You get four guesses.",
+      "body": [
+        "Every guess spends one turn. The loop keeps going while you have a turn left and found is false. Test both a win and a round that runs out of turns."
+      ],
+      "code": "let secret = 7\nlet turns = 4\nlet found = false\nprint(\"Guess the fossil number from 1 to 10.\")\nwhile turns > 0 and not found do\n  let guess = readint()\n  if guess = secret then\n    print(\"You found the fossil!\")\n    let found = true\n  else\n    if guess < secret then\n      print(\"Too low.\")\n    else\n      print(\"Too high.\")\n    end if\n  end if\n  let turns = turns - 1\nend while\nif not found then\n  print(\"The fossil was under rock \", secret, \".\")\nend if\n",
+      "challenge": "Let someone change secret while the other player looks away. Can you add a message that shows how many turns are left?",
+      "hint": "Right after turns goes down, add print(turns, \" turns left.\"). Put it in an if block if you want to hide it after a win.",
+      "checks": [
+        {
+          "input": [
+            "3",
+            "9",
+            "7"
+          ],
+          "output": "Guess the fossil number from 1 to 10.\nToo low.\nToo high.\nYou found the fossil!\n"
+        },
+        {
+          "input": [
+            "1",
+            "2",
+            "3",
+            "4"
+          ],
+          "output": "Guess the fossil number from 1 to 10.\nToo low.\nToo low.\nToo low.\nToo low.\nThe fossil was under rock 7.\n"
+        }
+      ],
+      "art": "",
+      "alt": ""
+    },
+    {
+      "chapter": "Text games",
+      "title": "Pip's Snack Stand",
+      "pip": "Berry buns are three shells each. You have ten shells and an excellent appetite.",
+      "body": [
+        "The function works out the bill. The shop checks for a negative order and tells you whether you can afford a valid one."
+      ],
+      "code": "function bill(buns)\n  output buns * 3\nend function\n\nlet shells = 10\nprint(\"How many berry buns would you like?\")\nlet order = readint()\nlet cost = bill(order)\nif order < 0 then\n  print(\"Order zero or more buns.\")\nelse\n  if cost <= shells then\n    print(\"Buns: \", order)\n    print(\"Shells left: \", shells - cost)\n  else\n    print(\"You need \", cost - shells, \" more shells.\")\n  end if\nend if\n",
+      "challenge": "Try to buy the most buns you can. Then invent a new snack with a different price. How does that change what you can afford?",
+      "hint": "Three buns cost 9 shells, so you have 1 shell left. Four cost 12, so you'll be 2 shells short.",
+      "checks": [
+        {
+          "input": [
+            "3"
+          ],
+          "output": "How many berry buns would you like?\nBuns: 3\nShells left: 1\n"
+        },
+        {
+          "input": [
+            "4"
+          ],
+          "output": "How many berry buns would you like?\nYou need 2 more shells.\n"
+        },
+        {
+          "input": [
+            "-1"
+          ],
+          "output": "How many berry buns would you like?\nOrder zero or more buns.\n"
+        }
+      ],
+      "art": "",
+      "alt": ""
+    },
+    {
+      "chapter": "Math puzzles",
+      "title": "The egg baskets",
+      "pip": "I've got 23 eggs. My baskets hold four eggs each. Help me pack them.",
+      "body": [
+        "Use // to count full groups and % to count what's left. Try to work out both answers for 23 eggs before you run the code."
+      ],
+      "code": "let eggs = 23\nlet basketSize = 4\nprint(\"Full baskets: \", eggs // basketSize)\nprint(\"Eggs left: \", eggs % basketSize)\n",
+      "challenge": "For 23 eggs, find a basket size from 3 to 7 that leaves exactly 3 eggs over. Can you find two different sizes that work?",
+      "hint": "With sizes 4 and 5, the remainders are both 3. With size 4, there are 5 full baskets. With size 5, there are 4.",
+      "checks": [
+        {
+          "input": [],
+          "output": "Full baskets: 5\nEggs left: 3\n"
+        }
+      ],
+      "art": "egg-baskets.png",
+      "alt": "Pip sorts speckled eggs into baskets on a sunny picnic blanket."
+    },
+    {
+      "chapter": "Math puzzles",
+      "title": "The stair of stones",
+      "pip": "I built stairs from pebbles. Step one has one pebble, step two has two, and so on.",
+      "body": [
+        "This program adds each row to a running total. For four rows, it adds 1 + 2 + 3 + 4. The total is 10."
+      ],
+      "code": "let rows = 4\nlet row = 1\nlet total = 0\nwhile row <= rows do\n  let total = total + row\n  let row = row + 1\nend while\nprint(\"Pebbles: \", total)\n",
+      "challenge": "You find a pile of exactly 28 pebbles. How many complete steps can you build? Find the number of rows with the program, then explain your answer to a friend.",
+      "hint": "Try 6 rows and then 7. Six rows take 21 pebbles and the next row takes 7 more.",
+      "checks": [
+        {
+          "input": [],
+          "output": "Pebbles: 10\n"
+        }
+      ],
+      "art": "",
+      "alt": ""
+    },
+    {
+      "chapter": "Math puzzles",
+      "title": "The fossil signal",
+      "pip": "Roar on a multiple of three. Stomp on a multiple of five. What about fifteen?",
+      "body": [
+        "A number is a multiple of 3 when the remainder after dividing by 3 is zero. This starter catches Roar numbers. Add the Stomp and Roar Stomp rules."
+      ],
+      "code": "let n = 1\nwhile n <= 15 do\n  if n % 3 = 0 then\n    print(\"Roar\")\n  else\n    print(n)\n  end if\n  let n = n + 1\nend while\n",
+      "challenge": "Make 3 say Roar, 5 say Stomp, and 15 say Roar Stomp. Any number that matches neither rule should print as itself. Once it works, check 30.",
+      "hint": "First test n % 3 = 0 and n % 5 = 0 together with and. Only if that fails should you check the individual rules. At 30, you should get Roar Stomp.",
+      "checks": [
+        {
+          "input": [],
+          "output": "1\n2\nRoar\n4\n5\nRoar\n7\n8\nRoar\n10\n11\nRoar\n13\n14\nRoar\n"
+        }
+      ],
+      "art": "",
+      "alt": ""
+    }
+  ]
+}

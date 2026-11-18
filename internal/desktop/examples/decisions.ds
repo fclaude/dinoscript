@@ -1,0 +1,7 @@
+# Try changing age to 7.
+let age = 10
+if age >= 10 then
+  print("You can ride the big dinosaur.")
+else
+  print("Try the little dinosaur ride.")
+end if

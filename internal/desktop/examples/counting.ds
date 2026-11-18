@@ -1,0 +1,6 @@
+# Change 5 to a different number.
+let count = 1
+while count <= 5 do
+  print("Dinosaur ", count)
+  let count = count + 1
+end while

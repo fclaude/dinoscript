@@ -1,0 +1,28 @@
+# Run this program, then enter a whole number such as 25 or 29.
+function prime(n)
+  if n < 2 then
+    output false
+  end if
+  if n = 2 then
+    output true
+  end if
+  if n % 2 = 0 then
+    output false
+  end if
+  let divisor = 3
+  while divisor <= n // divisor do
+    if n % divisor = 0 then
+      output false
+    end if
+    let divisor = divisor + 2
+  end while
+  output true
+end function
+
+print("Which whole number do you want to check?")
+let number = readint()
+if prime(number) then
+  print(number, " is prime.")
+else
+  print(number, " is not prime.")
+end if

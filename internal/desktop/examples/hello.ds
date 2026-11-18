@@ -1,0 +1,2 @@
+# Change the words. Press F5.
+print("Hello, dinosaur!")

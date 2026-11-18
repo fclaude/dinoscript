@@ -1,0 +1,246 @@
+package desktop
+
+import (
+	"bytes"
+	"os"
+	"path/filepath"
+	"slices"
+	"strings"
+	"testing"
+	"time"
+
+	"github.com/fclaude/dinoscript/book"
+	"github.com/richardwilkes/unison"
+	"github.com/richardwilkes/unison/enums/mod"
+)
+
+func TestDesktopEditor(t *testing.T) {
+	dir := t.TempDir()
+	draftPath := filepath.Join(dir, "draft.json")
+	dialogs := &testDialogs{
+		save: filepath.Join(dir, "saved.ds"),
+		open: filepath.Join(dir, "opened.ds"),
+		pdf:  filepath.Join(dir, book.PDFFilename),
+	}
+	if err := os.WriteFile(dialogs.open, []byte("print(\"Reopened\")\r\n"), 0600); err != nil {
+		t.Fatal(err)
+	}
+
+	var app *editor
+	var startupErr error
+	screen, err := unison.StartHeadless(
+		unison.HeadlessConfig{Width: 1024, Height: 768, SyncTimeout: 5 * time.Second},
+		unison.QuitAfterLastWindowClosedCallback(func() bool { return false }),
+		unison.StartupFinishedCallback(func() { app, startupErr = newEditor(draftPath, dialogs) }),
+	)
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Cleanup(func() {
+		screen.Stop()
+		if errors := screen.Errors(); len(errors) != 0 {
+			t.Errorf("UI event errors: %v", errors)
+		}
+	})
+	if startupErr != nil || app == nil {
+		t.Fatalf("create editor: %v", startupErr)
+	}
+	screen.EnableAccessibility()
+
+	assert := func(description string, condition func() bool) {
+		t.Helper()
+		var ok bool
+		if !screen.Do(func() { ok = condition() }) || !ok {
+			t.Fatalf("%s", description)
+		}
+	}
+	wait := func(status string) {
+		t.Helper()
+		deadline := time.Now().Add(5 * time.Second)
+		var got string
+		for time.Now().Before(deadline) {
+			if screen.Do(func() { got = app.status.String() }) && strings.HasPrefix(got, status) {
+				return
+			}
+			time.Sleep(10 * time.Millisecond)
+		}
+		t.Fatalf("waiting for status %q, got %q", status, got)
+	}
+	click := func(button *unison.Button) { screen.Click(screen.PanelCenter(button)) }
+	replaceCode := func(source string) {
+		screen.Click(screen.PanelCenter(app.source))
+		screen.KeyPress(unison.KeyA, mod.Control)
+		screen.Type(source)
+	}
+	run := func() { screen.KeyPress(unison.KeyF5, mod.None) }
+
+	assert("the source field should have startup focus", func() bool { return app.window.CurrentFocus() == app.source.AsPanel() })
+	click(app.run)
+	wait("Finished.")
+	assert("Run should show the bundled example's output", func() bool {
+		return app.output.Text() == "Hello, dinosaur!\n"
+	})
+	if node := screen.AccessibilityNodeFor(app.output); node == nil || !node.ReadOnly {
+		t.Fatal("Output should be exposed to assistive technology as read-only")
+	}
+	screen.Click(screen.PanelCenter(app.output))
+	screen.KeyPress(unison.KeyA, mod.Control)
+	screen.Type("Ignored")
+	screen.KeyPress(unison.KeyBackspace, mod.None)
+	assert("typing and deleting in Output should leave the program's text intact", func() bool {
+		return app.output.Text() == "Hello, dinosaur!\n"
+	})
+
+	replaceCode("print(\"🦖\", missing)")
+	run()
+	wait("Fix the error")
+	assert("the output pane should explain the unknown name", func() bool {
+		return strings.Contains(app.output.Text(), "I don't know \"missing\"")
+	})
+	if !slices.ContainsFunc(screen.Announcements(), func(text string) bool { return strings.Contains(text, "I don't know") }) {
+		t.Fatal("the source diagnostic was not announced for accessibility")
+	}
+	click(app.jump)
+	assert("Go to error should select the exact identifier after the Unicode string", func() bool {
+		return app.window.CurrentFocus() == app.source.AsPanel() && app.source.SelectedText() == "missing"
+	})
+	screen.Type("2 + 3 * 4")
+	run()
+	wait("Finished.")
+	assert("F5 should run the repaired source", func() bool { return app.output.Text() == "🦖14\n" })
+
+	replaceCode("print(\"Number?\")\nprint(readint() + 1)")
+	run()
+	wait("Enter a whole number")
+	assert("program input should follow the prompt and take focus", func() bool {
+		return app.output.Text() == "Number?\n" && app.window.CurrentFocus() == app.input.AsPanel()
+	})
+	screen.Type("41")
+	screen.KeyPress(unison.KeyReturn, mod.None)
+	wait("Finished.")
+	assert("Enter should send the response back to the program", func() bool {
+		return app.output.Text() == "Number?\n> 41\n42\n"
+	})
+	replaceCode("print(readint() / 0)")
+	run()
+	wait("Enter a whole number")
+	replaceCode("print(9)")
+	screen.Click(screen.PanelCenter(app.input))
+	screen.Type("1")
+	screen.KeyPress(unison.KeyReturn, mod.None)
+	wait("Fix the error")
+	assert("diagnostics from old source should stay visible without selecting the new source", func() bool {
+		return strings.Contains(app.output.Text(), "divide by zero") && !app.jump.Enabled()
+	})
+
+	replaceCode("print(readint())")
+	run()
+	wait("Enter a whole number")
+	click(app.stop)
+	wait("Stopped.")
+	assert("Stop should release the waiting run and disable its input", func() bool {
+		return app.run.Enabled() && !app.input.Enabled()
+	})
+
+	replaceCode("print(7)")
+	screen.KeyPress(unison.KeyZ, mod.Control)
+	assert("Undo should restore the previous source", func() bool { return app.source.Text() == "print(readint())" })
+	screen.KeyPress(unison.KeyY, mod.Control)
+	assert("Redo should restore the edit", func() bool { return app.source.Text() == "print(7)" })
+	screen.KeyPress(unison.KeyS, mod.Control)
+	wait("Saved")
+	data, err := os.ReadFile(dialogs.save)
+	if err != nil || string(data) != "print(7)" {
+		t.Fatalf("saved contents = %q, error = %v", data, err)
+	}
+	replaceCode("print(8)")
+	screen.KeyPress(unison.KeyO, mod.Control)
+	assert("canceling the discard should keep the current edits and avoid the picker", func() bool {
+		return app.source.Text() == "print(8)" && dialogs.openCount == 0
+	})
+	screen.Do(func() { dialogs.discard = true })
+	screen.KeyPress(unison.KeyO, mod.Control)
+	wait("Opened")
+	assert("Open should load the selected file and normalize Windows newlines", func() bool {
+		return app.source.Text() == "print(\"Reopened\")\n"
+	})
+	run()
+	wait("Finished.")
+	assert("a fresh run after Stop should work", func() bool { return app.output.Text() == "Reopened\n" })
+
+	replaceCode("print(\"Recover me\")")
+	screen.Do(func() {
+		if !app.window.AttemptClose() {
+			return
+		}
+		app, startupErr = newEditor(draftPath, dialogs)
+	})
+	if startupErr != nil {
+		t.Fatal(startupErr)
+	}
+	assert("reopening the window should recover the unsaved draft and its file path", func() bool {
+		return app.source.Text() == "print(\"Recover me\")" && app.dirty() && app.document.Path == dialogs.open
+	})
+
+	click(app.learn)
+	var reader *tutorialReader
+	assert("Learn should open the illustrated cover in a separate window", func() bool {
+		reader = app.reader
+		return reader != nil && reader.page == 0 && len(reader.images) == 1 && !reader.tryCode.Enabled()
+	})
+	click(reader.next)
+	click(reader.next)
+	click(reader.previous)
+	assert("Next and Previous should move one lesson at a time", func() bool {
+		return reader.page == 1 && reader.status.String() == "Lesson 1 of 14"
+	})
+	screen.Do(func() { dialogs.discard = false })
+	click(reader.tryCode)
+	assert("declining to replace an unsaved program should leave the source intact", func() bool {
+		return app.source.Text() == "print(\"Recover me\")"
+	})
+	screen.Do(func() { dialogs.discard = true })
+	click(reader.tryCode)
+	assert("Try code should load the selected lesson and give the editor focus", func() bool {
+		return app.source.Text() == reader.guide.Pages[0].Code && app.window.Focused() && app.window.CurrentFocus() == app.source.AsPanel()
+	})
+	run()
+	wait("Finished.")
+	assert("the tutorial code should run in the ordinary editor", func() bool {
+		return app.output.Text() == "Hello, dinosaur!\n"
+	})
+	click(app.learn)
+	assert("returning to Learn should keep the current lesson", func() bool {
+		return app.reader == reader && reader.page == 1
+	})
+	click(reader.save)
+	printed, err := os.ReadFile(dialogs.pdf)
+	if err != nil {
+		t.Fatal(err)
+	}
+	original, err := book.PDF()
+	if err != nil || !bytes.Equal(printed, original) {
+		t.Fatalf("Save PDF did not export the bundled book: %v", err)
+	}
+}
+
+type testDialogs struct {
+	open, save string
+	pdf        string
+	discard    bool
+	openCount  int
+}
+
+func (d *testDialogs) openPath() (string, bool) {
+	d.openCount++
+	return d.open, true
+}
+
+func (d *testDialogs) savePath(extension, _ string) (string, bool) {
+	if extension == "pdf" {
+		return d.pdf, d.pdf != ""
+	}
+	return d.save, d.save != ""
+}
+
+func (d *testDialogs) discardChanges() bool { return d.discard }
