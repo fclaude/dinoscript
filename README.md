@@ -30,7 +30,7 @@ Development builds are for testing. Release signing, notarization, and clean-mac
 
 The Go and desktop checks workflow builds the site for every run. A `vMAJOR.MINOR.PATCH` tag publishes the checked app packages and PDF to GitHub Releases, then triggers **Publish dinoscript.org** on the default branch. The site uses the downloads and workbook from the latest published release. Changes to the site source on `main` also trigger deployment. You can rerun **Publish dinoscript.org** manually from `main`.
 
-Linux packages are built and published by [fclaude-packages](https://github.com/fclaude/fclaude-packages). The website picks up the latest verified Linux package set when Pages deploys.
+Linux packages are published by [fclaude-packages](https://github.com/fclaude/fclaude-packages). When the download page opens, it checks the latest published package set and updates the five Linux installers and their checksum links together. An hourly Pages check also updates the static HTML when either release changes. Visitors can use the prebuilt links with JavaScript disabled or when GitHub is unavailable.
 
 In [Settings → Pages](https://github.com/fclaude/dinoscript/settings/pages), use **GitHub Actions** as the publishing source and `dinoscript.org` as the custom domain. The `github-pages` environment deploys from `main`. [GitHub Pages custom domain setup](https://docs.github.com/en/pages/configuring-a-custom-domain-for-your-github-pages-site/managing-a-custom-domain-for-your-github-pages-site)
 

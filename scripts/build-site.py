@@ -112,10 +112,13 @@ def render_linux_downloads(release):
     download = f"{PACKAGES}/releases/download/{tag}"
     urls = {key: f"{download}/{name}" for key, name in files.items()}
     template = Template((SITE / "linux-downloads.html").read_text(encoding="utf-8"))
-    return template.substitute(urls, version=version, release=f"{PACKAGES}/releases/tag/{tag}")
+    return template.substitute(urls, tag=tag, version=version, release=f"{PACKAGES}/releases/tag/{tag}")
 
 
 def build(tag, book_dir, output, linux_release):
+    linux_downloads = render_linux_downloads(linux_release) if linux_release is not None else ""
+    if linux_release is not None and not linux_downloads:
+        raise ValueError("The Linux release is missing a verified package or checksum manifest")
     guide = json.loads((book_dir / "book.json").read_text(encoding="utf-8"))
     art = render_art(book_dir, output, guide)
     cover, cover_width, cover_height = art[guide["cover_art"]]
@@ -126,7 +129,7 @@ def build(tag, book_dir, output, linux_release):
         "release": f"{REPOSITORY}/releases/tag/{tag}",
         "download": f"{REPOSITORY}/releases/download/{tag}",
         "linux_releases": f"{PACKAGES}/releases/latest",
-        "linux_downloads": render_linux_downloads(linux_release),
+        "linux_downloads": linux_downloads,
         "cover": escape(cover),
         "cover_alt": escape(guide["cover_alt"]),
         "cover_width": cover_width,
@@ -139,6 +142,7 @@ def build(tag, book_dir, output, linux_release):
         template = Template((SITE / page).read_text(encoding="utf-8"))
         (output / page).write_text(template.substitute(values), encoding="utf-8")
     shutil.copyfile(SITE / "styles.css", output / "styles.css")
+    shutil.copyfile(SITE / "linux-downloads.js", output / "linux-downloads.js")
     shutil.copyfile(book_dir / "Dinoscript-with-Pip.pdf", output / "Dinoscript-with-Pip.pdf")
 
 
@@ -151,7 +155,7 @@ def main():
     args = parser.parse_args()
     if not re.fullmatch(r"v[0-9]+\.[0-9]+\.[0-9]+", args.tag):
         parser.error("tag must be a version such as v0.1.0")
-    linux_release = json.loads(args.linux_release.read_text(encoding="utf-8")) if args.linux_release else {}
+    linux_release = json.loads(args.linux_release.read_text(encoding="utf-8")) if args.linux_release else None
     build(args.tag, args.book_dir, args.output, linux_release)
 
 
