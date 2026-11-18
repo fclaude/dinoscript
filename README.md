@@ -1,40 +1,73 @@
-# dinoscript
-Dinoscript - programming environment for kids
+<h1 align="center">Dinoscript</h1>
 
-[Download Dinoscript](https://dinoscript.org/#downloads) · [Read the online workbook](https://dinoscript.org/workbook.html)
+<p align="center"><strong>A free, offline coding editor for kids</strong><br>
+Write your first program, make text games, and solve math puzzles with Pip the triceratops.</p>
 
-Open Dinoscript, change the starter program, and press **F5** to run it. Pick a lesson from **Examples** or save your own program as a `.ds` file. When a program calls `readint()`, type your answer in **Output** and press Enter.
+<p align="center">
+  <strong><a href="https://dinoscript.org/#downloads">Download Dinoscript</a></strong> ·
+  <a href="https://dinoscript.org/workbook.html">Read the workbook</a> ·
+  <a href="book/Dinoscript-with-Pip.pdf">Get the PDF</a>
+</p>
 
-Use **My files** to switch between programs. **New** starts a blank tab and **Open** adds a file to the sidebar. Switching tabs stops the current run. Dinoscript recovers your open tabs and their edits when you reopen the editor.
+<p align="center">
+  <img src="book/art/pip-at-the-computer.png" alt="Pip the triceratops typing on a computer among ferns" width="540">
+</p>
 
-Choose **Learn** or press **F1** to meet Pip and browse the lessons offline. **Try code** opens the current example in the editor, and **Save PDF** exports the illustrated book. The print edition is included with the release packages. [Dinoscript with Pip](book/Dinoscript-with-Pip.pdf)
+## Get started
+
+Open Dinoscript and press <kbd>F5</kbd> to run the starter program. **Output** shows `Hello, dinosaur!`. Change the words inside the quotes and run it again.
+
+```text
+print("Hello, dinosaur!")
+```
+
+- **Try another program.** Choose one from **Examples** or save your own as a `.ds` file. When a program calls `readint()`, type your answer in **Output** and press <kbd>Enter</kbd>.
+- **Keep your work organized.** Use **New** for a blank tab, **Open** to add a file, and **My files** to switch between programs. Switching tabs stops the current run. Dinoscript restores your tabs and edits when you reopen the editor.
+- **Learn with Pip.** Choose **Learn** or press <kbd>F1</kbd> to browse the illustrated lessons offline. **Try code** opens the lesson example in the editor, and **Save PDF** exports the book. The print edition also comes with the release packages.
 
 ## Build and test
 
-The Go desktop build uses Go 1.27.3 or later. Start it during development with `go run ./cmd/dinoscript`. Run a file from a terminal with `go run ./cmd/dinoscript-run example.ds`. Pass `-input answers.txt` before the source path to provide input for `readint()`.
+The desktop build requires Go 1.27.3 or later. From the repository root, start the editor, run the bundled hello program in a terminal, or run the test suite.
+
+```sh
+go run ./cmd/dinoscript
+go run ./cmd/dinoscript-run internal/desktop/examples/hello.ds
+go test ./...
+```
+
+For programs that use `readint()`, pass `-input answers.txt` before the source path. Put one answer on each line of the input file.
 
 On Linux, install the Ubuntu, Fedora, or Arch package and open **Dinoscript** from the GNOME or KDE app menu. The editor uses Xorg or XWayland, including XWayland sessions that expose their X11 socket only in Linux's abstract socket namespace. [Linux downloads](https://dinoscript.org/#downloads)
 
-Run `go test ./...` for the interpreter, book programs, and automated desktop UI tests. The UI suite sends keyboard and mouse events through the desktop toolkit and covers saving, reopening, draft recovery, browsing lessons, running tutorial code, and saving the PDF. The GitHub Actions workflow runs the suite on Linux, macOS, and Windows and collects the Mac and Windows development builds.
+The test suite covers the interpreter, workbook programs, and desktop UI. The UI tests send keyboard and mouse events through the desktop toolkit to exercise saving, reopening, draft recovery, browsing lessons, running tutorial code, and exporting the PDF. GitHub Actions runs the suite on Linux, macOS, and Windows and collects the Mac and Windows development builds. [Go and desktop checks](.github/workflows/go.yml)
 
-The desktop lessons and print edition share [book.json](book/book.json). After changing the lessons or illustrations, run `python3 scripts/build-book.py` with ReportLab and Pillow installed, then run the tests.
+After editing the shared lesson source or illustrations, run `python3 scripts/build-book.py` with ReportLab and Pillow installed, then run the tests. [Shared lesson source](book/book.json)
 
 ## Package a development build
 
-- On **Mac**, run `sh scripts/package-mac.sh arm64` for Apple silicon or `sh scripts/package-mac.sh amd64` for Intel. The script creates `Dinoscript.app`. On a Mac it also creates a drag-to-install `.dmg`.
-- For **Windows x64**, run `sh scripts/package-windows.sh` from a POSIX shell such as Git Bash. Double-click `build/windows-amd64/Dinoscript.exe` on Windows.
+| Target | Command |
+| --- | --- |
+| Mac with Apple silicon | `sh scripts/package-mac.sh arm64` |
+| Mac with Intel | `sh scripts/package-mac.sh amd64` |
+| Windows x64 | `sh scripts/package-windows.sh` |
 
-Development builds are for testing. Release signing, notarization, and clean-machine install checks are tracked in the desktop plan.
+The Mac script creates `Dinoscript.app` and, when run on a Mac, a drag-to-install `.dmg`. Run the Windows script from a POSIX shell such as Git Bash, then open `build/windows-amd64/Dinoscript.exe` on Windows.
+
+Use development builds for testing. The desktop plan tracks release signing, notarization, and clean-machine install checks. [Desktop editor plan](docs/go-migration.md)
 
 ## Website and releases
 
-The Go and desktop checks workflow builds the site for every run. A `vMAJOR.MINOR.PATCH` tag publishes the checked app packages and PDF to GitHub Releases, then triggers **Publish dinoscript.org** on the default branch. The site uses the downloads and workbook from the latest published release. Changes to the site source on `main` also trigger deployment. You can rerun **Publish dinoscript.org** manually from `main`.
+The **Go and desktop checks** workflow builds the site on every run. Pushing a `vMAJOR.MINOR.PATCH` tag publishes the tested app packages and PDF to GitHub Releases, then triggers **Publish dinoscript.org** on the default branch. Site changes on `main` also trigger deployment, and you can run the publish workflow manually from `main`. [Pages workflow](.github/workflows/pages.yml)
 
-Linux packages are published by [fclaude-packages](https://github.com/fclaude/fclaude-packages). When the download page opens, it checks the latest published package set and updates the five Linux installers and their checksum links together. An hourly Pages check also updates the static HTML when either release changes. Visitors can use the prebuilt links with JavaScript disabled or when GitHub is unavailable.
+The site uses the downloads and workbook from the latest published Dinoscript release. When the download page opens, it checks the latest Linux package release and updates all five installer and checksum links together. An hourly Pages check refreshes the static HTML when either release changes. The prebuilt links are available with JavaScript disabled or when GitHub is unavailable. [Linux package repository](https://github.com/fclaude/fclaude-packages)
 
-In [Settings → Pages](https://github.com/fclaude/dinoscript/settings/pages), use **GitHub Actions** as the publishing source and `dinoscript.org` as the custom domain. The `github-pages` environment deploys from `main`. [GitHub Pages custom domain setup](https://docs.github.com/en/pages/configuring-a-custom-domain-for-your-github-pages-site/managing-a-custom-domain-for-your-github-pages-site)
+In the repository’s Pages settings, use **GitHub Actions** as the publishing source and `dinoscript.org` as the custom domain. The `github-pages` environment deploys from `main`. [Pages settings](https://github.com/fclaude/dinoscript/settings/pages) · [Custom domain setup](https://docs.github.com/en/pages/configuring-a-custom-domain-for-your-github-pages-site/managing-a-custom-domain-for-your-github-pages-site)
 
-For a local preview, install Pillow and run `python3 scripts/build-site.py v0.1.0`. The generated pages and PDF are in `build/site/`.
+For a local preview, install Pillow and run the following command. Find the generated pages and PDF in `build/site/`.
+
+```sh
+python3 scripts/build-site.py v0.1.0
+```
 
 ## Language and plans
 
