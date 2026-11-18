@@ -1,6 +1,8 @@
 # dinoscript
 Dinoscript - programming environment for kids
 
+[Download Dinoscript](https://dinoscript.org/#downloads) · [Read the online workbook](https://dinoscript.org/workbook.html)
+
 Open Dinoscript, change the starter program, and press **F5** to run it. Pick a lesson from **Examples** or save your own program as a `.ds` file. When a program calls `readint()`, type your answer in **Output** and press Enter.
 
 Choose **Learn** or press **F1** to meet Pip and browse the lessons offline. **Try code** opens the current example in the editor, and **Save PDF** exports the illustrated book. The print edition is included with the macOS and Windows release packages. [Dinoscript with Pip](book/Dinoscript-with-Pip.pdf)
@@ -21,6 +23,14 @@ The desktop lessons and print edition share [book.json](book/book.json). After c
 - For **Windows x64**, run `sh scripts/package-windows.sh` from a POSIX shell such as Git Bash. Double-click `build/windows-amd64/Dinoscript.exe` on Windows.
 
 Development builds are for testing. Release signing, notarization, and clean-machine install checks are tracked in the desktop plan.
+
+## Website and releases
+
+The Go and desktop checks workflow builds the site for every run. A `vMAJOR.MINOR.PATCH` tag publishes the checked app packages and PDF to GitHub Releases, then triggers **Publish dinoscript.org** on the default branch. The site uses the downloads and workbook from the latest published release. Changes to the site source on `main` also trigger deployment. You can rerun **Publish dinoscript.org** manually from `main`.
+
+In [Settings → Pages](https://github.com/fclaude/dinoscript/settings/pages), use **GitHub Actions** as the publishing source and `dinoscript.org` as the custom domain. The `github-pages` environment deploys from `main`. [GitHub Pages custom domain setup](https://docs.github.com/en/pages/configuring-a-custom-domain-for-your-github-pages-site/managing-a-custom-domain-for-your-github-pages-site)
+
+For a local preview, install Pillow and run `python3 scripts/build-site.py v0.1.0`. The generated pages and PDF are in `build/site/`.
 
 ## Language and plans
 

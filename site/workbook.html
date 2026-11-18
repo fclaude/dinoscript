@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="$subtitle">
+  <link rel="canonical" href="https://dinoscript.org/workbook.html">
+  <link rel="stylesheet" href="styles.css">
+  <script defer src="https://analytics.recoded.cl/script.js" data-website-id="cc0f3635-1173-4e50-9c45-3c2bdd2c339b"></script>
+  <title>$title · Online workbook</title>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header">
+    <div class="wrap header-inner">
+      <a class="brand" href="./"><span class="brand-mark" aria-hidden="true">&gt;_</span> Dinoscript</a>
+      <nav aria-label="Main navigation">
+        <a href="./#downloads">Downloads</a>
+        <a href="workbook.html" aria-current="page">Workbook</a>
+        <a href="$repository">GitHub <span aria-hidden="true">↗</span></a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="wrap workbook" id="main">
+    <header class="workbook-intro">
+      <p class="eyebrow">The Dinoscript workbook</p>
+      <h1>$title</h1>
+      <p class="intro">$subtitle</p>
+      <p>By $author</p>
+      <div class="actions">
+        <a class="button primary" href="#lesson-1">Start the first lesson <span aria-hidden="true">↓</span></a>
+        <a class="button secondary" href="Dinoscript-with-Pip.pdf" download>Download PDF <span aria-hidden="true">↓</span></a>
+      </div>
+    </header>
+    <div class="workbook-layout">
+      <nav class="contents" id="contents" aria-labelledby="contents-title">
+        <h2 id="contents-title">Contents</h2>
+        $contents
+      </nav>
+      <div class="chapters">
+        <p class="pip-quote">$welcome</p>
+        $chapters
+      </div>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap footer-inner">
+      <span>© 2023–2026 $author</span>
+      <a href="$repository/blob/$tag/LICENSE">Apache License 2.0</a>
+    </div>
+  </footer>
+</body>
+</html>

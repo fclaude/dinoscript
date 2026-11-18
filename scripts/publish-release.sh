@@ -40,7 +40,7 @@ Dinoscript is an offline coding editor for kids. Open the editor and press F5 to
 
 - On Apple silicon, use the arm64 disk image. On Intel Macs, use the amd64 disk image. Drag Dinoscript to Applications.
 - On Windows x64, extract the ZIP and open Dinoscript.exe.
-- Dinoscript with Pip is also available as a separate PDF.
+- [Read Dinoscript with Pip online](https://dinoscript.org/workbook.html) or download the printable PDF below.
 
 The Mac apps are ad-hoc signed. The Windows executable is unsigned.
 NOTES
