@@ -29,8 +29,7 @@ func TestDesktopEditor(t *testing.T) {
 	var app *editor
 	var startupErr error
 	screen, err := unison.StartHeadless(
-		// A cold system emoji font on Intel macOS can take several seconds to load and draw.
-		unison.HeadlessConfig{Width: 1024, Height: 768, SyncTimeout: 20 * time.Second},
+		unison.HeadlessConfig{Width: 1024, Height: 768, SyncTimeout: 5 * time.Second},
 		unison.QuitAfterLastWindowClosedCallback(func() bool { return false }),
 		unison.StartupFinishedCallback(func() { app, startupErr = newEditor(draftPath, dialogs) }),
 	)
@@ -46,6 +45,9 @@ func TestDesktopEditor(t *testing.T) {
 	if startupErr != nil || app == nil {
 		t.Fatalf("create editor: %v", startupErr)
 	}
+	// Load the system fallback font outside the input driver's redraw deadline.
+	// The test below still types the emoji, renders it and checks its diagnostic offset.
+	screen.Do(func() { unison.NewText("🦖", &unison.TextDecoration{Font: app.source.Font}) })
 	screen.EnableAccessibility()
 
 	assert := func(description string, condition func() bool) {
