@@ -143,6 +143,7 @@ def build(tag, book_dir, output, linux_release):
         (output / page).write_text(template.substitute(values), encoding="utf-8")
     shutil.copyfile(SITE / "styles.css", output / "styles.css")
     shutil.copyfile(SITE / "linux-downloads.js", output / "linux-downloads.js")
+    shutil.copyfile(ROOT / "internal" / "desktop" / "pip.png", output / "pip.png")
     shutil.copyfile(book_dir / "Dinoscript-with-Pip.pdf", output / "Dinoscript-with-Pip.pdf")
 
 

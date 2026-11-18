@@ -72,17 +72,7 @@ kbd {
   letter-spacing: -0.045em;
   text-decoration: none;
 }
-.brand-mark {
-  display: grid;
-  place-items: center;
-  width: 2rem;
-  height: 2rem;
-  border-radius: 0.5rem;
-  color: var(--gold);
-  background: var(--ink);
-  font: 700 0.93rem var(--mono);
-  letter-spacing: 0;
-}
+.brand-mark { width: 2rem; }
 .header-inner nav {
   display: flex;
   flex-wrap: wrap;
