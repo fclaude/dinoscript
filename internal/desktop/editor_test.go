@@ -29,7 +29,8 @@ func TestDesktopEditor(t *testing.T) {
 	var app *editor
 	var startupErr error
 	screen, err := unison.StartHeadless(
-		unison.HeadlessConfig{Width: 1024, Height: 768, SyncTimeout: 5 * time.Second},
+		// A cold system emoji font on Intel macOS can take several seconds to load and draw.
+		unison.HeadlessConfig{Width: 1024, Height: 768, SyncTimeout: 20 * time.Second},
 		unison.QuitAfterLastWindowClosedCallback(func() bool { return false }),
 		unison.StartupFinishedCallback(func() { app, startupErr = newEditor(draftPath, dialogs) }),
 	)

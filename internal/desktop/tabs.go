@@ -165,8 +165,10 @@ func (e *editor) updateTabTitle() {
 		title += " *"
 	}
 	e.window.SetTitle(title + " — Dinoscript")
-	e.fileTitle.SetTitle(shortName(title, 42))
-	e.fileTitle.MarkForLayoutAndRedraw()
+	if text := shortName(title, 42); e.fileTitle.String() != text {
+		e.fileTitle.SetTitle(text)
+		e.fileTitle.MarkForLayoutAndRedraw()
+	}
 	e.styleTab(e.document)
 }
 

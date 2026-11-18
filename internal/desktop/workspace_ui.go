@@ -200,17 +200,20 @@ func (e *editor) styleTab(t *fileTab) {
 		full += " (edited)"
 		title += " *"
 	}
+	border, icon := edge, unison.DocumentSVG
+	if t == e.document {
+		border, icon = tabColors[t.Color].stripe, unison.CheckmarkSVG
+	}
+	if b.Accessibility.Name == full && b.EdgeInk == border {
+		return
+	}
 	if b.Accessibility.Name != full {
 		b.Accessibility.Name = full
 		b.Tooltip = unison.NewTooltipWithText(full)
 		b.SetTitle(shortName(title, 17))
 	}
-	b.Drawable = smallIcon(unison.DocumentSVG)
-	b.EdgeInk = edge
-	if t == e.document {
-		b.Drawable = smallIcon(unison.CheckmarkSVG)
-		b.EdgeInk = tabColors[t.Color].stripe
-	}
+	b.Drawable = smallIcon(icon)
+	b.EdgeInk = border
 	b.MarkForLayoutAndRedraw()
 }
 
