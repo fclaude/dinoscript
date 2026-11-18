@@ -1,3 +1,4 @@
 *.pdf binary
 book/book.json text eol=lf
 book/book.es-CL.json text eol=lf
+internal/desktop/examples/**/*.ds text eol=lf
