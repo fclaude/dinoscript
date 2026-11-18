@@ -77,10 +77,23 @@ func toolButton(title string, svg *unison.SVG, click func()) *unison.Button {
 	return b
 }
 
+func (e *editor) toolButton(message string, svg *unison.SVG, click func()) *unison.Button {
+	b := toolButton("", svg, click)
+	e.localizeTitle(b, message)
+	return b
+}
+
+func (e *editor) describeButton(b *unison.Button, message string) {
+	e.localize(func() {
+		b.Accessibility.Name = e.text(message)
+		b.Tooltip = unison.NewTooltipWithText(b.Accessibility.Name)
+	})
+}
+
 func (e *editor) buildWindow(pip *unison.Image) {
 	content := e.window.Content()
 	content.SetLayout(&unison.FlexLayout{Columns: 1})
-	header := surface(cream, 5, geom.NewSymmetricInsets(18, 10))
+	header := surface(cream, 6, geom.NewSymmetricInsets(18, 10))
 	header.SetLayoutData(fill(false))
 	brand := label("Dinoscript", unison.EmphasizedSystemFont.Face().Font(28), ink)
 	brand.Drawable = &unison.SizedDrawable{Drawable: pip, Size: geom.NewUniformSize(42)}
@@ -88,15 +101,15 @@ func (e *editor) buildWindow(pip *unison.Image) {
 	brand.SetLayoutData(fill(false))
 	header.AddChild(brand)
 	header.AddChild(e.examplesMenu())
-	e.learn = toolButton("Learn", nil, e.openTutorial)
+	e.learn = e.toolButton("Learn", nil, e.openTutorial)
 	header.AddChild(e.learn)
+	header.AddChild(e.languageMenu())
 	for _, z := range []struct {
 		text, name string
 		step       float32
 	}{{"A−", "Smaller text", -1}, {"A+", "Larger text", 1}} {
 		b := toolButton(z.text, nil, func() { e.zoom(z.step) })
-		b.Accessibility.Name = z.name
-		b.Tooltip = unison.NewTooltipWithText(z.name)
+		e.describeButton(b, z.name)
 		header.AddChild(b)
 	}
 	content.AddChild(header)
@@ -114,32 +127,41 @@ func (e *editor) buildWindow(pip *unison.Image) {
 	e.status.OnBackgroundInk = muted
 	e.status.SetLayoutData(fill(false))
 	footer.AddChild(e.status)
-	e.jump = toolButton("Go to error", nil, e.jumpToError)
+	e.jump = e.toolButton("Go to error", nil, e.jumpToError)
 	e.jump.SetEnabled(false)
-	e.position = label("Ln 1, Col 1", unison.MonospacedFont.Face().Font(12), muted)
+	e.position = label(e.text("Ln %d, Col %d", 1, 1), unison.MonospacedFont.Face().Font(12), muted)
 	footer.AddChild(e.position)
 	content.AddChild(footer)
 	e.zoom(0)
 }
 
-func (e *editor) examplesMenu() *unison.PopupMenu[string] {
-	m := unison.NewPopupMenu[string]()
-	m.Accessibility.Name = "Examples"
+func toolbarMenu[T comparable]() *unison.PopupMenu[T] {
+	m := unison.NewPopupMenu[T]()
 	m.BackgroundInk, m.OnBackgroundInk, m.EdgeInk = cream, ink, edge
 	m.CornerRadius = geom.NewUniformSize(7)
 	m.VMargin = 5
-	m.AddDisabledItem("Examples")
-	m.Select("Examples")
-	for _, lesson := range lessons {
-		m.AddItem(lesson.title)
+	return m
+}
+
+func (e *editor) examplesMenu() *unison.PopupMenu[int] {
+	m := toolbarMenu[int]()
+	m.AddDisabledItem(-1)
+	m.Select(-1)
+	for index := range lessons {
+		m.AddItem(index)
 	}
-	m.ChoiceMadeCallback = func(_ *unison.PopupMenu[string], _ int, title string) {
-		for _, lesson := range lessons {
-			if lesson.title == title {
-				e.openExample(lesson.file, title)
-				return
-			}
+	m.ItemRendererCallback = func(index int) string {
+		if index < 0 {
+			return e.text("Examples")
 		}
+		return e.text(lessons[index].title)
+	}
+	e.localize(func() {
+		m.Accessibility.Name = e.text("Examples")
+		m.MarkForLayoutAndRedraw()
+	})
+	m.ChoiceMadeCallback = func(_ *unison.PopupMenu[int], _, index int) {
+		e.openExample(index)
 	}
 	return m
 }
@@ -147,7 +169,9 @@ func (e *editor) examplesMenu() *unison.PopupMenu[string] {
 func (e *editor) sidebar() *unison.Panel {
 	s := surface(shelf, 1, geom.Insets{Left: 12, Top: 18, Right: 8, Bottom: 12})
 	s.SetLayoutData(&unison.FlexLayoutData{VGrab: true, VAlign: align.Fill, SizeHint: geom.NewSize(205, 0)})
-	s.AddChild(label("My files", unison.EmphasizedSystemFont.Face().Font(16), ink))
+	files := label("", unison.EmphasizedSystemFont.Face().Font(16), ink)
+	e.localizeTitle(files, "My files")
+	s.AddChild(files)
 	e.tabList = surface(shelf, 1, geom.Insets{Top: 12, Bottom: 6})
 	e.tabList.SetLayout(&unison.FlexLayout{Columns: 1, VSpacing: 7})
 	scroll := unison.NewScrollPanel()
@@ -157,8 +181,8 @@ func (e *editor) sidebar() *unison.Panel {
 	s.AddChild(scroll)
 	actions := surface(shelf, 3, geom.Insets{Top: 8})
 	actions.SetLayout(&unison.FlexLayout{Columns: 3, HSpacing: 4})
-	e.newFile = toolButton("New", unison.CircledAddSVG, e.newTab)
-	for _, b := range []*unison.Button{e.newFile, toolButton("Open", folderIcon, e.open), toolButton("Save", saveIcon, e.save)} {
+	e.newFile = e.toolButton("New", unison.CircledAddSVG, e.newTab)
+	for _, b := range []*unison.Button{e.newFile, e.toolButton("Open", folderIcon, e.open), e.toolButton("Save", saveIcon, e.save)} {
 		b.Side = side.Top
 		b.HMargin, b.VMargin, b.Gap = 5, 4, 3
 		b.SetLayoutData(fill(false))
@@ -176,7 +200,7 @@ func (e *editor) fileButton(t *fileTab) *unison.Button {
 	b.VMargin, b.HMargin = 9, 11
 	b.SetLayoutData(fill(false))
 	b.BackgroundInk = tabColors[t.Color].face
-	b.SetTitle(shortName(t.title(), 17))
+	b.SetTitle(shortName(e.tabTitle(t), 17))
 	b.Accessibility.Callback = func(node *accessibility.Node) { node.Selected = e.document == t }
 	b.DrawOverCallback = func(c *unison.Canvas, _ geom.Rect) {
 		r := b.ContentRect(true).Inset(geom.NewSymmetricInsets(1, 6))
@@ -191,13 +215,13 @@ func (e *editor) fileButton(t *fileTab) *unison.Button {
 
 func (e *editor) styleTab(t *fileTab) {
 	b := t.button
-	title := t.title()
+	title := e.tabTitle(t)
 	full := title
 	if t.Path != "" {
 		full = t.Path
 	}
 	if t.SavedText != t.Text {
-		full += " (edited)"
+		full = e.text("%s (edited)", full)
 		title += " *"
 	}
 	border, icon := edge, unison.DocumentSVG
@@ -222,32 +246,32 @@ func (e *editor) workspace() *unison.Panel {
 	work.SetLayoutData(fill(true))
 	top := surface(paper, 4, geom.NewSymmetricInsets(14, 8))
 	top.SetLayoutData(fill(false))
-	e.fileTitle = label("Untitled.ds", unison.MonospacedFont.Face().Font(15), ink)
+	e.fileTitle = label(e.text("Untitled.ds"), unison.MonospacedFont.Face().Font(15), ink)
 	e.fileTitle.Drawable = smallIcon(unison.DocumentSVG)
 	e.fileTitle.SetLayoutData(fill(false))
 	top.AddChild(e.fileTitle)
 	closeFile := toolButton("×", nil, e.closeTab)
-	closeFile.Accessibility.Name = "Close file"
-	closeFile.Tooltip = unison.NewTooltipWithText("Close file")
+	e.describeButton(closeFile, "Close file")
 	top.AddChild(closeFile)
-	e.run = toolButton("Run  F5", playIcon, e.startRun)
+	e.run = e.toolButton("Run  F5", playIcon, e.startRun)
 	e.run.BackgroundInk, e.run.OnBackgroundInk, e.run.EdgeInk = coral, unison.White, coral
 	top.AddChild(e.run)
-	e.stop = toolButton("Stop", stopIcon, e.stopRun)
+	e.stop = e.toolButton("Stop", stopIcon, e.stopRun)
 	e.stop.SetEnabled(false)
 	top.AddChild(e.stop)
 	work.AddChild(top)
-	e.source.Accessibility.Name = "Code"
+	e.localize(func() { e.source.Accessibility.Name = e.text("Code") })
 	e.sourceScroll = fieldScroll(e.source, paper, geom.NewSize(620, 275), true)
 	e.codeView.install(e)
 	work.AddChild(e.sourceScroll)
 
 	bar := surface(sage, 2, geom.NewSymmetricInsets(14, 5))
 	bar.SetLayoutData(fill(false))
-	title := label("Output", unison.EmphasizedSystemFont.Face().Font(15), ink)
+	title := label("", unison.EmphasizedSystemFont.Face().Font(15), ink)
+	e.localizeTitle(title, "Output")
 	title.SetLayoutData(fill(false))
 	bar.AddChild(title)
-	bar.AddChild(toolButton("Clear", nil, e.clearOutput))
+	bar.AddChild(e.toolButton("Clear", nil, e.clearOutput))
 	work.AddChild(bar)
 	e.output.Accessibility.LabeledBy = title
 	work.AddChild(fieldScroll(e.output, sage, geom.NewSize(620, 145), false))

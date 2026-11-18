@@ -18,19 +18,24 @@ for arch in arm64 amd64; do
 done
 
 windows=build/release-artifacts/Dinoscript-windows-x64-development
-book=Dinoscript-with-Pip.pdf
-cmp "$windows/$book" "book/$book"
-cp "book/$book" "$staging/"
+books=(Dinoscript-with-Pip.pdf Dinoscript-con-Pip.pdf)
+book_assets=()
+for book in "${books[@]}"; do
+  cmp "$windows/$book" "book/$book"
+  cp "book/$book" "$staging/"
+  book_assets+=("$staging/$book")
+done
 (
   cd "$windows"
-  for file in Dinoscript.exe "$book" LICENSE NOTICE THIRD-PARTY-NOTICES.txt; do
+  files=(Dinoscript.exe "${books[@]}" LICENSE NOTICE THIRD-PARTY-NOTICES.txt)
+  for file in "${files[@]}"; do
     test -s "$file"
   done
-  zip -q "$staging/Dinoscript-Windows-x64.zip" Dinoscript.exe "$book" LICENSE NOTICE THIRD-PARTY-NOTICES.txt
+  zip -q "$staging/Dinoscript-Windows-x64.zip" "${files[@]}"
 )
 (
   cd "$staging"
-  sha256sum Dinoscript-arm64.dmg Dinoscript-amd64.dmg Dinoscript-Windows-x64.zip "$book" > SHA256SUMS
+  sha256sum Dinoscript-arm64.dmg Dinoscript-amd64.dmg Dinoscript-Windows-x64.zip "${books[@]}" > SHA256SUMS
 )
 
 repo="$GITHUB_REPOSITORY"
@@ -40,7 +45,7 @@ Dinoscript is an offline coding editor for kids. Open the editor and press F5 to
 
 - On Apple silicon, use the arm64 disk image. On Intel Macs, use the amd64 disk image. Drag Dinoscript to Applications.
 - On Windows x64, extract the ZIP and open Dinoscript.exe.
-- [Read Dinoscript with Pip online](https://dinoscript.org/workbook.html) or download the printable PDF below.
+- Read the workbook online in [English](https://dinoscript.org/workbook.html) or [Español](https://dinoscript.org/es/workbook.html), or download a printable PDF below.
 
 The Mac apps are ad-hoc signed. The Windows executable is unsigned.
 NOTES
@@ -48,7 +53,7 @@ NOTES
 gh release create "$tag" --repo "$repo" --verify-tag --draft \
   --title "Dinoscript $version" --notes-file "$staging/notes.md" \
   "$staging/Dinoscript-arm64.dmg" "$staging/Dinoscript-amd64.dmg" \
-  "$staging/Dinoscript-Windows-x64.zip" "$staging/$book" "$staging/SHA256SUMS"
+  "$staging/Dinoscript-Windows-x64.zip" "${book_assets[@]}" "$staging/SHA256SUMS"
 
 id="$(gh api "repos/$repo/releases" --paginate --slurp |
   jq -er --arg tag "$tag" 'flatten | map(select(.tag_name == $tag and .draft)) | .[0].id')"

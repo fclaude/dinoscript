@@ -13,10 +13,17 @@ import (
 	"testing"
 
 	"github.com/fclaude/dinoscript/internal/dino"
+	"github.com/fclaude/dinoscript/internal/locale"
 )
 
 func TestLessonPrograms(t *testing.T) {
-	guide, err := Load()
+	for _, language := range locale.Languages() {
+		t.Run(string(language), func(t *testing.T) { checkLessonPrograms(t, language) })
+	}
+}
+
+func checkLessonPrograms(t *testing.T, language locale.Language) {
+	guide, err := LoadLanguage(language)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -51,7 +58,14 @@ func TestLessonPrograms(t *testing.T) {
 }
 
 func TestPDFMatchesLessonSourceAndIllustrations(t *testing.T) {
-	data, err := files.ReadFile("book.json")
+	for _, language := range locale.Languages() {
+		t.Run(string(language), func(t *testing.T) { checkPDFSource(t, language) })
+	}
+}
+
+func checkPDFSource(t *testing.T, language locale.Language) {
+	source, pdfName := edition(language)
+	data, err := files.ReadFile(source)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -85,7 +99,7 @@ func TestPDFMatchesLessonSourceAndIllustrations(t *testing.T) {
 		digest.Write(data)
 	}
 
-	guide, err := Load()
+	guide, err := LoadLanguage(language)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -97,7 +111,7 @@ func TestPDFMatchesLessonSourceAndIllustrations(t *testing.T) {
 			t.Errorf("%s must have a bundled image and alt text", lesson.Title)
 		}
 	}
-	pdf, err := PDF()
+	pdf, err := files.ReadFile(pdfName)
 	if err != nil {
 		t.Fatal(err)
 	}

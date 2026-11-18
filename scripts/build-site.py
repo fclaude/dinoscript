@@ -16,6 +16,11 @@ ROOT = Path(__file__).resolve().parents[1]
 SITE = ROOT / "site"
 REPOSITORY = "https://github.com/fclaude/dinoscript"
 PACKAGES = "https://github.com/fclaude/fclaude-packages"
+SITE_URL = "https://dinoscript.org/"
+EDITIONS = {
+    "en": ("", "book.json", "Dinoscript-with-Pip.pdf", "English"),
+    "es-CL": ("es/", "book.es-CL.json", "Dinoscript-con-Pip.pdf", "Español"),
+}
 
 
 def render_art(book_dir, output, guide):
@@ -32,7 +37,7 @@ def render_art(book_dir, output, guide):
     return art
 
 
-def render_lesson(index, lesson, art):
+def render_lesson(index, lesson, art, copy):
     parts = [
         f'<article class="lesson" id="lesson-{index}">',
         f'<h3>{escape(lesson["title"])}</h3>',
@@ -42,10 +47,10 @@ def render_lesson(index, lesson, art):
     parts.append(f'<pre><code>{escape(lesson["code"].rstrip())}</code></pre>')
     if lesson["checks"]:
         example = lesson["checks"][0]
-        parts.append("<details><summary>Example run</summary>")
+        parts.append(f'<details><summary>{escape(copy["example_run"])}</summary>')
         if example["input"]:
-            entries = ", then ".join(escape(entry) for entry in example["input"])
-            parts.append(f"<p>Try entering {entries}.</p>")
+            entries = copy["example_input_then"].join(example["input"])
+            parts.append(f'<p>{escape(copy["example_input"].format(entries=entries))}</p>')
         parts.append(f'<pre><samp>{escape(example["output"].rstrip())}</samp></pre></details>')
     if lesson["art"]:
         source, width, height = art[lesson["art"]]
@@ -54,14 +59,14 @@ def render_lesson(index, lesson, art):
             f'width="{width}" height="{height}" loading="lazy">'
         )
     parts.extend([
-        f'<p><strong>Try it.</strong> {escape(lesson["challenge"])}</p>',
-        f'<details><summary>Pip’s hint</summary><p>{escape(lesson["hint"])}</p></details>',
+        f'<p><strong>{escape(copy["try_it"])}</strong> {escape(lesson["challenge"])}</p>',
+        f'<details><summary>{escape(copy["hint"])}</summary><p>{escape(lesson["hint"])}</p></details>',
         "</article>",
     ])
     return "\n".join(parts)
 
 
-def render_workbook(guide, art):
+def render_workbook(guide, art, copy):
     contents, chapters = [], []
     lessons = enumerate(guide["pages"], 1)
     groups = groupby(lessons, key=lambda entry: entry[1]["chapter"])
@@ -79,13 +84,13 @@ def render_workbook(guide, art):
         ])
         for index, lesson in entries:
             contents.append(f'<li><a href="#lesson-{index}">{escape(lesson["title"])}</a></li>')
-            chapters.append(render_lesson(index, lesson, art))
+            chapters.append(render_lesson(index, lesson, art, copy))
         contents.append("</ol>")
-        chapters.append('<a class="contents-link" href="#contents">Back to contents ↑</a></section>')
+        chapters.append(f'<a class="contents-link" href="#contents">{escape(copy["back_to_contents"])} ↑</a></section>')
     return "\n".join(contents), "\n".join(chapters)
 
 
-def render_linux_downloads(release):
+def render_linux_downloads(release, copy):
     tag = release.get("tag_name", "")
     if not re.fullmatch(r"packages-[0-9]{4}-[0-9]{2}-[0-9]{2}-[0-9]+", tag):
         return ""
@@ -111,20 +116,66 @@ def render_linux_downloads(release):
         return ""
     download = f"{PACKAGES}/releases/download/{tag}"
     urls = {key: f"{download}/{name}" for key, name in files.items()}
+    labels = {
+        "ubuntu_x64": "Ubuntu x64 DEB",
+        "ubuntu_arm64": "Ubuntu ARM64 DEB",
+        "fedora_x64": "Fedora x64 RPM",
+        "fedora_arm64": "Fedora ARM64 RPM",
+    }
+    checksums = {
+        "x64_checksums": "DEB/RPM x64",
+        "arm64_checksums": "DEB/RPM ARM64",
+        "arch_checksums": "Arch x64",
+    }
+    labels = {f"{key}_label": escape(copy["download_package"].format(package=package)) for key, package in labels.items()}
+    labels.update({
+        f"{key}_label": escape(copy["linux_checksums"].format(package=package))
+        for key, package in checksums.items()
+    })
+    labels["arch_x64_label"] = escape(copy["download_arch_x64"])
+    labels.update({key: escape(copy[key]) for key in ("linux_package", "pacman_package", "linux_install_help")})
     template = Template((SITE / "linux-downloads.html").read_text(encoding="utf-8"))
-    return template.substitute(urls, tag=tag, version=version, release=f"{PACKAGES}/releases/tag/{tag}")
+    return template.substitute({**urls, **labels}, tag=tag, version=version, release=f"{PACKAGES}/releases/tag/{tag}")
 
 
-def build(tag, book_dir, output, linux_release):
-    linux_downloads = render_linux_downloads(linux_release) if linux_release is not None else ""
+def page_links(language, page):
+    routes = {key: SITE_URL + prefix + page for key, (prefix, *_) in EDITIONS.items()}
+    return "\n  ".join([
+        f'<link rel="canonical" href="{routes[language]}">',
+        *(f'<link rel="alternate" hreflang="{key}" href="{url}">' for key, url in routes.items()),
+        f'<link rel="alternate" hreflang="x-default" href="{routes["en"]}">',
+    ])
+
+
+def language_links(language, page):
+    parent = "../" if EDITIONS[language][0] else ""
+    return "\n        ".join(
+        f'<a class="language-link" href="{parent}{prefix}{page}" hreflang="{key}" lang="{key}">{escape(name)}</a>'
+        for key, (prefix, _, _, name) in EDITIONS.items() if key != language
+    )
+
+
+def build_edition(language, tag, book_dir, output, linux_release):
+    prefix, source, pdf, _ = EDITIONS[language]
+    copy = json.loads((SITE / f"{language}.json").read_text(encoding="utf-8"))
+    linux_downloads = render_linux_downloads(linux_release, copy) if linux_release is not None else ""
     if linux_release is not None and not linux_downloads:
         raise ValueError("The Linux release is missing a verified package or checksum manifest")
-    guide = json.loads((book_dir / "book.json").read_text(encoding="utf-8"))
+    if language != "en" and not (book_dir / source).is_file():
+        # Older app releases shipped only the English workbook.
+        book_dir = ROOT / "book"
+    guide = json.loads((book_dir / source).read_text(encoding="utf-8"))
+    output = output / prefix
     art = render_art(book_dir, output, guide)
     cover, cover_width, cover_height = art[guide["cover_art"]]
-    contents, chapters = render_workbook(guide, art)
+    contents, chapters = render_workbook(guide, art, copy)
+    greeting = guide["pages"][0]["checks"][0]["output"].rstrip("\n")
     values = {
+        **{key: value if key.endswith("_html") else escape(value) for key, value in copy.items()},
+        "language": language,
         "tag": tag,
+        "assets": "../" if prefix else "",
+        "pdf": pdf,
         "repository": REPOSITORY,
         "release": f"{REPOSITORY}/releases/tag/{tag}",
         "download": f"{REPOSITORY}/releases/download/{tag}",
@@ -136,15 +187,26 @@ def build(tag, book_dir, output, linux_release):
         "cover_height": cover_height,
         "contents": contents,
         "chapters": chapters,
+        "greeting_literal": escape(json.dumps(greeting, ensure_ascii=False)),
+        "release_notes": escape(copy["release_notes"].format(tag=tag)),
+        "by": escape(copy["by"].format(author=guide["author"])),
+        "first_program_html": copy["first_program_html"].format(greeting=escape(greeting)),
     }
     values.update({key: escape(guide[key]) for key in ("title", "subtitle", "author", "welcome")})
     for page in ("index.html", "workbook.html"):
         template = Template((SITE / page).read_text(encoding="utf-8"))
-        (output / page).write_text(template.substitute(values), encoding="utf-8")
+        route = "" if page == "index.html" else page
+        html = template.substitute(values, page_links=page_links(language, route), language_links=language_links(language, route))
+        (output / page).write_text(html, encoding="utf-8")
+    shutil.copyfile(book_dir / pdf, output / pdf)
+
+
+def build(tag, book_dir, output, linux_release):
+    for language in EDITIONS:
+        build_edition(language, tag, book_dir, output, linux_release)
     shutil.copyfile(SITE / "styles.css", output / "styles.css")
     shutil.copyfile(SITE / "linux-downloads.js", output / "linux-downloads.js")
     shutil.copyfile(ROOT / "internal" / "desktop" / "pip.png", output / "pip.png")
-    shutil.copyfile(book_dir / "Dinoscript-with-Pip.pdf", output / "Dinoscript-with-Pip.pdf")
 
 
 def main():

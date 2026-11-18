@@ -83,6 +83,11 @@ kbd {
 }
 .header-inner nav a { padding-block: 0.35rem; text-decoration: none; }
 .header-inner nav a:hover, .header-inner nav [aria-current] { text-decoration: underline; }
+.header-inner nav .language-link {
+  border: 1px solid var(--border);
+  border-radius: 0.55rem;
+  padding-inline: 0.65rem;
+}
 
 .hero, .learn-section {
   display: grid;

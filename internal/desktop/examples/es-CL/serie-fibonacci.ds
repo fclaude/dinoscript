@@ -1,0 +1,9 @@
+# Prueba con otra posición de la serie, entre 0 y 12.
+function fib(n)
+  if n <= 1 then
+    output n
+  end if
+  output fib(n - 1) + fib(n - 2)
+end function
+
+print("El número de Fibonacci en la posición 8 es ", fib(8))

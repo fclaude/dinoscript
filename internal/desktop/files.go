@@ -3,7 +3,6 @@ package desktop
 import (
 	"encoding/json"
 	"errors"
-	"fmt"
 	"io"
 	"os"
 	"path/filepath"
@@ -11,6 +10,7 @@ import (
 	"unicode/utf8"
 
 	"github.com/fclaude/dinoscript/internal/dino"
+	"github.com/fclaude/dinoscript/internal/locale"
 	"github.com/richardwilkes/unison"
 )
 
@@ -20,7 +20,7 @@ type fileDialogs interface {
 	discardChanges() bool
 }
 
-type systemDialogs struct{}
+type systemDialogs struct{ editor *editor }
 
 func (systemDialogs) openPath() (string, bool) {
 	dialog := unison.NewOpenDialog()
@@ -41,8 +41,15 @@ func (systemDialogs) savePath(extension, defaultName string) (string, bool) {
 	return unison.ValidateSaveFilePath(dialog.Path(), extension, false)
 }
 
-func (systemDialogs) discardChanges() bool {
-	return unison.QuestionDialog("Leave this program?", "Save it first if you want to keep your changes.") == unison.ModalResponseOK
+func (s systemDialogs) discardChanges() bool {
+	e := s.editor
+	message := unison.NewMessagePanel(e.text("Leave this program?"), e.text("Save it first if you want to keep your changes."))
+	cancel := unison.NewCancelButtonInfo()
+	cancel.Title = e.text("Cancel")
+	ok := unison.NewOKButtonInfoWithTitle(e.text("Discard changes"))
+	theme := unison.DefaultDialogTheme
+	dialog, err := unison.NewDialog(theme.QuestionIcon, theme.QuestionIconInk, message, []*unison.DialogButtonInfo{cancel, ok})
+	return err == nil && dialog.RunModal() == unison.ModalResponseOK
 }
 
 type draft struct {
@@ -59,6 +66,12 @@ type workspaceDraft struct {
 }
 
 const maxWorkspaceBytes = 64 << 20
+
+var (
+	errSourceSize     = errors.New("this program is too large to open")
+	errSourceEncoding = errors.New("save the program as UTF-8 text and try again")
+	errSourceControl  = errors.New("this file contains characters the editor cannot display")
+)
 
 func readWorkspace(path string) (workspaceDraft, bool) {
 	file, err := os.Open(path)
@@ -101,16 +114,16 @@ func readSource(path string) (string, error) {
 		return "", err
 	}
 	if len(data) > dino.MaxSourceBytes {
-		return "", errors.New("this program is too large to open")
+		return "", errSourceSize
 	}
 	if !utf8.Valid(data) {
-		return "", errors.New("save the program as UTF-8 text and try again")
+		return "", errSourceEncoding
 	}
 	source := strings.TrimPrefix(string(data), "\ufeff")
 	source = strings.NewReplacer("\r\n", "\n", "\r", "\n").Replace(source)
 	for _, ch := range source {
 		if ch < ' ' && ch != '\n' && ch != '\t' {
-			return "", errors.New("this file contains characters the editor cannot display")
+			return "", errSourceControl
 		}
 	}
 	return source, nil
@@ -140,11 +153,21 @@ func (e *editor) open() {
 	}
 	source, err := readSource(path)
 	if err != nil {
-		e.setStatus(fmt.Sprintf("Couldn't open %s: %v", filepath.Base(path), err))
+		name := filepath.Base(path)
+		switch err {
+		case errSourceSize, errSourceEncoding, errSourceControl:
+			e.setStatus("Couldn't open %s: %v", name, statusMessage(err.Error()))
+		default:
+			if e.language != locale.English {
+				e.setStatus("Couldn't open %s.", name)
+			} else {
+				e.setStatus("Couldn't open %s: %v", name, err)
+			}
+		}
 		return
 	}
 	e.openTab(draft{Text: source, Path: path, SavedText: source})
-	e.setStatus("Opened " + filepath.Base(path) + ".")
+	e.setStatus("Opened %s.", filepath.Base(path))
 }
 
 func (e *editor) save() {
@@ -159,7 +182,7 @@ func (e *editor) save() {
 	}
 	if path == "" {
 		var ok bool
-		path, ok = e.dialogs.savePath("ds", e.document.title())
+		path, ok = e.dialogs.savePath("ds", e.tabTitle(e.document))
 		if !ok {
 			return
 		}
@@ -169,12 +192,17 @@ func (e *editor) save() {
 		}
 	}
 	if err := writeFile(path, []byte(current)); err != nil {
-		e.setStatus(fmt.Sprintf("Couldn't save %s: %v", filepath.Base(path), err))
+		name := filepath.Base(path)
+		if e.language != locale.English {
+			e.setStatus("Couldn't save %s.", name)
+		} else {
+			e.setStatus("Couldn't save %s: %v", name, err)
+		}
 		return
 	}
 	e.document.Path, e.document.SavedText = path, current
 	e.updateDocument()
-	e.setStatus("Saved " + filepath.Base(path) + ".")
+	e.setStatus("Saved %s.", filepath.Base(path))
 }
 
 func (e *editor) writeDraft() error {

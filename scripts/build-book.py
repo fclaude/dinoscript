@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
 """Lay out the print edition from the lesson data embedded in Dinoscript."""
 
+import argparse
 import hashlib
 import io
+from itertools import groupby
 import json
 import os
 from pathlib import Path
@@ -26,10 +28,46 @@ SOFT = "#536262"
 WHITE = "#FFFDF5"
 LINE = "#E9DDC8"
 TEAL = "#125B58"
-CHAPTERS = {
-    "Start coding": ("#125B58", "#E4F1E8"),
-    "Text games": ("#984728", "#FAE8D9"),
-    "Math puzzles": ("#5D487E", "#EEE7F7"),
+CHAPTER_COLORS = [
+    ("#125B58", "#E4F1E8"),
+    ("#984728", "#FAE8D9"),
+    ("#5D487E", "#EEE7F7"),
+]
+EDITIONS = {
+    "en": {
+        "source": "book.json",
+        "pdf": "Dinoscript-with-Pip.pdf",
+        "cover": "Cover",
+        "series": "A Dinoscript activity book",
+        "with_pip": "with Pip",
+        "pages": "Pages {first} to {last}",
+        "license": "Copyright 2023-2026 Francisco Claude-Faust  ·  Apache License 2.0",
+        "subject": "A Dinoscript workbook for kids · Apache License, Version 2.0",
+        "pip": "Pip says",
+        "enter": "Try entering {entries}",
+        "then": ", then ",
+        "output": "What you'll see",
+        "try": "Try it",
+        "hint": "Pip's hint",
+        "notes": "Your notes",
+    },
+    "es-CL": {
+        "source": "book.es-CL.json",
+        "pdf": "Dinoscript-con-Pip.pdf",
+        "cover": "Portada",
+        "series": "Un cuaderno de actividades de Dinoscript",
+        "with_pip": "con Pip",
+        "pages": "Páginas {first} a {last}",
+        "license": "Copyright 2023-2026 Francisco Claude-Faust  ·  Licencia Apache 2.0",
+        "subject": "Un cuaderno de Dinoscript para niñas y niños · Licencia Apache 2.0",
+        "pip": "Dice Pip",
+        "enter": "Prueba ingresando {entries}",
+        "then": ", luego ",
+        "output": "Lo que verás",
+        "try": "Ponlo a prueba",
+        "hint": "Pista de Pip",
+        "notes": "Tus notas",
+    },
 }
 
 
@@ -84,28 +122,27 @@ def artwork(c, file, x, top, width):
     return y
 
 
-def cover(c, book):
+def cover(c, book, chapters, edition):
     rectangle(c, 0, 0, WIDTH, HEIGHT, PAPER)
     c.bookmarkPage("cover")
-    c.addOutlineEntry("Cover", "cover")
-    text(c, MARGIN, 714, "A Dinoscript activity book", "Roboto-Bold", 13, TEAL)
+    c.addOutlineEntry(edition["cover"], "cover")
+    text(c, MARGIN, 714, edition["series"], "Roboto-Bold", 13, TEAL)
     text(c, MARGIN - 3, 642, "Dinoscript", "Roboto-Bold", 71)
-    text(c, MARGIN - 1, 580, "with Pip", "Roboto-Bold", 65, TEAL)
-    paragraph(c, MARGIN, 556, book["subtitle"], CONTENT, size=15, leading=19)
-    artwork(c, book["cover_art"], MARGIN, 519, CONTENT)
+    text(c, MARGIN - 1, 580, edition["with_pip"], "Roboto-Bold", 65, TEAL)
+    subtitle_bottom = paragraph(c, MARGIN, 556, book["subtitle"], CONTENT, size=15, leading=19)
+    artwork(c, book["cover_art"], MARGIN, min(519, subtitle_bottom - 8), CONTENT)
     text(c, MARGIN, 151, book["author"], "Roboto-Bold", 15)
     paragraph(c, MARGIN, 139, book["welcome"], CONTENT, size=12.8, leading=17)
 
-    chapters = [("Start coding", "Pages 1 to 8"), ("Text games", "Pages 9 to 11"), ("Math puzzles", "Pages 12 to 14")]
-    card_width = (CONTENT - 16) / 3
-    for i, (name, number) in enumerate(chapters):
+    card_width = (CONTENT - 8 * (len(chapters) - 1)) / len(chapters)
+    for i, (name, entries) in enumerate(chapters):
         x = MARGIN + i * (card_width + 8)
-        accent, tint = CHAPTERS[name]
+        accent, tint = CHAPTER_COLORS[i]
+        number = edition["pages"].format(first=entries[0][0], last=entries[-1][0])
         rectangle(c, x, 48, card_width, 42, tint, 9)
         text(c, x + 11, 72, name, "Roboto-Bold", 12, accent)
         text(c, x + 11, 57, number, "Roboto", 10, SOFT)
-    text(c, MARGIN, 29, "Copyright 2023-2026 Francisco Claude-Faust  ·  Apache License 2.0",
-         "Roboto", 8.5, SOFT)
+    text(c, MARGIN, 29, edition["license"], "Roboto", 8.5, SOFT)
     c.showPage()
 
 
@@ -137,9 +174,9 @@ def card(c, x, top, width, label, content, accent, tint):
     return top - height
 
 
-def lesson(c, page, index):
+def lesson(c, page, index, colors, edition, book_title):
     chapter, title = page["chapter"], page["title"]
-    accent, tint = CHAPTERS[chapter]
+    accent, tint = colors
     key = f"page-{index}"
     c.bookmarkPage(key)
     c.addOutlineEntry(f"{index}. {title}", key)
@@ -150,14 +187,15 @@ def lesson(c, page, index):
     top = paragraph(c, MARGIN, 706, title, CONTENT, size=32, font="Roboto-Bold", leading=35) - 13
 
     pip = "“" + page["pip"] + "”"
-    top = card(c, MARGIN, top, CONTENT, "Pip says", pip, accent, tint) - 15
+    top = card(c, MARGIN, top, CONTENT, edition["pip"], pip, accent, tint) - 15
     for part in page["body"]:
         top = paragraph(c, MARGIN, top, part, CONTENT, size=13.5, leading=18) - 8
     top = code_block(c, page["code"], top - 1, accent) - 16
 
     lines = page["checks"][0]["output"].strip().split("\n")
     if not page["art"] and len(page["code"].splitlines()) <= 10 and len(lines) <= 3:
-        label = "Try entering " + ", then ".join(page["checks"][0]["input"]) if page["checks"][0]["input"] else "What you'll see"
+        inputs = page["checks"][0]["input"]
+        label = edition["enter"].format(entries=edition["then"].join(inputs)) if inputs else edition["output"]
         text(c, MARGIN + 2, top - 10, label, "Roboto-Bold", 10.5, accent)
         top -= 18
         for line in lines:
@@ -171,46 +209,62 @@ def lesson(c, page, index):
         art_width = 202
         card_width -= art_width + 14
         art_bottom = artwork(c, page["art"], MARGIN + card_width + 14, top, art_width)
-    top = card(c, MARGIN, top, card_width, "Try it", page["challenge"], accent, WHITE) - 8
-    top = card(c, MARGIN, top, card_width, "Pip's hint", page["hint"], accent, tint)
+    top = card(c, MARGIN, top, card_width, edition["try"], page["challenge"], accent, WHITE) - 8
+    top = card(c, MARGIN, top, card_width, edition["hint"], page["hint"], accent, tint)
     if min(top, art_bottom) < 59:
         raise ValueError(f"Lesson {index} overflows the page (bottom at {min(top, art_bottom):.1f})")
 
     if min(top, art_bottom) > 158:
-        text(c, MARGIN, 136, "Your notes", "Roboto-Bold", 10.5, accent)
+        text(c, MARGIN, 136, edition["notes"], "Roboto-Bold", 10.5, accent)
         rectangle(c, MARGIN, 109, CONTENT, 0.7, LINE)
         rectangle(c, MARGIN, 82, CONTENT, 0.7, LINE)
     rectangle(c, MARGIN, 45, CONTENT, 1, LINE)
-    text(c, MARGIN, 26, "DINOSCRIPT WITH PIP", "Roboto-Bold", 8, SOFT)
+    text(c, MARGIN, 26, book_title.upper(), "Roboto-Bold", 8, SOFT)
     c.setFont("Roboto-Bold", 11)
     c.setFillColor(HexColor(accent))
     c.drawRightString(WIDTH - MARGIN, 26, f"{index:02}")
     c.showPage()
 
 
-def main():
-    os.environ.setdefault("SOURCE_DATE_EPOCH", "1794916800")
-    source = (BOOK / "book.json").read_bytes()
+def build(language):
+    edition = EDITIONS[language]
+    source = (BOOK / edition["source"]).read_bytes()
     book = json.loads(source)
+    chapters = [
+        (name, list(entries))
+        for name, entries in groupby(enumerate(book["pages"], 1), key=lambda entry: entry[1]["chapter"])
+    ]
     digest = hashlib.sha256(source)
     for asset in sorted((BOOK / "art").glob("*.png")):
         digest.update(asset.read_bytes())
     font_dir = BOOK / "fonts"
     for font in sorted(font_dir.glob("*.ttf")):
         digest.update(font.read_bytes())
-    registerFont(TTFont("Roboto", str(font_dir / "Roboto-Regular.ttf")))
-    registerFont(TTFont("Roboto-Bold", str(font_dir / "Roboto-Bold.ttf")))
-    registerFont(TTFont("DejaVuMono", str(font_dir / "DejaVuSansMono.ttf")))
-    pdf = Canvas(str(BOOK / "Dinoscript-with-Pip.pdf"), pagesize=letter, pageCompression=1, invariant=1)
+    pdf = Canvas(str(BOOK / edition["pdf"]), pagesize=letter, pageCompression=1, invariant=1,
+                 lang=language if language != "en" else None)
     pdf.setTitle(book["title"])
     pdf.setAuthor(book["author"])
     pdf.setCreator("Dinoscript")
     pdf.setKeywords("source-sha256 " + digest.hexdigest())
-    pdf.setSubject("A Dinoscript workbook for kids · Apache License, Version 2.0")
-    cover(pdf, book)
-    for index, page in enumerate(book["pages"], 1):
-        lesson(pdf, page, index)
+    pdf.setSubject(edition["subject"])
+    cover(pdf, book, chapters, edition)
+    for colors, (_, entries) in zip(CHAPTER_COLORS, chapters, strict=True):
+        for index, page in entries:
+            lesson(pdf, page, index, colors, edition, book["title"])
     pdf.save()
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--language", choices=EDITIONS, help="build only this edition")
+    args = parser.parse_args()
+    os.environ.setdefault("SOURCE_DATE_EPOCH", "1794916800")
+    font_dir = BOOK / "fonts"
+    registerFont(TTFont("Roboto", str(font_dir / "Roboto-Regular.ttf")))
+    registerFont(TTFont("Roboto-Bold", str(font_dir / "Roboto-Bold.ttf")))
+    registerFont(TTFont("DejaVuMono", str(font_dir / "DejaVuSansMono.ttf")))
+    for language in [args.language] if args.language else EDITIONS:
+        build(language)
 
 
 if __name__ == "__main__":

@@ -35,7 +35,7 @@ func (e *editor) openTutorial() {
 		e.reader.window.ToFront()
 		return
 	}
-	guide, err := book.Load()
+	guide, err := book.LoadLanguage(e.language)
 	if err != nil {
 		e.setStatus("Couldn't open the Dinoscript book.")
 		return
@@ -46,7 +46,7 @@ func (e *editor) openTutorial() {
 		return
 	}
 	window.SetTitleIcons(e.window.TitleIcons())
-	reader := &tutorialReader{editor: e, guide: guide, window: window, images: make(map[string]*unison.Image)}
+	reader := &tutorialReader{editor: e, window: window, images: make(map[string]*unison.Image)}
 	e.reader = reader
 	window.WillCloseCallback = func() {
 		for _, image := range reader.images {
@@ -55,7 +55,7 @@ func (e *editor) openTutorial() {
 		e.reader = nil
 	}
 	reader.build()
-	reader.showPage(0)
+	reader.showGuide(guide)
 	window.PackWithDefaultInitialLocation()
 	window.ToFront()
 	window.SetFocus(reader.next)
@@ -67,21 +67,17 @@ func (r *tutorialReader) build() {
 	content.SetBorder(unison.NewEmptyBorder(geom.NewUniformInsets(12)))
 
 	r.contents = unison.NewPopupMenu[int]()
-	r.contents.Accessibility.Name = "Choose a lesson"
-	for number := 0; number <= len(r.guide.Pages); number++ {
-		r.contents.AddItem(number)
-	}
 	r.contents.ItemRendererCallback = func(number int) string {
 		if number == 0 {
-			return "Cover"
+			return r.editor.text("Cover")
 		}
 		return fmt.Sprintf("%d. %s", number, r.guide.Pages[number-1].Title)
 	}
 	r.contents.ChoiceMadeCallback = func(_ *unison.PopupMenu[int], _, page int) { r.showPage(page) }
-	r.previous = button("Previous", func() { r.showPage(r.page - 1) })
-	r.next = button("Next", func() { r.showPage(r.page + 1) })
-	r.tryCode = button("Try code", r.loadCode)
-	r.save = button("Save PDF…", r.savePDF)
+	r.previous = button("", func() { r.showPage(r.page - 1) })
+	r.next = button("", func() { r.showPage(r.page + 1) })
+	r.tryCode = button("", r.loadCode)
+	r.save = button("", r.savePDF)
 
 	navigation := unison.NewPanel()
 	navigation.SetLayout(&unison.FlexLayout{Columns: 3, HSpacing: 6, VAlign: align.Middle})
@@ -120,6 +116,34 @@ func (r *tutorialReader) build() {
 	}
 }
 
+func (r *tutorialReader) refreshLanguage() {
+	guide, err := book.LoadLanguage(r.editor.language)
+	if err != nil {
+		r.setStatus("Couldn't open the Dinoscript book.")
+		return
+	}
+	r.showGuide(guide)
+}
+
+func (r *tutorialReader) showGuide(guide book.Guide) {
+	e := r.editor
+	r.guide = guide
+	r.window.SetTitle(guide.Title)
+	r.contents.Accessibility.Name = e.text("Choose a lesson")
+	r.contents.RemoveAllItems()
+	for number := 0; number <= len(guide.Pages); number++ {
+		r.contents.AddItem(number)
+	}
+	for _, control := range []struct {
+		button *unison.Button
+		title  string
+	}{{r.previous, "Previous"}, {r.next, "Next"}, {r.tryCode, "Try code"}, {r.save, "Save PDF…"}} {
+		control.button.SetTitle(e.text(control.title))
+		control.button.MarkForLayoutAndRedraw()
+	}
+	r.showPage(min(r.page, len(guide.Pages)))
+}
+
 func (r *tutorialReader) showPage(number int) {
 	if number < 0 || number > len(r.guide.Pages) {
 		return
@@ -130,19 +154,20 @@ func (r *tutorialReader) showPage(number int) {
 	r.next.SetEnabled(number < len(r.guide.Pages))
 	r.tryCode.SetEnabled(number > 0)
 	r.body.RemoveAllChildren()
+	text := r.editor.text
 
 	if number == 0 {
-		r.addText(fmt.Sprintf("# %s\n\n%s\n\nBy %s", r.guide.Title, r.guide.Subtitle, r.guide.Author))
+		r.addText(fmt.Sprintf("# %s\n\n%s\n\n%s", r.guide.Title, r.guide.Subtitle, text("By %s", r.guide.Author)))
 		r.addArt(r.guide.CoverArt, r.guide.CoverAlt)
-		r.addText(r.guide.Welcome + "\n\nChoose **Next** to begin, or pick a lesson from the list.")
+		r.addText(r.guide.Welcome + "\n\n" + text("Choose **Next** to begin, or pick a lesson from the list."))
 		r.setStatus("Cover")
 	} else {
 		lesson := r.guide.Pages[number-1]
 		r.addText(fmt.Sprintf("**%s**\n\n# %s\n\n> %s\n\n%s",
 			lesson.Chapter, lesson.Title, lesson.Pip, strings.Join(lesson.Body, "\n\n")))
 		r.addArt(lesson.Art, lesson.Alt)
-		r.addText("```text\n" + lesson.Code + "```\n\n## Try it\n\n" + lesson.Challenge + "\n\n## Pip's hint\n\n" + lesson.Hint)
-		r.setStatus(fmt.Sprintf("Lesson %d of %d", number, len(r.guide.Pages)))
+		r.addText("```text\n" + lesson.Code + "```\n\n## " + text("Try it") + "\n\n" + lesson.Challenge + "\n\n## " + text("Pip's hint") + "\n\n" + lesson.Hint)
+		r.setStatus("Lesson %d of %d", number, len(r.guide.Pages))
 	}
 	r.body.MarkForLayoutAndRedraw()
 	r.scroll.SetPosition(0, 0)
@@ -188,7 +213,7 @@ func (r *tutorialReader) loadCode() {
 	lesson := r.guide.Pages[r.page-1]
 	e := r.editor
 	if e.source.Text() != lesson.Code {
-		e.openSample(fmt.Sprintf("Lesson %02d.ds", r.page), lesson.Code)
+		e.openSample(e.text("Lesson %02d.ds", r.page), lesson.Code)
 	}
 	e.window.ToFront()
 	e.window.SetFocus(e.source)
@@ -196,11 +221,12 @@ func (r *tutorialReader) loadCode() {
 }
 
 func (r *tutorialReader) savePDF() {
-	path, ok := r.editor.dialogs.savePath("pdf", book.PDFFilename)
+	language := r.editor.language
+	path, ok := r.editor.dialogs.savePath("pdf", book.Filename(language))
 	if !ok {
 		return
 	}
-	pdf, err := book.PDF()
+	pdf, err := book.PDFLanguage(language)
 	if err == nil {
 		err = writeFile(path, pdf)
 	}
@@ -208,10 +234,11 @@ func (r *tutorialReader) savePDF() {
 		r.setStatus("Couldn't save the PDF.")
 		return
 	}
-	r.setStatus("Saved " + filepath.Base(path) + ".")
+	r.setStatus("Saved %s.", filepath.Base(path))
 }
 
-func (r *tutorialReader) setStatus(message string) {
+func (r *tutorialReader) setStatus(message string, args ...any) {
+	message = r.editor.text(message, args...)
 	r.status.SetTitle(message)
 	r.status.MarkForLayoutAndRedraw()
 	unison.AnnounceForAccessibility(message)

@@ -1,7 +1,6 @@
 package desktop
 
 import (
-	"fmt"
 	"regexp"
 	"sort"
 	"strconv"
@@ -70,14 +69,19 @@ func tintedLine(source string, font unison.Font) *unison.Text {
 func (v *codeDecoration) install(e *editor) {
 	e.source.DrawOverCallback = func(c *unison.Canvas, dirty geom.Rect) {
 		v.draw(e.source, c, dirty)
-		_, pos := e.source.Selection()
-		row := sort.Search(len(v.lines), func(i int) bool { return v.lines[i].start > pos }) - 1
-		if row >= 0 {
-			title := fmt.Sprintf("Ln %d, Col %d", row+1, pos-v.lines[row].start+1)
-			if title != e.position.String() {
-				e.position.SetTitle(title)
-				e.position.MarkForLayoutAndRedraw()
-			}
+		e.refreshPosition()
+	}
+}
+
+func (e *editor) refreshPosition() {
+	lines := e.codeView.lines
+	_, pos := e.source.Selection()
+	row := sort.Search(len(lines), func(i int) bool { return lines[i].start > pos }) - 1
+	if row >= 0 {
+		title := e.text("Ln %d, Col %d", row+1, pos-lines[row].start+1)
+		if title != e.position.String() {
+			e.position.SetTitle(title)
+			e.position.MarkForLayoutAndRedraw()
 		}
 	}
 }

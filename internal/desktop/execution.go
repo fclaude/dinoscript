@@ -102,10 +102,18 @@ func (e *editor) poll(run *execution) {
 func (e *editor) appendOutput(text string) {
 	if text != "" {
 		e.outputText.WriteString(text)
-		e.output.ApplyFieldState(&unison.FieldState{Text: e.outputText.String()})
-		e.output.SetSelectionToEnd()
-		e.output.MarkForLayoutAndRedraw()
+		e.renderOutput()
 	}
+}
+
+func (e *editor) renderOutput() {
+	text := e.outputText.String()
+	if e.diagnostic != nil {
+		text += e.diagnostic.Localized(e.language) + "\n"
+	}
+	e.output.ApplyFieldState(&unison.FieldState{Text: text})
+	e.output.SetSelectionToEnd()
+	e.output.MarkForLayoutAndRedraw()
 }
 
 func (e *editor) stopRun() {
@@ -130,13 +138,17 @@ func (e *editor) finishRun(run *execution) {
 	case errors.Is(run.err, context.Canceled):
 		e.setStatus("Stopped.")
 	default:
-		e.appendOutput(run.err.Error() + "\n")
+		message := run.err.Error()
 		if errors.As(run.err, &e.diagnostic) {
+			message = e.diagnostic.Localized(e.language)
 			e.diagnosticSource = run.source
+			e.renderOutput()
 			e.updateJump()
+		} else {
+			e.appendOutput(message + "\n")
 		}
 		e.setStatus("Fix the error in Output and run again.")
-		unison.AnnounceForAccessibility(run.err.Error())
+		unison.AnnounceForAccessibility(message)
 	}
 }
 

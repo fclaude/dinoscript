@@ -2,6 +2,7 @@
 Type=Application
 Name=Dinoscript
 Comment=Write and run programs with Pip the triceratops
+Comment[es]=Escribe y ejecuta programas con Pip, un tricerátops
 Exec=dinoscript
 Icon=com.fclaude.dinoscript
 Terminal=false

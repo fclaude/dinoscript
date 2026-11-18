@@ -5,6 +5,7 @@ on:
     branches: [main]
     paths:
       - 'site/**'
+      - 'book/**'
       - scripts/build-site.py
       - .github/workflows/pages.yml
   repository_dispatch:

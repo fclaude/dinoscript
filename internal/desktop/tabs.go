@@ -1,7 +1,6 @@
 package desktop
 
 import (
-	"fmt"
 	"os"
 	"path/filepath"
 	"slices"
@@ -17,21 +16,21 @@ type fileTab struct {
 	scrollX, scrollY float32
 }
 
-func (t *fileTab) title() string {
+func (e *editor) tabTitle(t *fileTab) string {
 	if t.Path != "" {
 		return filepath.Base(t.Path)
 	}
 	if t.Name != "" {
 		return t.Name
 	}
-	return "Untitled.ds"
+	return e.text("Untitled.ds")
 }
 
 func (e *editor) restoreTabs() {
 	session, ok := readWorkspace(e.draftPath)
 	if !ok {
-		for i, name := range []string{"hello.ds", "counting.ds", "decisions.ds"} {
-			source := example(name)
+		for i, index := range []int{0, 2, 1} {
+			name, source := e.sample(index)
 			session.Tabs = append(session.Tabs, draft{Name: name, Color: i, Text: source, SavedText: source})
 		}
 	}
@@ -60,9 +59,9 @@ func (e *editor) openTab(d draft) {
 }
 
 func (e *editor) newTab() {
-	name := "Untitled.ds"
-	for n := 2; slices.ContainsFunc(e.tabs, func(t *fileTab) bool { return t.title() == name }); n++ {
-		name = fmt.Sprintf("Untitled %d.ds", n)
+	name := e.text("Untitled.ds")
+	for n := 2; slices.ContainsFunc(e.tabs, func(t *fileTab) bool { return e.tabTitle(t) == name }); n++ {
+		name = e.text("Untitled %d.ds", n)
 	}
 	e.openTab(draft{Name: name})
 }
@@ -102,9 +101,17 @@ func (e *editor) tabForPath(path string) *fileTab {
 	return nil
 }
 
-func (e *editor) openExample(name, title string) {
-	e.openSample(name, example(name))
-	e.setStatus("Opened " + title)
+func (e *editor) sample(index int) (name, source string) {
+	lesson := lessons[index]
+	if name, ok := lesson.localized[e.language]; ok {
+		return name, example(string(e.language) + "/" + name)
+	}
+	return lesson.file, example(lesson.file)
+}
+
+func (e *editor) openExample(index int) {
+	e.openSample(e.sample(index))
+	e.setStatus("Opened %s", statusMessage(lessons[index].title))
 }
 
 func (e *editor) openSample(name, source string) {
@@ -160,7 +167,7 @@ func (e *editor) clearOutput() {
 }
 
 func (e *editor) updateTabTitle() {
-	title := e.document.title()
+	title := e.tabTitle(e.document)
 	if e.dirty() {
 		title += " *"
 	}

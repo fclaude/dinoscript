@@ -4,11 +4,13 @@ package book
 import (
 	"embed"
 	"encoding/json"
+
+	"github.com/fclaude/dinoscript/internal/locale"
 )
 
 const PDFFilename = "Dinoscript-with-Pip.pdf"
 
-//go:embed book.json Dinoscript-with-Pip.pdf art/*.png
+//go:embed book*.json Dinoscript-*.pdf art/*.png
 var files embed.FS
 
 type Guide struct {
@@ -39,8 +41,28 @@ type Example struct {
 	Output string
 }
 
-func Load() (Guide, error) {
-	data, err := files.ReadFile("book.json")
+var editions = map[locale.Language]struct{ source, pdf string }{
+	locale.English: {"book.json", PDFFilename},
+	locale.Spanish: {"book.es-CL.json", "Dinoscript-con-Pip.pdf"},
+}
+
+func edition(language locale.Language) (source, pdf string) {
+	if entry, ok := editions[language]; ok {
+		return entry.source, entry.pdf
+	}
+	return "book.json", PDFFilename
+}
+
+func Filename(language locale.Language) string {
+	_, pdf := edition(language)
+	return pdf
+}
+
+func Load() (Guide, error) { return LoadLanguage(locale.English) }
+
+func LoadLanguage(language locale.Language) (Guide, error) {
+	source, _ := edition(language)
+	data, err := files.ReadFile(source)
 	if err != nil {
 		return Guide{}, err
 	}
@@ -50,5 +72,7 @@ func Load() (Guide, error) {
 }
 
 func PDF() ([]byte, error) { return files.ReadFile(PDFFilename) }
+
+func PDFLanguage(language locale.Language) ([]byte, error) { return files.ReadFile(Filename(language)) }
 
 func Art(name string) ([]byte, error) { return files.ReadFile("art/" + name) }

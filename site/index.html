@@ -1,24 +1,25 @@
 <!doctype html>
-<html lang="en">
+<html lang="$language">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Dinoscript is a free offline coding editor for kids. Write your first program, make text games, and solve math puzzles with Pip the triceratops.">
-  <link rel="canonical" href="https://dinoscript.org/">
-  <link rel="stylesheet" href="styles.css">
-  <script defer src="linux-downloads.js"></script>
+  <meta name="description" content="$home_description">
+  $page_links
+  <link rel="stylesheet" href="${assets}styles.css">
+  <script defer src="${assets}linux-downloads.js"></script>
   <script defer src="https://analytics.recoded.cl/script.js" data-website-id="cc0f3635-1173-4e50-9c45-3c2bdd2c339b"></script>
-  <title>Dinoscript · Learn to code with Pip</title>
+  <title>$home_title</title>
 </head>
 <body>
-  <a class="skip-link" href="#main">Skip to content</a>
+  <a class="skip-link" href="#main">$skip</a>
   <header class="site-header">
     <div class="wrap header-inner">
-      <a class="brand" href="./"><img class="brand-mark" src="pip.png" width="32" height="32" alt=""> Dinoscript</a>
-      <nav aria-label="Main navigation">
-        <a href="#downloads">Downloads</a>
-        <a href="workbook.html">Workbook</a>
+      <a class="brand" href="./"><img class="brand-mark" src="${assets}pip.png" width="32" height="32" alt=""> Dinoscript</a>
+      <nav aria-label="$main_navigation">
+        <a href="#downloads">$downloads</a>
+        <a href="workbook.html">$workbook</a>
         <a href="$repository">GitHub <span aria-hidden="true">↗</span></a>
+        $language_links
       </nav>
     </div>
   </header>
@@ -26,12 +27,12 @@
   <main id="main">
     <section class="wrap hero" aria-labelledby="hero-title">
       <div>
-        <p class="eyebrow">An offline coding editor for kids</p>
-        <h1 id="hero-title">Learn to code<br>with <em>Pip.</em></h1>
-        <p class="intro">Write your first program, make text games, and solve math puzzles with Pip the triceratops. Dinoscript is free and open source.</p>
+        <p class="eyebrow">$eyebrow</p>
+        <h1 id="hero-title">$hero_first_line<br>$hero_second_line <em>Pip.</em></h1>
+        <p class="intro">$intro</p>
         <div class="actions">
-          <a class="button primary" href="#downloads">Download Dinoscript <span aria-hidden="true">↓</span></a>
-          <a class="button secondary" href="workbook.html">Read the workbook <span aria-hidden="true">→</span></a>
+          <a class="button primary" href="#downloads">$download_app <span aria-hidden="true">↓</span></a>
+          <a class="button secondary" href="workbook.html">$read_workbook <span aria-hidden="true">→</span></a>
         </div>
       </div>
       <img class="hero-art" src="$cover" alt="$cover_alt" width="$cover_width" height="$cover_height" fetchpriority="high">
@@ -41,15 +42,15 @@
       <div class="wrap">
         <div class="section-heading">
           <div>
-            <h2 id="download-title">Download Dinoscript</h2>
-            <p>Choose the package for your computer.</p>
+            <h2 id="download-title">$download_app</h2>
+            <p>$choose_package</p>
           </div>
-          <a class="release-link" href="$release">$tag release notes <span aria-hidden="true">↗</span></a>
+          <a class="release-link" href="$release">$release_notes <span aria-hidden="true">↗</span></a>
         </div>
         <ul class="downloads">
           <li>
             <a class="download-card" href="$download/Dinoscript-arm64.dmg">
-              <span><strong>Mac</strong><span class="platform">Apple silicon · DMG</span></span>
+              <span><strong>Mac</strong><span class="platform">$apple_silicon · DMG</span></span>
               <span class="download-icon" aria-hidden="true">↓</span>
             </a>
           </li>
@@ -66,26 +67,26 @@
             </a>
           </li>
         </ul>
-        <p class="install-help">On Mac, open the disk image and drag Dinoscript to Applications. On Windows, extract the ZIP and open <code>Dinoscript.exe</code>. The Mac apps are ad-hoc signed. The Windows executable is unsigned.</p>
-        <p class="download-meta"><a href="$download/SHA256SUMS">SHA-256 checksums</a> <a href="$repository/releases">All releases</a></p>
+        <p class="install-help">$install_help_html</p>
+        <p class="download-meta"><a href="$download/SHA256SUMS">$app_checksums</a> <a href="$repository/releases">$all_releases</a></p>
         $linux_downloads
-        <p class="download-meta"><a href="$linux_releases">Linux package releases on GitHub</a></p>
+        <p class="download-meta"><a href="$linux_releases">$linux_releases_label</a></p>
       </div>
     </section>
 
     <section class="wrap learn-section" aria-labelledby="learn-title">
       <div>
-        <h2 id="learn-title">Dinoscript with Pip</h2>
-        <p>Follow the illustrated lessons from your first line of code to loops, functions, and playable games. Read along online, print the PDF, or press <kbd>F1</kbd> in the app to open the lessons offline.</p>
+        <h2 id="learn-title">$title</h2>
+        <p>$learn_intro_html</p>
         <div class="actions">
-          <a class="button primary" href="workbook.html">Read online <span aria-hidden="true">→</span></a>
-          <a class="button secondary" href="Dinoscript-with-Pip.pdf" download>Download PDF <span aria-hidden="true">↓</span></a>
+          <a class="button primary" href="workbook.html">$read_online <span aria-hidden="true">→</span></a>
+          <a class="button secondary" href="$pdf" download>$download_pdf <span aria-hidden="true">↓</span></a>
         </div>
       </div>
       <div class="code-example">
-        <a href="workbook.html#lesson-1">Your first program <span aria-hidden="true">→</span></a>
-        <pre><code><span class="syntax-name">print</span>(<span class="syntax-string">"Hello, dinosaur!"</span>)</code></pre>
-        <p>Press <kbd>F5</kbd> in Dinoscript to see <samp>Hello, dinosaur!</samp></p>
+        <a href="workbook.html#lesson-1">$first_program <span aria-hidden="true">→</span></a>
+        <pre><code><span class="syntax-name">print</span>(<span class="syntax-string">$greeting_literal</span>)</code></pre>
+        <p>$first_program_html</p>
       </div>
     </section>
   </main>
@@ -93,7 +94,7 @@
   <footer class="site-footer">
     <div class="wrap footer-inner">
       <span>© 2023–2026 Francisco Claude-Faust</span>
-      <a href="$repository/blob/$tag/LICENSE">Apache License 2.0</a>
+      <a href="$repository/blob/$tag/LICENSE">$license</a>
     </div>
   </footer>
 </body>

@@ -1,0 +1,6 @@
+# Cambia el 5 por otro número.
+let cuenta = 1
+while cuenta <= 5 do
+  print("Dinosaurio ", cuenta)
+  let cuenta = cuenta + 1
+end while

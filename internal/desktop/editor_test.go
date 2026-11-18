@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"github.com/fclaude/dinoscript/book"
+	"github.com/fclaude/dinoscript/internal/locale"
 	"github.com/richardwilkes/unison"
 	"github.com/richardwilkes/unison/enums/mod"
 )
@@ -31,7 +32,7 @@ func TestDesktopEditor(t *testing.T) {
 	screen, err := unison.StartHeadless(
 		unison.HeadlessConfig{Width: 1024, Height: 768, SyncTimeout: 5 * time.Second},
 		unison.QuitAfterLastWindowClosedCallback(func() bool { return false }),
-		unison.StartupFinishedCallback(func() { app, startupErr = newEditor(draftPath, dialogs) }),
+		unison.StartupFinishedCallback(func() { app, startupErr = newEditor(draftPath, dialogs, locale.English) }),
 	)
 	if err != nil {
 		t.Fatal(err)
@@ -79,7 +80,7 @@ func TestDesktopEditor(t *testing.T) {
 
 	assert("the source field should have startup focus", func() bool { return app.window.CurrentFocus() == app.source.AsPanel() })
 	assert("the editor should open with Pip and three file tabs", func() bool {
-		return len(app.window.TitleIcons()) == 1 && len(app.tabs) == 3 && app.document.title() == "hello.ds"
+		return len(app.window.TitleIcons()) == 1 && len(app.tabs) == 3 && app.tabTitle(app.document) == "hello.ds"
 	})
 	click(app.run)
 	wait("Finished.")
@@ -183,7 +184,7 @@ func TestDesktopEditor(t *testing.T) {
 		if !app.window.AttemptClose() {
 			return
 		}
-		app, startupErr = newEditor(draftPath, dialogs)
+		app, startupErr = newEditor(draftPath, dialogs, locale.English)
 	})
 	if startupErr != nil {
 		t.Fatal(startupErr)
@@ -238,6 +239,76 @@ func TestDesktopEditor(t *testing.T) {
 	if err != nil || !bytes.Equal(printed, original) {
 		t.Fatalf("Save PDF did not export the bundled book: %v", err)
 	}
+
+	var languages *unison.PopupMenu[locale.Language]
+	assert("the editor should expose a language menu", func() bool {
+		app.window.ToFront()
+		for _, child := range app.window.Content().Children()[0].Children() {
+			if menu, ok := child.Self.(*unison.PopupMenu[locale.Language]); ok {
+				languages = menu
+				return true
+			}
+		}
+		return false
+	})
+	replaceCode("print(\"Pip\", missing)")
+	run()
+	wait("Fix the error")
+	screen.Click(screen.PanelCenter(languages))
+	for range 3 {
+		screen.KeyPress(unison.KeyDown, mod.None)
+	}
+	screen.KeyPress(unison.KeyReturn, mod.None)
+	assert("choosing Spanish should translate the editor and diagnostic while preserving code and the open lesson", func() bool {
+		return app.language == locale.Spanish && app.source.Text() == "print(\"Pip\", missing)" && app.dirty() &&
+			app.run.Text.String() == "Ejecutar  F5" && app.source.Accessibility.Name == "Código" &&
+			strings.Contains(app.output.Text(), "Línea 1, columna 14: Todavía no conozco \"missing\"") &&
+			app.jump.Enabled() && app.reader == reader && reader.page == 1 && reader.status.String() == "Lección 1 de 14"
+	})
+	click(app.learn)
+	click(reader.save)
+	printed, err = os.ReadFile(dialogs.pdf)
+	if err != nil {
+		t.Fatal(err)
+	}
+	original, err = book.PDFLanguage(locale.Spanish)
+	if err != nil || !bytes.Equal(printed, original) {
+		t.Fatalf("Guardar PDF did not export the Spanish edition: %v", err)
+	}
+	click(reader.tryCode)
+	run()
+	wait("Ejecución terminada.")
+	assert("the Spanish lesson code should run in the ordinary editor", func() bool {
+		return app.output.Text() == "¡Hola, dinosaurio!\n"
+	})
+	screen.Do(func() {
+		if app.window.AttemptClose() {
+			app, startupErr = newEditor(draftPath, dialogs, locale.English)
+		}
+	})
+	if startupErr != nil {
+		t.Fatal(startupErr)
+	}
+	assert("an explicit language choice should survive a restart", func() bool {
+		return app.language == locale.Spanish && app.source.Text() == "print(\"¡Hola, dinosaurio!\")\n"
+	})
+	screen.Do(func() { app.changeLanguage(systemLanguage) })
+	assert("returning to the system language should restore the English interface", func() bool {
+		return app.language == locale.English && app.run.Text.String() == "Run  F5"
+	})
+	freshDraft := filepath.Join(t.TempDir(), "draft.json")
+	screen.Do(func() {
+		if app.window.AttemptClose() {
+			app, startupErr = newEditor(freshDraft, dialogs, locale.Spanish)
+		}
+	})
+	if startupErr != nil {
+		t.Fatal(startupErr)
+	}
+	assert("a fresh installation on a Spanish system should open with Spanish examples", func() bool {
+		return app.preference == systemLanguage && app.language == locale.Spanish &&
+			app.tabTitle(app.document) == "hola.ds" && strings.Contains(app.source.Text(), "¡Hola, dinosaurio!")
+	})
 }
 
 type testDialogs struct {

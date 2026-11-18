@@ -1,0 +1,28 @@
+# Ejecuta este programa e ingresa un número entero, como 25 o 29.
+function esPrimo(n)
+  if n < 2 then
+    output false
+  end if
+  if n = 2 then
+    output true
+  end if
+  if n % 2 = 0 then
+    output false
+  end if
+  let divisor = 3
+  while divisor <= n // divisor do
+    if n % divisor = 0 then
+      output false
+    end if
+    let divisor = divisor + 2
+  end while
+  output true
+end function
+
+print("¿Qué número entero quieres revisar?")
+let numero = readint()
+if esPrimo(numero) then
+  print(numero, " es primo.")
+else
+  print(numero, " no es primo.")
+end if

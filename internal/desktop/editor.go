@@ -4,10 +4,12 @@ import (
 	"embed"
 	"os"
 	"path/filepath"
+	"slices"
 	"strings"
 	"time"
 
 	"github.com/fclaude/dinoscript/internal/dino"
+	"github.com/fclaude/dinoscript/internal/locale"
 	"github.com/richardwilkes/toolbox/v2/geom"
 	"github.com/richardwilkes/unison"
 	"github.com/richardwilkes/unison/accessibility"
@@ -15,18 +17,19 @@ import (
 	"github.com/richardwilkes/unison/enums/mod"
 )
 
-//go:embed examples/*.ds
+//go:embed examples/*.ds examples/*/*.ds
 var examples embed.FS
 
 var lessons = []struct {
-	title string
-	file  string
+	title     string
+	file      string
+	localized map[locale.Language]string
 }{
-	{"Hello, dinosaur!", "hello.ds"},
-	{"Make a decision", "decisions.ds"},
-	{"Count with a loop", "counting.ds"},
-	{"Fibonacci numbers", "fibonacci.ds"},
-	{"Is it prime?", "prime.ds"},
+	{"Hello, dinosaur!", "hello.ds", map[locale.Language]string{locale.Spanish: "hola.ds"}},
+	{"Make a decision", "decisions.ds", map[locale.Language]string{locale.Spanish: "decisiones.ds"}},
+	{"Count with a loop", "counting.ds", map[locale.Language]string{locale.Spanish: "contar.ds"}},
+	{"Fibonacci numbers", "fibonacci.ds", map[locale.Language]string{locale.Spanish: "serie-fibonacci.ds"}},
+	{"Is it prime?", "prime.ds", map[locale.Language]string{locale.Spanish: "primo.ds"}},
 }
 
 type editor struct {
@@ -47,6 +50,12 @@ type editor struct {
 	sourceScroll *unison.ScrollPanel
 	codeView     codeDecoration
 	reader       *tutorialReader
+	language     locale.Language
+	systemLocale locale.Language
+	preference   locale.Language
+	localized    []func()
+	statusText   string
+	statusArgs   []any
 
 	dialogs     fileDialogs
 	draftPath   string
@@ -66,19 +75,23 @@ func Open() error {
 	if dir, err := os.UserConfigDir(); err == nil {
 		path = filepath.Join(dir, "Dinoscript", "draft.json")
 	}
-	_, err := newEditor(path, systemDialogs{})
+	_, err := newEditor(path, nil, locale.System())
 	return err
 }
 
-func newEditor(draftPath string, dialogs fileDialogs) (*editor, error) {
+func newEditor(draftPath string, dialogs fileDialogs, systemLocale locale.Language) (*editor, error) {
 	window, err := unison.NewWindow("Dinoscript")
 	if err != nil {
 		return nil, err
 	}
 	e := &editor{
-		window: window, dialogs: dialogs, draftPath: draftPath,
+		window: window, dialogs: dialogs, draftPath: draftPath, systemLocale: systemLocale,
 		source: unison.NewMultiLineField(), output: unison.NewMultiLineField(),
 		input: unison.NewField(), status: unison.NewLabel(),
+	}
+	e.loadLanguage()
+	if e.dialogs == nil {
+		e.dialogs = systemDialogs{editor: e}
 	}
 	pip, err := unison.NewImageFromBytes(pipPortrait, geom.NewPoint(1, 1))
 	if err != nil {
@@ -126,7 +139,10 @@ func (e *editor) configureFields() {
 	e.source.NoSelectAllOnFocus = true
 	e.source.ModifiedCallback = e.edited
 	e.source.KeyDownCallback = e.codeKey
-	e.output.Watermark = "Run your code to see what it prints."
+	e.localize(func() {
+		e.output.Watermark = e.text("Run your code to see what it prints.")
+		e.output.MarkForLayoutAndRedraw()
+	})
 	e.output.NoSelectAllOnFocus = true
 	e.output.RuneTypedCallback = func(rune) bool { return false }
 	e.output.KeyDownCallback = func(key unison.KeyCode, mods mod.Modifiers, repeat bool) bool {
@@ -148,8 +164,11 @@ func (e *editor) configureFields() {
 		node.ReadOnly = true
 		node.Actions = node.Actions.Without(accessibility.SetValue, accessibility.ReplaceText)
 	}
-	e.input.Watermark = "Program input"
-	e.input.Accessibility.Name = "Program input"
+	e.localize(func() {
+		e.input.Watermark = e.text("Program input")
+		e.input.Accessibility.Name = e.input.Watermark
+		e.input.MarkForLayoutAndRedraw()
+	})
 	e.input.SetEnabled(false)
 	e.input.KeyDownCallback = func(key unison.KeyCode, mods mod.Modifiers, repeat bool) bool {
 		if key == unison.KeyReturn || key == unison.KeyNumPadEnter {
@@ -267,7 +286,7 @@ func (e *editor) edited(before, after *unison.FieldState) {
 		return
 	}
 	e.document.undo.Add(&unison.UndoEdit[*unison.FieldState]{
-		ID: e.source.CurrentUndoID(), EditName: "Typing",
+		ID: e.source.CurrentUndoID(), EditName: e.text("Typing"),
 		BeforeData: before, AfterData: after, EditCost: len(before.Text) + len(after.Text),
 		UndoFunc: func(edit *unison.UndoEdit[*unison.FieldState]) { e.applyEdit(edit.BeforeData) },
 		RedoFunc: func(edit *unison.UndoEdit[*unison.FieldState]) { e.applyEdit(edit.AfterData) },
@@ -314,7 +333,19 @@ func (e *editor) queueDraft() {
 
 func (e *editor) dirty() bool { return e.document.Text != e.document.SavedText }
 
-func (e *editor) setStatus(message string) {
+func (e *editor) setStatus(message string, args ...any) {
+	e.statusText, e.statusArgs = message, args
+	e.renderStatus()
+}
+
+func (e *editor) renderStatus() {
+	args := slices.Clone(e.statusArgs)
+	for index, arg := range args {
+		if message, ok := arg.(statusMessage); ok {
+			args[index] = e.text(string(message))
+		}
+	}
+	message := e.text(e.statusText, args...)
 	e.status.SetTitle(message)
 	e.status.MarkForLayoutAndRedraw()
 	unison.AnnounceForAccessibility(message)

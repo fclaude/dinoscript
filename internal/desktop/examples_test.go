@@ -21,6 +21,11 @@ func TestLessons(t *testing.T) {
 		{"prime nine", "prime.ds", "9", "9 is not prime.\n"},
 		{"prime twenty-five", "prime.ds", "25", "25 is not prime.\n"},
 		{"prime twenty-nine", "prime.ds", "29", "29 is prime.\n"},
+		{"hola", "es-CL/hola.ds", "", "¡Hola, dinosaurio!\n"},
+		{"decisiones", "es-CL/decisiones.ds", "", "Puedes subir al dinosaurio grande.\n"},
+		{"contar", "es-CL/contar.ds", "", "Dinosaurio 1\nDinosaurio 2\nDinosaurio 3\nDinosaurio 4\nDinosaurio 5\n"},
+		{"fibonacci en español", "es-CL/serie-fibonacci.ds", "", "El número de Fibonacci en la posición 8 es 21\n"},
+		{"primo", "es-CL/primo.ds", "29", "¿Qué número entero quieres revisar?\n29 es primo.\n"},
 	} {
 		t.Run(tt.name, func(t *testing.T) {
 			var output strings.Builder
@@ -29,7 +34,7 @@ func TestLessons(t *testing.T) {
 				Output: func(s string) { output.WriteString(s) },
 			})
 			want := tt.want
-			if tt.input != "" {
+			if tt.input != "" && tt.file == "prime.ds" {
 				want = "Which whole number do you want to check?\n" + want
 			}
 			if err != nil || output.String() != want {

@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"strings"
 	"unicode/utf8"
+
+	"github.com/fclaude/dinoscript/internal/locale"
 )
 
 // Span identifies a range of UTF-8 bytes and its one-based line and rune column.
@@ -17,14 +19,31 @@ type Span struct {
 type Diagnostic struct {
 	Span    Span
 	Message string
+	format  string
+	args    []any
+}
+
+var diagnosticMessages = map[locale.Language]map[string]string{
+	locale.Spanish: spanishDiagnostics,
 }
 
 func (d *Diagnostic) Error() string {
 	return fmt.Sprintf("Line %d, column %d: %s", d.Span.Line, d.Span.Column, d.Message)
 }
 
+// Localized formats the diagnostic without changing its source location.
+func (d *Diagnostic) Localized(language locale.Language) string {
+	if messages := diagnosticMessages[language]; messages != nil {
+		if format, ok := messages[d.format]; ok {
+			body := fmt.Sprintf(format, d.args...)
+			return fmt.Sprintf(messages["Line %d, column %d: %s"], d.Span.Line, d.Span.Column, body)
+		}
+	}
+	return d.Error()
+}
+
 func problem(at Span, format string, args ...any) *Diagnostic {
-	return &Diagnostic{Span: at, Message: fmt.Sprintf(format, args...)}
+	return &Diagnostic{Span: at, Message: fmt.Sprintf(format, args...), format: format, args: args}
 }
 
 type tokenKind uint8

@@ -1,34 +1,34 @@
 <section class="linux-downloads" aria-labelledby="linux-download-title" data-tag="$tag" data-version="$version">
   <div class="section-heading">
     <h3 id="linux-download-title">Linux</h3>
-    <a class="release-link" href="$release">Linux package <span class="linux-version">$version</span> <span aria-hidden="true">↗</span></a>
+    <a class="release-link" href="$release">$linux_package <span class="linux-version">$version</span> <span aria-hidden="true">↗</span></a>
   </div>
   <ul class="downloads">
     <li class="linux-card">
       <strong>Ubuntu</strong>
       <span class="platform">24.04 · DEB</span>
-      <a href="$ubuntu_x64" aria-label="Download Ubuntu x64 DEB">x64</a>
-      <a href="$ubuntu_arm64" aria-label="Download Ubuntu ARM64 DEB">ARM64</a>
+      <a href="$ubuntu_x64" aria-label="$ubuntu_x64_label">x64</a>
+      <a href="$ubuntu_arm64" aria-label="$ubuntu_arm64_label">ARM64</a>
       <code>sudo apt install ./dinoscript_*.deb</code>
     </li>
     <li class="linux-card">
       <strong>Fedora</strong>
       <span class="platform">44 · RPM</span>
-      <a href="$fedora_x64" aria-label="Download Fedora x64 RPM">x64</a>
-      <a href="$fedora_arm64" aria-label="Download Fedora ARM64 RPM">ARM64</a>
+      <a href="$fedora_x64" aria-label="$fedora_x64_label">x64</a>
+      <a href="$fedora_arm64" aria-label="$fedora_arm64_label">ARM64</a>
       <code>sudo dnf install ./dinoscript-*.rpm</code>
     </li>
     <li class="linux-card">
       <strong>Arch Linux</strong>
-      <span class="platform">Pacman package</span>
-      <a href="$arch_x64" aria-label="Download Arch Linux x64 package">x64</a>
+      <span class="platform">$pacman_package</span>
+      <a href="$arch_x64" aria-label="$arch_x64_label">x64</a>
       <code>sudo pacman -U ./dinoscript-*.pkg.tar.zst</code>
     </li>
   </ul>
-  <p class="install-help">Run the command in the folder where you saved the package. Then open Dinoscript from the GNOME or KDE app menu. Dinoscript uses X11 or XWayland.</p>
+  <p class="install-help">$linux_install_help</p>
   <p class="download-meta">
-    <a href="$x64_checksums">DEB/RPM x64 checksums</a>
-    <a href="$arm64_checksums">DEB/RPM ARM64 checksums</a>
-    <a href="$arch_checksums">Arch x64 checksums</a>
+    <a href="$x64_checksums">$x64_checksums_label</a>
+    <a href="$arm64_checksums">$arm64_checksums_label</a>
+    <a href="$arch_checksums">$arch_checksums_label</a>
   </p>
 </section>

@@ -1,0 +1,7 @@
+# Prueba cambiando la edad a 7.
+let edad = 10
+if edad >= 10 then
+  print("Puedes subir al dinosaurio grande.")
+else
+  print("Prueba con el dinosaurio pequeño.")
+end if

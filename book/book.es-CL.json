@@ -1,0 +1,248 @@
+{
+  "title": "Dinoscript con Pip",
+  "subtitle": "Escribe tu primer programa, crea tres juegos y resuelve desafíos matemáticos.",
+  "author": "Francisco Claude-Faust",
+  "cover_art": "pip-at-the-computer.png",
+  "cover_alt": "Pip, un pequeño tricerátops verde con un pañuelo amarillo, está frente a un computador entre los helechos.",
+  "welcome": "Soy Pip, un tricerátops con tres cuernos y un teclado. Abre Dinoscript y ven a aprender conmigo. En cada página encontrarás algo breve que escribir, ejecutar o cambiar.",
+  "pages": [
+    {
+      "chapter": "Primeros pasos",
+      "title": "Haz hablar a un dinosaurio",
+      "pip": "Mi primer programa dijo hola. El segundo pidió algo para comer.",
+      "body": [
+        "Abre Dinoscript. Escribe la línea de abajo en Código o elige Probar código si estás leyendo esta página en la aplicación.",
+        "Haz clic en Ejecutar o presiona F5. La palabra print le indica a Dinoscript que muestre algo. Las palabras entre comillas dobles aparecen en Salida."
+      ],
+      "code": "print(\"¡Hola, dinosaurio!\")\n",
+      "challenge": "Cambia las palabras entre comillas y vuelve a ejecutar el programa. ¿Puedes hacer que Pip se presente en dos líneas?",
+      "hint": "Prueba con print(\"¡Soy Pip!\") en una línea nueva, debajo del primer print.",
+      "checks": [
+        {"input": [], "output": "¡Hola, dinosaurio!\n"}
+      ],
+      "art": "",
+      "alt": ""
+    },
+    {
+      "chapter": "Primeros pasos",
+      "title": "Dales un lugar a las palabras y los números",
+      "pip": "En mi mochila hay un sándwich y tres piedras. Adivina qué quería guardar.",
+      "body": [
+        "El texto entre comillas dobles se llama cadena de texto. Los números se escriben sin comillas. Separa con comas lo que quieras mostrar en una misma línea.",
+        "Una línea que empieza con # es un comentario. Puedes dejarlo como nota para quien lea el código después. Dinoscript se lo salta."
+      ],
+      "code": "# Pip revisa sus bolsillos.\nprint(\"Piedras en mi bolsillo: \", 3)\nprint(\"Si recojo dos más: \", 3 + 2)\n",
+      "challenge": "Pon 3 + 2 entre comillas dobles y vuelve a ejecutar el programa. ¿Qué cambió? Luego agrega un comentario que me cuente de dónde salieron las piedras.",
+      "hint": "Con comillas, Dinoscript muestra el texto 3 + 2. Sin comillas, hace la suma y muestra 5.",
+      "checks": [
+        {"input": [], "output": "Piedras en mi bolsillo: 3\nSi recojo dos más: 5\n"}
+      ],
+      "art": "",
+      "alt": ""
+    },
+    {
+      "chapter": "Primeros pasos",
+      "title": "Lleva la cuenta con let",
+      "pip": "Puedo contar unas cuantas bayas con mis garras. Para contar más, necesito una variable.",
+      "body": [
+        "Una variable es un nombre para un valor que quieres guardar. La primera línea guarda un 4 en una variable llamada bayas.",
+        "La siguiente línea lee el valor, le suma 3 y guarda el resultado en la misma variable. La última línea vuelve a leer el valor."
+      ],
+      "code": "let bayas = 4\nlet bayas = bayas + 3\nprint(\"Tengo \", bayas, \" bayas.\")\n",
+      "challenge": "Pip se come dos bayas antes de contarlas. Agrega una línea antes de print para restarlas. ¿Cuál debería ser el nuevo total?",
+      "hint": "Escribe let bayas = bayas - 2. Deberías ver que quedan 5 bayas.",
+      "checks": [
+        {"input": [], "output": "Tengo 7 bayas.\n"}
+      ],
+      "art": "",
+      "alt": ""
+    },
+    {
+      "chapter": "Primeros pasos",
+      "title": "Pide una respuesta",
+      "pip": "Si escribes 4, te prometo que voy a contar los cuatro dinosaurios imaginarios.",
+      "body": [
+        "print muestra la pregunta. Los paréntesis vacíos de readint() indican que no hay que ponerle nada adentro. La función espera a que escribas un número entero.",
+        "Haz clic en Ejecutar. Cuando aparezca el cuadro de entrada en Salida, escribe tu respuesta y presiona Enter. Puedes usar Detener si el programa sigue esperando."
+      ],
+      "code": "print(\"¿Cuántos dinosaurios vienen?\")\nlet invitados = readint()\nprint(\"Necesitamos \", invitados * 2, \" platos de hojas.\")\n",
+      "challenge": "Prueba con 4 invitados. Luego cambia el programa para que cada invitado necesite tres platos. Prueba también con 0 invitados.",
+      "hint": "Con el código original, 4 invitados necesitan 8 platos. Con tres platos por invitado, necesitan 12.",
+      "checks": [
+        {"input": ["4"], "output": "¿Cuántos dinosaurios vienen?\nNecesitamos 8 platos de hojas.\n"},
+        {"input": ["0"], "output": "¿Cuántos dinosaurios vienen?\nNecesitamos 0 platos de hojas.\n"}
+      ],
+      "art": "",
+      "alt": ""
+    },
+    {
+      "chapter": "Primeros pasos",
+      "title": "Elige qué pasa",
+      "pip": "Para cruzar el arroyo y llegar al pícnic, necesito al menos dos piedras.",
+      "body": [
+        "if comprueba una condición que puede ser verdadera o falsa. Aquí, >= significa «mayor o igual que». Si la condición es verdadera, se ejecutan las líneas después de then.",
+        "Si la condición es falsa, se ejecutan las líneas después de else. end if cierra el bloque."
+      ],
+      "code": "let piedras = 2\nif piedras >= 2 then\n  print(\"¡Podemos cruzar!\")\nelse\n  print(\"Busca otra piedra para cruzar.\")\nend if\n",
+      "challenge": "Prueba con 1, 2 y 3 piedras. ¿Puedes predecir qué mensaje aparecerá con cada número?",
+      "hint": "Con 1 piedra, necesitas otra. Con 2 o 3, puedes cruzar.",
+      "checks": [
+        {"input": [], "output": "¡Podemos cruzar!\n"}
+      ],
+      "art": "",
+      "alt": ""
+    },
+    {
+      "chapter": "Primeros pasos",
+      "title": "Cuenta luciérnagas con un ciclo",
+      "pip": "Una, dos, tres, cuatro, cinco. Quédense quietitas, por favor.",
+      "body": [
+        "while comprueba la condición antes de cada vuelta. El ciclo sigue mientras la condición sea verdadera.",
+        "La última línea del ciclo cambia el valor de luciernaga, así que en algún momento la condición se vuelve falsa. Si olvidas cambiar el número, puedes hacer clic en Detener."
+      ],
+      "code": "let luciernaga = 1\nwhile luciernaga <= 5 do\n  print(\"Luciérnaga \", luciernaga)\n  let luciernaga = luciernaga + 1\nend while\n",
+      "challenge": "Cuenta hacia atrás del 5 al 1. Cambia el valor inicial de luciernaga, la condición y la línea que actualiza su valor.",
+      "hint": "Empieza en 5, usa luciernaga >= 1 y resta 1 en cada vuelta.",
+      "checks": [
+        {"input": [], "output": "Luciérnaga 1\nLuciérnaga 2\nLuciérnaga 3\nLuciérnaga 4\nLuciérnaga 5\n"}
+      ],
+      "art": "",
+      "alt": ""
+    },
+    {
+      "chapter": "Primeros pasos",
+      "title": "Crea tu propia instrucción",
+      "pip": "Una rampa para tres dinosaurios necesita seis ladrillos. Uso mucho ese cálculo.",
+      "body": [
+        "Una función es un conjunto de instrucciones con un nombre. ladrillosPara tiene un parámetro llamado invitados. Al llamar a ladrillosPara(3), invitados toma el valor 3.",
+        "Dentro de una función, output devuelve un valor a la línea que hizo la llamada. Usa print para mostrar ese valor en Salida."
+      ],
+      "code": "function ladrillosPara(invitados)\n  output invitados * 2\nend function\n\nprint(ladrillosPara(3))\nprint(ladrillosPara(5))\n",
+      "challenge": "Cada dinosaurio necesita dos ladrillos y la rampa necesita uno extra. Haz un solo cambio en la función para corregir los dos resultados.",
+      "hint": "Usa output invitados * 2 + 1. Las dos líneas deberían mostrar 7 y 11.",
+      "checks": [
+        {"input": [], "output": "6\n10\n"}
+      ],
+      "art": "",
+      "alt": ""
+    },
+    {
+      "chapter": "Primeros pasos",
+      "title": "Sigue la pista de un error",
+      "pip": "Un error te da una pista. Hay errores tan chicos que se esconden detrás de una comilla.",
+      "body": [
+        "Ejecuta el programa una vez. Luego borra end if y vuelve a ejecutarlo. Lee el mensaje en Salida y haz clic en Ir al error.",
+        "Dinoscript salta a la línea donde empieza el bloque que quedó abierto. Vuelve a escribir end if debajo de la línea con print y ejecuta el programa otra vez."
+      ],
+      "code": "let tengoHambre = true\nif tengoHambre then\n  print(\"¡Hora de la colación!\")\nend if\n",
+      "challenge": "Ahora borra la comilla doble de cierre en la línea con print. ¿Qué te pide corregir el nuevo mensaje?",
+      "hint": "Vuelve a poner la comilla después del signo de exclamación y antes del paréntesis de cierre.",
+      "checks": [
+        {"input": [], "output": "¡Hora de la colación!\n"}
+      ],
+      "art": "",
+      "alt": ""
+    },
+    {
+      "chapter": "Juegos de texto",
+      "title": "Dos caminos entre los helechos",
+      "pip": "Traje un mapa. Dice que el helecho de la izquierda se parece mucho al de la derecha.",
+      "body": [
+        "Usa los números como botones. El juego espera tu elección y usa un bloque if para contar un final distinto según el camino que tomes."
+      ],
+      "code": "print(\"1. Sendero de cristales\")\nprint(\"2. Cueva con musgo\")\nlet camino = readint()\nif camino = 1 then\n  print(\"¡Ves cristales de ámbar!\")\nelse\n  if camino = 2 then\n    print(\"Un murciélago tímido te muestra una puerta secreta.\")\n  else\n    print(\"El mapa solo muestra el 1 y el 2.\")\n  end if\nend if\n",
+      "challenge": "Prueba con 1, 2 y 9. Luego haz que el murciélago haga otra pregunta. ¿Qué pasa si respondes que sí con un 1?",
+      "hint": "Agrega otro print y un readint() en el bloque de la cueva, antes de su end if. Usa otro if para revisar la respuesta.",
+      "checks": [
+        {"input": ["1"], "output": "1. Sendero de cristales\n2. Cueva con musgo\n¡Ves cristales de ámbar!\n"},
+        {"input": ["2"], "output": "1. Sendero de cristales\n2. Cueva con musgo\nUn murciélago tímido te muestra una puerta secreta.\n"},
+        {"input": ["9"], "output": "1. Sendero de cristales\n2. Cueva con musgo\nEl mapa solo muestra el 1 y el 2.\n"}
+      ],
+      "art": "fork-in-the-ferns.png",
+      "alt": "Pip sostiene un mapa donde se separan dos caminos, uno hacia los cristales de ámbar y otro hacia una cueva con musgo."
+    },
+    {
+      "chapter": "Juegos de texto",
+      "title": "El fósil secreto",
+      "pip": "Escondí un fósil debajo de una piedra numerada. Tienes cuatro intentos.",
+      "body": [
+        "Cada intento gasta un turno. El ciclo sigue mientras queden turnos y encontrado sea false. Prueba ganar y también quedarte sin turnos."
+      ],
+      "code": "let secreto = 7\nlet turnos = 4\nlet encontrado = false\nprint(\"Adivina el número de la piedra, del 1 al 10.\")\nwhile turnos > 0 and not encontrado do\n  let intento = readint()\n  if intento = secreto then\n    print(\"¡Encontraste el fósil!\")\n    let encontrado = true\n  else\n    if intento < secreto then\n      print(\"El número es mayor.\")\n    else\n      print(\"El número es menor.\")\n    end if\n  end if\n  let turnos = turnos - 1\nend while\nif not encontrado then\n  print(\"El fósil estaba bajo la piedra \", secreto, \".\")\nend if\n",
+      "challenge": "Pídele a alguien que cambie secreto sin que la otra persona mire. ¿Puedes agregar un mensaje que muestre cuántos turnos quedan?",
+      "hint": "Justo después de restar un turno, agrega print(\"Turnos que quedan: \", turnos). Ponlo en un if si quieres ocultarlo cuando alguien gane.",
+      "checks": [
+        {"input": ["3", "9", "7"], "output": "Adivina el número de la piedra, del 1 al 10.\nEl número es mayor.\nEl número es menor.\n¡Encontraste el fósil!\n"},
+        {"input": ["1", "2", "3", "4"], "output": "Adivina el número de la piedra, del 1 al 10.\nEl número es mayor.\nEl número es mayor.\nEl número es mayor.\nEl número es mayor.\nEl fósil estaba bajo la piedra 7.\n"}
+      ],
+      "art": "",
+      "alt": ""
+    },
+    {
+      "chapter": "Juegos de texto",
+      "title": "El puesto de colaciones de Pip",
+      "pip": "Cada pancito de bayas cuesta tres conchitas. Tienes diez conchitas y mucho apetito.",
+      "body": [
+        "La función calcula cuánto cuesta el pedido. El puesto revisa si la cantidad es negativa. Si el pedido es válido, te dice si te alcanzan las conchitas."
+      ],
+      "code": "function cobrar(panes)\n  output panes * 3\nend function\n\nlet conchitas = 10\nprint(\"¿Cuántos pancitos de bayas quieres?\")\nlet pedido = readint()\nlet costo = cobrar(pedido)\nif pedido < 0 then\n  print(\"Pide cero pancitos o más.\")\nelse\n  if costo <= conchitas then\n    print(\"Pancitos: \", pedido)\n    print(\"Conchitas que quedan: \", conchitas - costo)\n  else\n    print(\"Te faltan \", costo - conchitas, \" conchitas.\")\n  end if\nend if\n",
+      "challenge": "Compra todos los pancitos que puedas. Luego inventa una colación con otro precio. ¿Qué puedes comprar ahora?",
+      "hint": "Tres pancitos cuestan 9 conchitas y te queda una. Cuatro cuestan 12 y te faltan dos.",
+      "checks": [
+        {"input": ["3"], "output": "¿Cuántos pancitos de bayas quieres?\nPancitos: 3\nConchitas que quedan: 1\n"},
+        {"input": ["4"], "output": "¿Cuántos pancitos de bayas quieres?\nTe faltan 2 conchitas.\n"},
+        {"input": ["-1"], "output": "¿Cuántos pancitos de bayas quieres?\nPide cero pancitos o más.\n"}
+      ],
+      "art": "",
+      "alt": ""
+    },
+    {
+      "chapter": "Desafíos matemáticos",
+      "title": "Las canastas de huevos",
+      "pip": "Tengo 23 huevos. En cada canasta caben cuatro. ¿Me ayudas a guardarlos?",
+      "body": [
+        "Usa // para contar los grupos completos y % para saber cuánto sobra. Intenta calcular ambos resultados para 23 huevos antes de ejecutar el código."
+      ],
+      "code": "let huevos = 23\nlet capacidad = 4\nprint(\"Canastas llenas: \", huevos // capacidad)\nprint(\"Huevos que sobran: \", huevos % capacidad)\n",
+      "challenge": "Para 23 huevos, busca una capacidad entre 3 y 7 que deje exactamente 3 huevos de sobra. ¿Puedes encontrar dos capacidades que sirvan?",
+      "hint": "Con capacidad para 4 o 5 huevos sobran 3. En canastas de 4, llenas 5. En canastas de 5, llenas 4.",
+      "checks": [
+        {"input": [], "output": "Canastas llenas: 5\nHuevos que sobran: 3\n"}
+      ],
+      "art": "egg-baskets.png",
+      "alt": "Pip reparte huevos moteados en canastas sobre una manta de pícnic al sol."
+    },
+    {
+      "chapter": "Desafíos matemáticos",
+      "title": "La escalera de piedras",
+      "pip": "Construí una escalera con piedritas. El primer peldaño tiene una, el segundo tiene dos y así sigue.",
+      "body": [
+        "Este programa va sumando las piedritas de cada peldaño. Con cuatro peldaños, suma 1 + 2 + 3 + 4. El total es 10."
+      ],
+      "code": "let escalones = 4\nlet fila = 1\nlet total = 0\nwhile fila <= escalones do\n  let total = total + fila\n  let fila = fila + 1\nend while\nprint(\"Piedritas: \", total)\n",
+      "challenge": "Encuentras exactamente 28 piedritas. ¿Cuántos peldaños completos puedes construir? Usa el programa para averiguarlo y cuéntale a alguien cómo llegaste a la respuesta.",
+      "hint": "Prueba con 6 peldaños y luego con 7. Para seis necesitas 21 piedritas. Para el siguiente necesitas 7 más.",
+      "checks": [
+        {"input": [], "output": "Piedritas: 10\n"}
+      ],
+      "art": "",
+      "alt": ""
+    },
+    {
+      "chapter": "Desafíos matemáticos",
+      "title": "La señal fósil",
+      "pip": "Ruge con los múltiplos de tres y da un pisotón con los de cinco. ¿Qué haces con el quince?",
+      "body": [
+        "Un número es múltiplo de 3 si al dividirlo por 3 el resto es cero. El código inicial ya muestra Rugido cuando corresponde. Agrega las reglas para Pisotón y Rugido y pisotón."
+      ],
+      "code": "let n = 1\nwhile n <= 15 do\n  if n % 3 = 0 then\n    print(\"Rugido\")\n  else\n    print(n)\n  end if\n  let n = n + 1\nend while\n",
+      "challenge": "Haz que el 3 muestre «Rugido», el 5 «Pisotón» y el 15 «Rugido y pisotón». Si no se cumple ninguna regla, muestra el número. Cuando funcione, prueba con 30.",
+      "hint": "Primero comprueba si se cumplen las dos condiciones juntas con n % 3 = 0 and n % 5 = 0. Si no se cumplen ambas, revisa cada una por separado. Con 30 debería aparecer «Rugido y pisotón».",
+      "checks": [
+        {"input": [], "output": "1\n2\nRugido\n4\n5\nRugido\n7\n8\nRugido\n10\n11\nRugido\n13\n14\nRugido\n"}
+      ],
+      "art": "",
+      "alt": ""
+    }
+  ]
+}
