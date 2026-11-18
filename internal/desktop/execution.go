@@ -36,9 +36,7 @@ func (e *editor) startRun() {
 		cancel: cancel,
 	}
 	e.active = run
-	e.diagnostic = nil
-	e.outputText.Reset()
-	e.output.ApplyFieldState(&unison.FieldState{})
+	e.clearOutput()
 	e.run.SetEnabled(false)
 	e.stop.SetEnabled(true)
 	e.jump.SetEnabled(false)
@@ -144,7 +142,13 @@ func (e *editor) finishRun(run *execution) {
 
 func (e *editor) setInputEnabled(enabled bool) {
 	wasEnabled := e.input.Enabled()
+	if enabled && e.input.Parent() == nil {
+		e.sourceScroll.Parent().AddChild(e.input)
+	} else if !enabled && e.input.Parent() != nil {
+		e.input.RemoveFromParent()
+	}
 	e.input.SetEnabled(enabled)
+	e.input.MarkForLayoutAndRedraw()
 	e.input.SetText("")
 	if enabled {
 		e.window.SetFocus(e.input)
@@ -167,7 +171,14 @@ func (e *editor) submitInput() {
 }
 
 func (e *editor) updateJump() {
-	e.jump.SetEnabled(e.diagnostic != nil && e.source.Text() == e.diagnosticSource)
+	enabled := e.diagnostic != nil && e.source.Text() == e.diagnosticSource
+	if enabled && e.jump.Parent() == nil {
+		e.status.Parent().AddChildAtIndex(e.jump, 1)
+	} else if !enabled && e.jump.Parent() != nil {
+		e.jump.RemoveFromParent()
+	}
+	e.jump.SetEnabled(enabled)
+	e.jump.MarkForLayoutAndRedraw()
 }
 
 func (e *editor) jumpToError() {

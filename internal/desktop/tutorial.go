@@ -186,11 +186,8 @@ func (r *tutorialReader) loadCode() {
 	}
 	lesson := r.guide.Pages[r.page-1]
 	e := r.editor
-	if e.dirty() && e.source.Text() != lesson.Code && !e.dialogs.discardChanges() {
-		return
-	}
 	if e.source.Text() != lesson.Code {
-		e.load(draft{Text: lesson.Code, SavedText: lesson.Code})
+		e.openSample(fmt.Sprintf("Lesson %02d.ds", r.page), lesson.Code)
 	}
 	e.window.ToFront()
 	e.window.SetFocus(e.source)

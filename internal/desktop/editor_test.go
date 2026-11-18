@@ -75,6 +75,9 @@ func TestDesktopEditor(t *testing.T) {
 	run := func() { screen.KeyPress(unison.KeyF5, mod.None) }
 
 	assert("the source field should have startup focus", func() bool { return app.window.CurrentFocus() == app.source.AsPanel() })
+	assert("the editor should open with Pip and three file tabs", func() bool {
+		return len(app.window.TitleIcons()) == 1 && len(app.tabs) == 3 && app.document.title() == "hello.ds"
+	})
 	click(app.run)
 	wait("Finished.")
 	assert("Run should show the bundled example's output", func() bool {
@@ -154,16 +157,20 @@ func TestDesktopEditor(t *testing.T) {
 		t.Fatalf("saved contents = %q, error = %v", data, err)
 	}
 	replaceCode("print(8)")
-	screen.KeyPress(unison.KeyO, mod.Control)
-	assert("canceling the discard should keep the current edits and avoid the picker", func() bool {
-		return app.source.Text() == "print(8)" && dialogs.openCount == 0
-	})
-	screen.Do(func() { dialogs.discard = true })
+	var editedTab *fileTab
+	screen.Do(func() { editedTab = app.document })
 	screen.KeyPress(unison.KeyO, mod.Control)
 	wait("Opened")
-	assert("Open should load the selected file and normalize Windows newlines", func() bool {
-		return app.source.Text() == "print(\"Reopened\")\n"
+	assert("Open should keep pending edits and normalize Windows newlines in the new tab", func() bool {
+		return editedTab.Text == "print(8)" && editedTab.SavedText == "print(7)" && app.source.Text() == "print(\"Reopened\")\n" && dialogs.openCount == 1
 	})
+	var opened *fileTab
+	screen.Do(func() { opened = app.document })
+	click(editedTab.button)
+	screen.KeyPress(unison.KeyZ, mod.Control)
+	assert("undo belongs to the selected tab", func() bool { return app.source.Text() == "print(7)" && opened.Text == "print(\"Reopened\")\n" })
+	screen.KeyPress(unison.KeyY, mod.Control)
+	click(opened.button)
 	run()
 	wait("Finished.")
 	assert("a fresh run after Stop should work", func() bool { return app.output.Text() == "Reopened\n" })
@@ -179,8 +186,20 @@ func TestDesktopEditor(t *testing.T) {
 		t.Fatal(startupErr)
 	}
 	assert("reopening the window should recover the unsaved draft and its file path", func() bool {
-		return app.source.Text() == "print(\"Recover me\")" && app.dirty() && app.document.Path == dialogs.open
+		return app.source.Text() == "print(\"Recover me\")" && app.dirty() && app.document.Path == dialogs.open &&
+			app.tabs[0].Text == "print(8)" && app.tabs[0].SavedText == "print(7)"
 	})
+	click(app.newFile)
+	replaceCode("print(readint())")
+	run()
+	wait("Enter a whole number")
+	screen.Do(func() { opened = app.tabs[len(app.tabs)-2] })
+	click(opened.button)
+	assert("a tab switch should release the waiting run and keep output attached to the current file", func() bool {
+		return app.active == nil && !app.input.Enabled() && app.output.Text() == "" && app.source.Text() == "print(\"Recover me\")"
+	})
+	screen.KeyPress(unison.KeyW, mod.Control)
+	assert("declining to close an edited tab should keep it open", func() bool { return app.document == opened })
 
 	click(app.learn)
 	var reader *tutorialReader
@@ -194,15 +213,9 @@ func TestDesktopEditor(t *testing.T) {
 	assert("Next and Previous should move one lesson at a time", func() bool {
 		return reader.page == 1 && reader.status.String() == "Lesson 1 of 14"
 	})
-	screen.Do(func() { dialogs.discard = false })
 	click(reader.tryCode)
-	assert("declining to replace an unsaved program should leave the source intact", func() bool {
-		return app.source.Text() == "print(\"Recover me\")"
-	})
-	screen.Do(func() { dialogs.discard = true })
-	click(reader.tryCode)
-	assert("Try code should load the selected lesson and give the editor focus", func() bool {
-		return app.source.Text() == reader.guide.Pages[0].Code && app.window.Focused() && app.window.CurrentFocus() == app.source.AsPanel()
+	assert("Try code should open the lesson separately and give the editor focus", func() bool {
+		return opened.Text == "print(\"Recover me\")" && app.source.Text() == reader.guide.Pages[0].Code && app.window.Focused() && app.window.CurrentFocus() == app.source.AsPanel()
 	})
 	run()
 	wait("Finished.")
@@ -244,3 +257,18 @@ func (d *testDialogs) savePath(extension, _ string) (string, bool) {
 }
 
 func (d *testDialogs) discardChanges() bool { return d.discard }
+
+func TestReadSingleDocumentDraft(t *testing.T) {
+	path := filepath.Join(t.TempDir(), "draft.json")
+	if err := os.WriteFile(path, []byte(`{"Text":"print(8)","Path":"saved.ds","SavedText":"print(7)"}`), 0600); err != nil {
+		t.Fatal(err)
+	}
+	session, ok := readWorkspace(path)
+	if !ok || session.Active != 0 || len(session.Tabs) != 1 {
+		t.Fatalf("recover legacy workspace: %+v", session)
+	}
+	want := draft{Text: "print(8)", Path: "saved.ds", SavedText: "print(7)"}
+	if session.Tabs[0] != want {
+		t.Errorf("recovered tab = %+v, want %+v", session.Tabs[0], want)
+	}
+}

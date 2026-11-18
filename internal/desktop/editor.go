@@ -2,7 +2,6 @@ package desktop
 
 import (
 	"embed"
-	"fmt"
 	"os"
 	"path/filepath"
 	"strings"
@@ -13,7 +12,6 @@ import (
 	"github.com/richardwilkes/unison"
 	"github.com/richardwilkes/unison/accessibility"
 	"github.com/richardwilkes/unison/enums/align"
-	"github.com/richardwilkes/unison/enums/behavior"
 	"github.com/richardwilkes/unison/enums/mod"
 )
 
@@ -32,22 +30,28 @@ var lessons = []struct {
 }
 
 type editor struct {
-	window *unison.Window
-	source *unison.Field
-	output *unison.Field
-	input  *unison.Field
-	status *unison.Label
-	run    *unison.Button
-	stop   *unison.Button
-	jump   *unison.Button
-	learn  *unison.Button
-	undo   *unison.UndoManager
-	reader *tutorialReader
+	window       *unison.Window
+	source       *unison.Field
+	output       *unison.Field
+	input        *unison.Field
+	status       *unison.Label
+	run          *unison.Button
+	stop         *unison.Button
+	jump         *unison.Button
+	learn        *unison.Button
+	tabList      *unison.Panel
+	fileTitle    *unison.Label
+	position     *unison.Label
+	tabs         []*fileTab
+	newFile      *unison.Button
+	sourceScroll *unison.ScrollPanel
+	codeView     codeDecoration
+	reader       *tutorialReader
 
 	dialogs     fileDialogs
 	draftPath   string
 	draftQueued bool
-	document    draft
+	document    *fileTab
 	closed      bool
 
 	active           *execution
@@ -75,25 +79,27 @@ func newEditor(draftPath string, dialogs fileDialogs) (*editor, error) {
 		window: window, dialogs: dialogs, draftPath: draftPath,
 		source: unison.NewMultiLineField(), output: unison.NewMultiLineField(),
 		input: unison.NewField(), status: unison.NewLabel(),
-		undo: unison.NewUndoManager(1024*1024, nil),
 	}
-	e.buildWindow()
-	first := example(lessons[0].file)
-	initial := draft{Text: first, SavedText: first}
-	if recovered, ok := readDraft(draftPath); ok {
-		initial = recovered
+	pip, err := unison.NewImageFromBytes(pipPortrait, geom.NewPoint(1, 1))
+	if err != nil {
+		window.Dispose()
+		return nil, err
 	}
-	e.load(initial)
+	e.configureFields()
+	e.buildWindow(pip)
+	window.SetTitleIcons([]*unison.Image{pip})
+	e.restoreTabs()
 	e.setStatus("Ready.")
 	window.KeyDownCallback = e.onKey
 	window.AllowCloseCallback = func() bool {
-		if err := e.writeDraft(); err != nil && e.dirty() {
+		if err := e.writeDraft(); err != nil && e.hasUnsavedTabs() {
 			return e.dialogs.discardChanges()
 		}
 		return true
 	}
 	window.WillCloseCallback = func() {
 		e.closed = true
+		pip.Dispose()
 		if e.reader != nil {
 			e.reader.window.Dispose()
 		}
@@ -115,45 +121,7 @@ func example(name string) string {
 	return string(source)
 }
 
-func (e *editor) buildWindow() {
-	content := e.window.Content()
-	content.SetLayout(&unison.FlexLayout{Columns: 1, VSpacing: 10})
-	content.SetBorder(unison.NewEmptyBorder(geom.NewUniformInsets(12)))
-
-	exampleMenu := unison.NewPopupMenu[string]()
-	exampleMenu.Accessibility.Name = "Examples"
-	exampleMenu.AddDisabledItem("Examples")
-	exampleMenu.Select("Examples")
-	for _, lesson := range lessons {
-		exampleMenu.AddItem(lesson.title)
-	}
-	exampleMenu.ChoiceMadeCallback = func(_ *unison.PopupMenu[string], _ int, title string) {
-		for _, lesson := range lessons {
-			if lesson.title == title {
-				e.openExample(lesson.file, title)
-				return
-			}
-		}
-	}
-	e.run = button("Run (F5)", e.startRun)
-	e.stop = button("Stop", e.stopRun)
-	e.stop.SetEnabled(false)
-	e.jump = button("Go to error", e.jumpToError)
-	e.jump.SetEnabled(false)
-
-	toolbar := unison.NewPanel()
-	toolbar.SetLayout(&unison.FlexLayout{Columns: 8, HSpacing: 7, VAlign: align.Middle})
-	toolbar.AddChild(e.run)
-	toolbar.AddChild(e.stop)
-	toolbar.AddChild(exampleMenu)
-	toolbar.AddChild(button("Open…", e.open))
-	toolbar.AddChild(button("Save", e.save))
-	e.learn = button("Learn", e.openTutorial)
-	toolbar.AddChild(e.learn)
-	toolbar.AddChild(button("Smaller text", func() { e.zoom(-1) }))
-	toolbar.AddChild(button("Larger text", func() { e.zoom(1) }))
-	content.AddChild(toolbar)
-
+func (e *editor) configureFields() {
 	e.source.SetWrap(false)
 	e.source.NoSelectAllOnFocus = true
 	e.source.ModifiedCallback = e.edited
@@ -197,49 +165,6 @@ func (e *editor) buildWindow() {
 		}
 	}
 
-	panes := unison.NewPanel()
-	panes.SetLayout(&unison.FlexLayout{Columns: 2, HSpacing: 12, EqualColumns: true})
-	panes.SetLayoutData(fill(true))
-	panes.AddChild(pane("Code", e.source, nil))
-	panes.AddChild(pane("Output", e.output, e.input))
-	content.AddChild(panes)
-
-	footer := unison.NewPanel()
-	footer.SetLayout(&unison.FlexLayout{Columns: 2, HSpacing: 8, VAlign: align.Middle})
-	footer.SetLayoutData(fill(false))
-	e.status.SetLayoutData(fill(false))
-	footer.AddChild(e.status)
-	footer.AddChild(e.jump)
-	content.AddChild(footer)
-	e.zoom(0)
-}
-
-func pane(title string, field *unison.Field, input *unison.Field) *unison.Panel {
-	panel := unison.NewPanel()
-	panel.SetLayout(&unison.FlexLayout{Columns: 1, VSpacing: 6})
-	panel.SetLayoutData(fill(true))
-
-	label := unison.NewLabel()
-	label.SetTitle(title)
-	field.Accessibility.LabeledBy = label
-	panel.AddChild(label)
-	scroll := unison.NewScrollPanel()
-	scroll.SetLayoutData(&unison.FlexLayoutData{
-		HGrab: true, VGrab: true, HAlign: align.Fill, VAlign: align.Fill,
-		SizeHint: geom.NewSize(380, 360), MinSize: geom.NewSize(220, 160),
-	})
-	width := behavior.Follow
-	if !field.Wrap() {
-		width = behavior.Fill
-	}
-	field.AutoScroll = false
-	scroll.SetContent(field, width, behavior.HintedFill)
-	panel.AddChild(scroll)
-	if input != nil {
-		input.SetLayoutData(fill(false))
-		panel.AddChild(input)
-	}
-	return panel
 }
 
 func button(title string, click func()) *unison.Button {
@@ -260,6 +185,7 @@ func (e *editor) zoom(change float32) {
 	}
 	e.source.Font = unison.MonospacedFont.Face().Font(size)
 	e.output.Font = e.source.Font
+	e.refreshCode()
 	e.source.MarkForLayoutAndRedraw()
 	e.output.MarkForLayoutAndRedraw()
 }
@@ -281,6 +207,12 @@ func (e *editor) onKey(key unison.KeyCode, mods mod.Modifiers, repeat bool) bool
 		return true
 	case mods&mod.NonSticky == mod.OSMenuCommand() && !repeat:
 		switch key {
+		case unison.KeyN:
+			e.newTab()
+			return true
+		case unison.KeyW:
+			e.closeTab()
+			return true
 		case unison.KeyO:
 			e.open()
 			return true
@@ -291,14 +223,14 @@ func (e *editor) onKey(key unison.KeyCode, mods mod.Modifiers, repeat bool) bool
 			e.window.AttemptClose()
 			return true
 		case unison.KeyZ:
-			e.undo.Undo()
+			e.document.undo.Undo()
 			return true
 		case unison.KeyY:
-			e.undo.Redo()
+			e.document.undo.Redo()
 			return true
 		}
 	case mods&mod.NonSticky == mod.OSMenuCommand()|mod.Shift && key == unison.KeyZ:
-		e.undo.Redo()
+		e.document.undo.Redo()
 		return true
 	}
 	return false
@@ -334,7 +266,7 @@ func (e *editor) edited(before, after *unison.FieldState) {
 		e.setStatus("This program is too large. Try a smaller file.")
 		return
 	}
-	e.undo.Add(&unison.UndoEdit[*unison.FieldState]{
+	e.document.undo.Add(&unison.UndoEdit[*unison.FieldState]{
 		ID: e.source.CurrentUndoID(), EditName: "Typing",
 		BeforeData: before, AfterData: after, EditCost: len(before.Text) + len(after.Text),
 		UndoFunc: func(edit *unison.UndoEdit[*unison.FieldState]) { e.applyEdit(edit.BeforeData) },
@@ -357,36 +289,16 @@ func (e *editor) applyEdit(state *unison.FieldState) {
 	e.updateDocument()
 }
 
-func (e *editor) openExample(name, title string) {
-	if e.dirty() && !e.dialogs.discardChanges() {
-		return
-	}
-	source := example(name)
-	e.load(draft{Text: source, SavedText: source})
-	e.setStatus("Opened " + title)
-}
-
-func (e *editor) load(document draft) {
-	e.document = document
-	e.source.ApplyFieldState(&unison.FieldState{Text: document.Text})
-	e.undo.Clear()
-	e.window.SetFocus(e.source)
-	e.updateDocument()
-}
-
 func (e *editor) updateDocument() {
 	e.document.Text = e.source.Text()
-	title := "Untitled"
-	if e.document.Path != "" {
-		title = filepath.Base(e.document.Path)
-	}
-	if e.dirty() {
-		title += " *"
-	}
-	e.window.SetTitle(fmt.Sprintf("%s — Dinoscript", title))
+	e.updateTabTitle()
+	e.refreshCode()
 	e.source.MarkForLayoutAndRedraw()
 	e.updateJump()
+	e.queueDraft()
+}
 
+func (e *editor) queueDraft() {
 	if !e.draftQueued && e.draftPath != "" {
 		e.draftQueued = true
 		unison.InvokeTaskAfter(func() {
@@ -400,7 +312,7 @@ func (e *editor) updateDocument() {
 	}
 }
 
-func (e *editor) dirty() bool { return e.source.Text() != e.document.SavedText }
+func (e *editor) dirty() bool { return e.document.Text != e.document.SavedText }
 
 func (e *editor) setStatus(message string) {
 	e.status.SetTitle(message)

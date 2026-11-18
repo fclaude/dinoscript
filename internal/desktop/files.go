@@ -49,27 +49,43 @@ type draft struct {
 	Text      string
 	Path      string
 	SavedText string
+	Name      string
+	Color     int
 }
 
-func readDraft(path string) (draft, bool) {
-	if path == "" {
-		return draft{}, false
-	}
+type workspaceDraft struct {
+	Tabs   []draft
+	Active int
+}
+
+const maxWorkspaceBytes = 64 << 20
+
+func readWorkspace(path string) (workspaceDraft, bool) {
 	file, err := os.Open(path)
 	if err != nil {
-		return draft{}, false
+		return workspaceDraft{}, false
 	}
 	defer file.Close()
-	// A JSON string can take six bytes per byte of source after escaping.
-	const maxDraftBytes = 12*dino.MaxSourceBytes + 8192
-	data, err := io.ReadAll(io.LimitReader(file, maxDraftBytes+1))
-	if err != nil || len(data) > maxDraftBytes {
-		return draft{}, false
+	data, err := io.ReadAll(io.LimitReader(file, maxWorkspaceBytes+1))
+	var recovered workspaceDraft
+	if err != nil || len(data) > maxWorkspaceBytes || json.Unmarshal(data, &recovered) != nil {
+		return workspaceDraft{}, false
 	}
-	var recovered draft
-	if json.Unmarshal(data, &recovered) != nil ||
-		len(recovered.Text) > dino.MaxSourceBytes || len(recovered.SavedText) > dino.MaxSourceBytes {
-		return draft{}, false
+	if recovered.Tabs == nil {
+		// Single-document installations stored their draft directly in this file.
+		var legacy draft
+		if json.Unmarshal(data, &legacy) != nil {
+			return workspaceDraft{}, false
+		}
+		recovered.Tabs = []draft{legacy}
+	}
+	if recovered.Active < 0 || recovered.Active >= len(recovered.Tabs) {
+		return workspaceDraft{}, false
+	}
+	for _, tab := range recovered.Tabs {
+		if len(tab.Text) > dino.MaxSourceBytes || len(tab.SavedText) > dino.MaxSourceBytes {
+			return workspaceDraft{}, false
+		}
 	}
 	return recovered, true
 }
@@ -114,11 +130,12 @@ func writeFile(path string, content []byte) error {
 }
 
 func (e *editor) open() {
-	if e.dirty() && !e.dialogs.discardChanges() {
-		return
-	}
 	path, ok := e.dialogs.openPath()
 	if !ok {
+		return
+	}
+	if tab := e.tabForPath(path); tab != nil {
+		e.selectTab(tab)
 		return
 	}
 	source, err := readSource(path)
@@ -126,7 +143,7 @@ func (e *editor) open() {
 		e.setStatus(fmt.Sprintf("Couldn't open %s: %v", filepath.Base(path), err))
 		return
 	}
-	e.load(draft{Text: source, Path: path, SavedText: source})
+	e.openTab(draft{Text: source, Path: path, SavedText: source})
 	e.setStatus("Opened " + filepath.Base(path) + ".")
 }
 
@@ -142,8 +159,12 @@ func (e *editor) save() {
 	}
 	if path == "" {
 		var ok bool
-		path, ok = e.dialogs.savePath("ds", "My program.ds")
+		path, ok = e.dialogs.savePath("ds", e.document.title())
 		if !ok {
+			return
+		}
+		if tab := e.tabForPath(path); tab != nil && tab != e.document {
+			e.setStatus("That file is open in another tab. Choose a different name.")
 			return
 		}
 	}
@@ -163,9 +184,19 @@ func (e *editor) writeDraft() error {
 	if err := os.MkdirAll(filepath.Dir(e.draftPath), 0700); err != nil {
 		return err
 	}
-	data, err := json.Marshal(e.document)
+	session := workspaceDraft{Tabs: make([]draft, 0, len(e.tabs))}
+	for i, tab := range e.tabs {
+		if tab == e.document {
+			session.Active = i
+		}
+		session.Tabs = append(session.Tabs, tab.draft)
+	}
+	data, err := json.Marshal(session)
 	if err != nil {
 		return err
+	}
+	if len(data) > maxWorkspaceBytes {
+		return errors.New("the workspace is too large to recover automatically")
 	}
 	return writeFile(e.draftPath, data)
 }

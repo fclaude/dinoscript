@@ -5,6 +5,8 @@ Dinoscript - programming environment for kids
 
 Open Dinoscript, change the starter program, and press **F5** to run it. Pick a lesson from **Examples** or save your own program as a `.ds` file. When a program calls `readint()`, type your answer in **Output** and press Enter.
 
+Use **My files** to switch between programs. **New** starts a blank tab and **Open** adds a file to the sidebar. Switching tabs stops the current run. Dinoscript recovers your open tabs and their edits when you reopen the editor.
+
 Choose **Learn** or press **F1** to meet Pip and browse the lessons offline. **Try code** opens the current example in the editor, and **Save PDF** exports the illustrated book. The print edition is included with the release packages. [Dinoscript with Pip](book/Dinoscript-with-Pip.pdf)
 
 ## Build and test
