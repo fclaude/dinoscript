@@ -1,10 +1,11 @@
 <h1 align="center">Dinoscript</h1>
 
-<p align="center"><strong>A free, offline coding editor for kids</strong><br>
+<p align="center"><strong>A free coding editor for kids</strong><br>
 Write your first program, make text games, and solve math puzzles with Pip the triceratops.</p>
 
 <p align="center">
-  <strong><a href="https://dinoscript.org/#downloads">Download Dinoscript</a></strong> ·
+  <strong><a href="https://dinoscript.org/play/">Try Dinoscript in your browser</a></strong> ·
+  <a href="https://dinoscript.org/#downloads">Download Dinoscript</a> ·
   <a href="https://dinoscript.org/workbook.html">Read the workbook</a> ·
   <a href="book/Dinoscript-with-Pip.pdf">Get the PDF</a>
 </p>
@@ -16,6 +17,8 @@ Write your first program, make text games, and solve math puzzles with Pip the t
 ## Get started
 
 Open Dinoscript and press <kbd>F5</kbd> to run the starter program. **Output** shows `Hello, dinosaur!`. Change the words inside the quotes and run it again.
+
+The [browser playground](https://dinoscript.org/play/) runs programs on your device and keeps drafts in the browser. Use **Save** to download a `.ds` file you can open in either edition.
 
 ```text
 print("Hello, dinosaur!")
@@ -64,10 +67,11 @@ The site uses the downloads and workbooks from the latest published Dinoscript r
 
 In the repository’s Pages settings, use **GitHub Actions** as the publishing source and `dinoscript.org` as the custom domain. The `github-pages` environment deploys from `main`. [Pages settings](https://github.com/fclaude/dinoscript/settings/pages) · [Custom domain setup](https://docs.github.com/en/pages/configuring-a-custom-domain-for-your-github-pages-site/managing-a-custom-domain-for-your-github-pages-site)
 
-For a local preview, install Pillow and run the following command. Find the generated pages and PDF in `build/site/`.
+For a local preview, install Pillow and Go, then build and serve the site. Open [the playground](http://localhost:8000/play/) in your browser.
 
 ```sh
 python3 scripts/build-site.py v0.1.0
+python3 -m http.server 8000 --bind 127.0.0.1 --directory build/site
 ```
 
 ## Language and plans

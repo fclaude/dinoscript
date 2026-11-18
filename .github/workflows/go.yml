@@ -53,7 +53,7 @@ jobs:
           if-no-files-found: error
 
   site:
-    name: Build the landing page and online workbook
+    name: Build the site and test the Wasm interpreter
     runs-on: ubuntu-latest
     timeout-minutes: 8
     steps:
@@ -63,6 +63,14 @@ jobs:
       - uses: actions/setup-python@v6
         with:
           python-version: '3.12'
+      - uses: actions/setup-go@v7
+        with:
+          go-version-file: go.mod
+      - name: Run interpreter and workbook tests in Wasm
+        env:
+          GOOS: js
+          GOARCH: wasm
+        run: go test -timeout=60s -exec "$(go env GOROOT)/lib/wasm/go_js_wasm_exec" ./internal/dino ./book
       - name: Build static files
         env:
           RELEASE_TAG: ${{ (startsWith(github.ref, 'refs/tags/v') && github.ref_name) || 'v0.0.0' }}

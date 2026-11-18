@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="$language">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="$play_description">
+  $page_links
+  <link rel="icon" href="${assets}pip.png" type="image/png">
+  <link rel="stylesheet" href="${assets}styles.css">
+  <link rel="stylesheet" href="$play_assets/play.css">
+  <script type="module" src="$play_assets/play.js"></script>
+  <title>$play_title · Dinoscript</title>
+</head>
+<body class="play-page">
+  <a class="skip-link" href="#main">$skip</a>
+  <svg xmlns="http://www.w3.org/2000/svg" class="play-icons" aria-hidden="true">
+    <symbol id="file-icon" viewBox="0 0 24 24"><path d="M6 3h8l4 4v14H6z M14 3v5h4 M9 13h6 M9 17h6"/></symbol>
+    <symbol id="new-icon" viewBox="0 0 24 24"><path d="M12 5v14 M5 12h14"/></symbol>
+    <symbol id="open-icon" viewBox="0 0 24 24"><path d="M3 18V5h6l3 3h8v3 M3 19l3-8h16l-3 8z"/></symbol>
+    <symbol id="save-icon" viewBox="0 0 24 24"><path d="M12 3v12 M8 11l4 4 4-4 M4 16v4h16v-4"/></symbol>
+    <symbol id="close-icon" viewBox="0 0 24 24"><path d="m7 7 10 10 M17 7 7 17"/></symbol>
+    <symbol id="check-icon" viewBox="0 0 24 24"><path d="m5 12 4 4 10-10"/></symbol>
+    <symbol id="run-icon" viewBox="0 0 24 24"><path fill="currentColor" stroke="none" d="M6 4.5a1 1 0 0 1 1.5-.87l12 7.5a1 1 0 0 1 0 1.74l-12 7.5A1 1 0 0 1 6 19.5z"/></symbol>
+    <symbol id="stop-icon" viewBox="0 0 24 24"><rect fill="currentColor" stroke="none" x="6" y="6" width="12" height="12" rx="2"/></symbol>
+    <symbol id="output-icon" viewBox="0 0 24 24"><path d="m5 7 5 5-5 5 M13 17h6"/></symbol>
+  </svg>
+
+  <header class="site-header">
+    <div class="play-wrap header-inner">
+      <a class="brand" href="../"><img class="brand-mark" src="${assets}pip.png" width="40" height="40" alt="">Dinoscript</a>
+      <nav aria-label="$main_navigation">
+        <a href="../workbook.html">$workbook</a>
+        <a href="../#downloads">$downloads</a>
+        $language_links
+      </nav>
+    </div>
+  </header>
+
+  <main class="play-wrap" id="main" tabindex="-1">
+    <div class="play-heading">
+      <h1>$play_title</h1>
+      <label class="play-select">
+        <span class="visually-hidden">$play_examples</span>
+        <select id="examples" disabled>
+          <option value="" selected disabled>$play_examples</option>
+          $example_options
+        </select>
+      </label>
+    </div>
+    <noscript><p class="play-notice">$play_no_js</p></noscript>
+    <div class="workspace">
+      <aside class="file-shelf" aria-labelledby="files-heading">
+        <h2 id="files-heading">$play_files</h2>
+        <ul class="file-list" id="file-list"></ul>
+        <div class="file-actions">
+          <button type="button" id="new-file" disabled><svg aria-hidden="true"><use href="#new-icon"/></svg>$play_new</button>
+          <button type="button" id="open-file" disabled><svg aria-hidden="true"><use href="#open-icon"/></svg>$play_open</button>
+          <button type="button" id="save-file" title="$play_save_hint" disabled><svg aria-hidden="true"><use href="#save-icon"/></svg>$play_save</button>
+          <input type="file" id="file-picker" accept=".ds,text/plain" hidden>
+        </div>
+      </aside>
+
+      <div class="play-panes">
+        <section class="code-pane" aria-label="$play_code">
+          <header class="pane-bar">
+            <h2 class="document-title"><svg aria-hidden="true"><use href="#file-icon"/></svg><span id="file-name">$starter_filename</span></h2>
+            <button type="button" class="close-file" id="close-file" aria-label="$play_close" title="$play_close" disabled><svg aria-hidden="true"><use href="#close-icon"/></svg></button>
+            <button type="button" class="run-button" id="run" aria-keyshortcuts="F5" disabled><svg aria-hidden="true"><use href="#run-icon"/></svg>$play_run <kbd aria-hidden="true">F5</kbd></button>
+            <button type="button" class="stop-button" id="stop" disabled><svg aria-hidden="true"><use href="#stop-icon"/></svg>$play_stop</button>
+          </header>
+          <div class="code-editor">
+            <div class="line-gutter" aria-hidden="true"><pre id="line-numbers">1</pre></div>
+            <div class="code-surface">
+              <pre class="highlighted-code" id="highlighted-code" aria-hidden="true"></pre>
+              <textarea id="source" aria-label="$play_code" spellcheck="false" autocomplete="off" autocapitalize="off" wrap="off" maxlength="65536">$starter_source</textarea>
+            </div>
+          </div>
+        </section>
+
+        <section class="output-pane" aria-labelledby="output-title">
+          <header class="pane-bar">
+            <h2 id="output-title"><svg aria-hidden="true"><use href="#output-icon"/></svg>$play_output</h2>
+            <button type="button" id="clear-output" disabled>$play_clear</button>
+          </header>
+          <div class="console-view" id="console-view" role="region" aria-label="$play_output" tabindex="0">
+            <div class="console-empty" id="console-empty">
+              <img src="${assets}pip.png" width="52" height="52" alt="">
+              <p>$play_empty</p>
+            </div>
+            <pre class="program-output" id="program-output"></pre>
+            <p class="program-diagnostic" id="diagnostic" role="alert" hidden></p>
+          </div>
+          <form class="program-input" id="program-input" hidden>
+            <label for="answer" class="visually-hidden">$play_input_label</label>
+            <input type="text" id="answer" inputmode="numeric" autocomplete="off" spellcheck="false" maxlength="1024" placeholder="$play_input_label">
+            <button type="submit" id="send-answer">$play_enter</button>
+          </form>
+        </section>
+      </div>
+
+      <footer class="workspace-footer">
+        <p id="run-status" role="status">$play_ready</p>
+        <button type="button" id="show-error" hidden>$play_error_jump</button>
+        <p id="draft-status">$play_saved_here</p>
+        <p class="code-position" id="code-position">$initial_position</p>
+      </footer>
+    </div>
+  </main>
+  <script type="application/json" id="play-config">$play_config</script>
+</body>
+</html>

@@ -6,6 +6,13 @@ on:
     paths:
       - 'site/**'
       - 'book/**'
+      - 'cmd/dinoscript-web/**'
+      - 'internal/dino/**'
+      - 'internal/locale/**'
+      - 'internal/desktop/examples/**'
+      - internal/desktop/pip.png
+      - go.mod
+      - go.sum
       - scripts/build-site.py
       - .github/workflows/pages.yml
   repository_dispatch:
@@ -74,6 +81,9 @@ jobs:
       - uses: actions/setup-python@v6
         with:
           python-version: '3.12'
+      - uses: actions/setup-go@v7
+        with:
+          go-version-file: go.mod
       - name: Build static files
         env:
           GH_TOKEN: ${{ github.token }}

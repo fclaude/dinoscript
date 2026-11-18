@@ -1,14 +1,18 @@
 #!/usr/bin/env python3
-"""Build the release landing page and online edition of the Pip workbook."""
+"""Build the landing page, Pip workbook, and Dinoscript playground."""
 
 import argparse
+from hashlib import sha256
 from html import escape
 from itertools import groupby
 import json
+import os
 from pathlib import Path
 import re
 import shutil
 from string import Template
+import subprocess
+from tempfile import TemporaryDirectory
 
 from PIL import Image
 
@@ -45,6 +49,9 @@ def render_lesson(index, lesson, art, copy):
     ]
     parts.extend(f"<p>{escape(paragraph)}</p>" for paragraph in lesson["body"])
     parts.append(f'<pre><code>{escape(lesson["code"].rstrip())}</code></pre>')
+    parts.append(
+        f'<p><a class="button secondary" href="play/?lesson={index}">{escape(copy["play_lesson"])}</a></p>'
+    )
     if lesson["checks"]:
         example = lesson["checks"][0]
         parts.append(f'<details><summary>{escape(copy["example_run"])}</summary>')
@@ -149,17 +156,75 @@ def page_links(language, page):
     ])
 
 
-def language_links(language, page):
-    parent = "../" if EDITIONS[language][0] else ""
+def language_links(language, page, assets):
     return "\n        ".join(
-        f'<a class="language-link" href="{parent}{prefix}{page}" hreflang="{key}" lang="{key}">{escape(name)}</a>'
+        f'<a class="language-link" href="{assets}{prefix}{page}" hreflang="{key}" lang="{key}">{escape(name)}</a>'
         for key, (prefix, _, _, name) in EDITIONS.items() if key != language
     )
 
 
-def build_edition(language, tag, book_dir, output, linux_release):
+def build_play_assets(output):
+    sources = [SITE / "play" / name for name in ("play.css", "play.js", "play-worker.js")]
+    goroot = Path(subprocess.check_output(["go", "env", "GOROOT"], cwd=ROOT, text=True).strip())
+    sources.append(goroot / "lib" / "wasm" / "wasm_exec.js")
+    with TemporaryDirectory() as directory:
+        wasm = Path(directory) / "dinoscript.wasm"
+        subprocess.run(
+            ["go", "build", "-buildvcs=false", "-trimpath", "-ldflags=-s -w", "-o", str(wasm), "./cmd/dinoscript-web"],
+            cwd=ROOT, env={**os.environ, "GOOS": "js", "GOARCH": "wasm"}, check=True,
+        )
+        sources.append(wasm)
+        # Publishing a single versioned directory keeps the loader and binary in sync.
+        digest = sha256()
+        for source in sources:
+            digest.update(sha256(source.read_bytes()).digest())
+        relative = f"assets/play-{digest.hexdigest()[:16]}"
+        target = output / relative
+        target.mkdir(parents=True, exist_ok=True)
+        for source in sources:
+            shutil.copyfile(source, target / source.name)
+    return relative
+
+
+def render_playground(output, guide, play, values, play_assets):
+    examples_dir = ROOT / "internal" / "desktop" / "examples"
+    examples = {}
+    options = []
+    for key, (title, path) in play["examples"].items():
+        examples[key] = {"filename": Path(path).name, "source": (examples_dir / path).read_text(encoding="utf-8")}
+        options.append(f'<option value="{key}">{escape(title)}</option>')
+    for index, lesson in enumerate(guide["pages"], 1):
+        examples[f"lesson-{index}"] = {"filename": f'{play["lesson_file"]} {index}.ds', "source": lesson["code"]}
+    messages = play["messages"]
+    config = {"examples": examples, "starters": ["hello", "counting", "decisions", "number-magic"], "messages": messages}
+    starter = examples["hello"]
+    assets = "../" + values["assets"]
+    language = values["language"]
+    template = Template((SITE / "play" / "index.html").read_text(encoding="utf-8"))
+    markup = template.substitute({
+        **values,
+        "assets": assets,
+        "play_assets": assets + play_assets,
+        "starter_filename": escape(starter["filename"]),
+        "starter_source": escape(starter["source"]),
+        "play_ready": escape(messages["ready"]),
+        "play_empty": escape(messages["empty"]),
+        "play_enter": escape(messages["enter"]),
+        "initial_position": escape(messages["position"].format(line=1, column=1)),
+        "play_config": json.dumps(config, ensure_ascii=True).replace("<", "\\u003c"),
+        "example_options": "\n          ".join(options),
+        "page_links": page_links(language, "play/"),
+        "language_links": language_links(language, "play/", assets),
+    })
+    (output / "play").mkdir(exist_ok=True)
+    (output / "play" / "index.html").write_text(markup, encoding="utf-8")
+
+
+def build_edition(language, tag, book_dir, output, linux_release, play_assets):
     prefix, source, pdf, _ = EDITIONS[language]
     copy = json.loads((SITE / f"{language}.json").read_text(encoding="utf-8"))
+    play = json.loads((SITE / "play" / f"{language}.json").read_text(encoding="utf-8"))
+    copy.update(play["labels"])
     linux_downloads = render_linux_downloads(linux_release, copy) if linux_release is not None else ""
     if linux_release is not None and not linux_downloads:
         raise ValueError("The Linux release is missing a verified package or checksum manifest")
@@ -198,14 +263,18 @@ def build_edition(language, tag, book_dir, output, linux_release):
     for page in ("index.html", "workbook.html"):
         template = Template((SITE / page).read_text(encoding="utf-8"))
         route = "" if page == "index.html" else page
-        html = template.substitute(values, page_links=page_links(language, route), language_links=language_links(language, route))
+        html = template.substitute(
+            values, page_links=page_links(language, route), language_links=language_links(language, route, values["assets"]),
+        )
         (output / page).write_text(html, encoding="utf-8")
+    render_playground(output, guide, play, values, play_assets)
     shutil.copyfile(book_dir / pdf, output / pdf)
 
 
 def build(tag, book_dir, output, linux_release):
+    play_assets = build_play_assets(output)
     for language in EDITIONS:
-        build_edition(language, tag, book_dir, output, linux_release)
+        build_edition(language, tag, book_dir, output, linux_release, play_assets)
     shutil.copyfile(SITE / "styles.css", output / "styles.css")
     shutil.copyfile(SITE / "linux-downloads.js", output / "linux-downloads.js")
     shutil.copyfile(ROOT / "internal" / "desktop" / "pip.png", output / "pip.png")
