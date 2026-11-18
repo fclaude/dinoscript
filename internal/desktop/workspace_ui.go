@@ -12,7 +12,7 @@ import (
 	"github.com/richardwilkes/unison/enums/side"
 )
 
-// pipPortrait is a close crop of Pip from the workbook cover.
+// pipPortrait is the small desktop rendition of the Pip launcher icon.
 //
 //go:embed pip.png
 var pipPortrait []byte

@@ -13,6 +13,7 @@ mkdir -p "$app/Contents/MacOS" "$app/Contents/Resources"
 CGO_ENABLED=0 GOOS=darwin GOARCH="$arch" go build -trimpath \
   -o "$app/Contents/MacOS/Dinoscript" ./cmd/dinoscript
 cp LICENSE NOTICE release/THIRD-PARTY-NOTICES.txt "$app/Contents/Resources/"
+cp release/Dinoscript.icns "$app/Contents/Resources/"
 
 cat > "$app/Contents/Info.plist" <<'PLIST'
 <?xml version="1.0" encoding="UTF-8"?>
@@ -23,6 +24,8 @@ cat > "$app/Contents/Info.plist" <<'PLIST'
     <string>Dinoscript</string>
     <key>CFBundleIdentifier</key>
     <string>com.fclaude.dinoscript</string>
+    <key>CFBundleIconFile</key>
+    <string>Dinoscript.icns</string>
     <key>CFBundleInfoDictionaryVersion</key>
     <string>6.0</string>
     <key>CFBundleName</key>
@@ -30,9 +33,9 @@ cat > "$app/Contents/Info.plist" <<'PLIST'
     <key>CFBundlePackageType</key>
     <string>APPL</string>
     <key>CFBundleVersion</key>
-    <string>0.2.0</string>
+    <string>0.2.1</string>
     <key>CFBundleShortVersionString</key>
-    <string>0.2.0</string>
+    <string>0.2.1</string>
     <key>NSHighResolutionCapable</key>
     <true/>
 </dict>

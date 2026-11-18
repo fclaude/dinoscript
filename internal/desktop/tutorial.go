@@ -45,6 +45,7 @@ func (e *editor) openTutorial() {
 		e.setStatus("Couldn't open the Dinoscript book.")
 		return
 	}
+	window.SetTitleIcons(e.window.TitleIcons())
 	reader := &tutorialReader{editor: e, guide: guide, window: window, images: make(map[string]*unison.Image)}
 	e.reader = reader
 	window.WillCloseCallback = func() {
