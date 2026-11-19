@@ -161,9 +161,10 @@ func (e *editor) selectTab(t *fileTab) {
 func (e *editor) clearOutput() {
 	e.outputText.Reset()
 	e.output.ApplyFieldState(&unison.FieldState{})
+	e.outputScroll.SetPosition(0, 0)
+	e.outputScroll.MarkForLayoutAndRedraw()
 	e.diagnostic = nil
 	e.updateJump()
-	e.output.MarkForLayoutAndRedraw()
 }
 
 func (e *editor) updateTabTitle() {

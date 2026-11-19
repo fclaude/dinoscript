@@ -130,9 +130,16 @@ func (e *editor) renderOutput() {
 	if e.diagnostic != nil {
 		text += e.diagnostic.Localized(e.language) + "\n"
 	}
-	e.output.ApplyFieldState(&unison.FieldState{Text: text})
-	e.output.SetSelectionToEnd()
-	e.output.MarkForLayoutAndRedraw()
+	bar := e.outputScroll.Bar(false)
+	follow := bar.Value() == bar.MaxValue()
+	state := e.output.GetFieldState()
+	state.Text = text
+	e.output.ApplyFieldState(state)
+	e.outputScroll.MarkForLayoutAndRedraw()
+	if follow {
+		e.window.ValidateLayout()
+		e.outputScroll.SetPosition(0, bar.MaxValue())
+	}
 }
 
 func (e *editor) stopRun() {

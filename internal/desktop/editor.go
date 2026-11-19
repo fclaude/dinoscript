@@ -51,6 +51,7 @@ type editor struct {
 	tabs         []*fileTab
 	newFile      *unison.Button
 	sourceScroll *unison.ScrollPanel
+	outputScroll *unison.ScrollPanel
 	codeView     codeDecoration
 	reader       *tutorialReader
 	language     locale.Language
@@ -210,8 +211,8 @@ func (e *editor) zoom(change float32) {
 	e.source.Font = unison.MonospacedFont.Face().Font(size)
 	e.output.Font = e.source.Font
 	e.refreshCode()
-	e.source.MarkForLayoutAndRedraw()
-	e.output.MarkForLayoutAndRedraw()
+	e.sourceScroll.MarkForLayoutAndRedraw()
+	e.outputScroll.MarkForLayoutAndRedraw()
 }
 
 func (e *editor) onKey(key unison.KeyCode, mods mod.Modifiers, repeat bool) bool {
@@ -317,7 +318,7 @@ func (e *editor) updateDocument() {
 	e.document.Text = e.source.Text()
 	e.updateTabTitle()
 	e.refreshCode()
-	e.source.MarkForLayoutAndRedraw()
+	e.sourceScroll.MarkForLayoutAndRedraw()
 	e.updateJump()
 	e.queueDraft()
 }

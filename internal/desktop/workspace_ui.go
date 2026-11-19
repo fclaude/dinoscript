@@ -274,24 +274,25 @@ func (e *editor) workspace() *unison.Panel {
 	bar.AddChild(e.toolButton("Clear", nil, e.clearOutput))
 	work.AddChild(bar)
 	e.output.Accessibility.LabeledBy = title
-	work.AddChild(fieldScroll(e.output, sage, geom.NewSize(620, 145), false))
+	e.outputScroll = fieldScroll(e.output, sage, geom.NewSize(620, 145), false)
+	work.AddChild(e.outputScroll)
 	e.input.SetLayoutData(fill(false))
 	return work
 }
 
-func fieldScroll(f *unison.Field, color unison.Color, size geom.Size, expand bool) *unison.ScrollPanel {
+func fieldScroll(f *unison.Field, color unison.Color, size geom.Size, lineNumbers bool) *unison.ScrollPanel {
 	f.AutoScroll = false
 	f.EditableInk, f.OnEditableInk = color, ink
 	f.SelectionInk, f.OnSelectionInk = focus, unison.White
 	padding := geom.NewSymmetricInsets(12, 8)
-	if expand {
+	if lineNumbers {
 		padding.Left = 49
 		padding.Top = 12
 	}
 	installEditorBorder(f, padding)
 	s := unison.NewScrollPanel()
 	s.BackgroundInk = color
-	data := fill(expand)
+	data := fill(true)
 	data.SizeHint = size
 	data.MinSize = geom.NewSize(200, 65)
 	s.SetLayoutData(data)
@@ -299,7 +300,8 @@ func fieldScroll(f *unison.Field, color unison.Color, size geom.Size, expand boo
 	if !f.Wrap() {
 		width = behavior.Fill
 	}
-	s.SetContent(f, width, behavior.HintedFill)
+	// Measure the full text height so anything beyond the viewport can scroll.
+	s.SetContent(f, width, behavior.Fill)
 	return s
 }
 

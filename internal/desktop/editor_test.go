@@ -11,6 +11,7 @@ import (
 
 	"github.com/fclaude/dinoscript/book"
 	"github.com/fclaude/dinoscript/internal/locale"
+	"github.com/richardwilkes/toolbox/v2/geom"
 	"github.com/richardwilkes/unison"
 	"github.com/richardwilkes/unison/enums/mod"
 )
@@ -116,6 +117,50 @@ func TestDesktopEditor(t *testing.T) {
 	screen.KeyPress(unison.KeyBackspace, mod.None)
 	assert("typing and deleting in Output should leave the program's text intact", func() bool {
 		return app.output.Text() == "Hello, dinosaur!\n"
+	})
+
+	outputScroll := app.output.ScrollRoot()
+	var outputHeight float32
+	var windowRect geom.Rect
+	screen.Do(func() {
+		outputHeight = outputScroll.FrameRect().Height
+		windowRect = app.window.ContentRect()
+		taller := windowRect
+		taller.Height += 100
+		app.window.SetContentRect(taller)
+	})
+	assert("Output should grow when the window gets taller", func() bool {
+		return outputScroll.FrameRect().Height > outputHeight
+	})
+	screen.Do(func() { app.window.SetContentRect(windowRect) })
+	replaceCode(`let count = 1
+while count <= 120 do
+  print("Dinosaur ", count)
+  let count = count + 1
+end while
+pause()
+print(121)`)
+	run()
+	wait("Press Enter to continue.")
+	outputBar := outputScroll.Bar(false)
+	assert("long output should show a scroll bar and follow the latest line", func() bool {
+		return strings.HasSuffix(app.output.Text(), "Dinosaur 120\n") &&
+			outputBar.Thumb().Height > 0 && outputBar.MaxValue() > 0 && outputBar.Value() == outputBar.MaxValue()
+	})
+	screen.Wheel(screen.PanelCenter(outputScroll.ContentView()), geom.NewPoint(0, 2), mod.None)
+	var readingPosition float32
+	assert("the mouse wheel should scroll back through the output", func() bool {
+		readingPosition = outputBar.Value()
+		return readingPosition < outputBar.MaxValue()
+	})
+	screen.KeyPress(unison.KeyReturn, mod.None)
+	wait("Finished.")
+	assert("new output should preserve the scroll position while reading earlier lines", func() bool {
+		return strings.HasSuffix(app.output.Text(), "Dinosaur 120\n121\n") && outputBar.Value() == readingPosition
+	})
+	screen.Wheel(screen.PanelCenter(outputScroll.ContentView()), geom.NewPoint(0, 200), mod.None)
+	assert("the first line should still be reachable", func() bool {
+		return strings.HasPrefix(app.output.Text(), "Dinosaur 1\n") && outputBar.Value() == 0
 	})
 
 	playMagic("Press Enter to continue.", "Enter a whole number", "Finished.", "Your secret number was 7!",
