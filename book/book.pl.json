@@ -1,0 +1,269 @@
+{
+  "title": "Dinoscript z Pip",
+  "subtitle": "Napisz swój pierwszy program, stwórz trzy gry i rozwiąż zagadki matematyczne.",
+  "author": "Francisco Claude-Faust",
+  "cover_art": "pip-at-the-computer.png",
+  "cover_alt": "Pip, mały zielony triceratops w żółtej chustce, siedzi przed komputerem wśród paproci.",
+  "welcome": "Cześć! Mam na imię Pip. Jestem triceratopsem z trzema rogami i klawiaturą. Otwórz Dinoscript i ucz się ze mną. Na każdej stronie znajdziesz coś krótkiego do wpisania, uruchomienia albo zmiany.",
+  "pages": [
+    {
+      "chapter": "Pierwsze kroki",
+      "title": "Niech dinozaur przemówi",
+      "pip": "Mój pierwszy program powiedział „cześć”. Drugi poprosił o przekąskę.",
+      "body": [
+        "Otwórz Dinoscript. Wpisz poniższy wiersz w polu Kod lub kliknij Wypróbuj kod, jeśli czytasz tę lekcję w aplikacji.",
+        "Kliknij Uruchom albo naciśnij F5. Polecenie print mówi Dinoscriptowi, żeby coś wypisał. Tekst w podwójnym cudzysłowie pojawi się w panelu Wynik."
+      ],
+      "code": "print(\"Cześć, dinozaurze!\")\n",
+      "challenge": "Zmień tekst w cudzysłowie i znów uruchom program. Czy uda ci się sprawić, żeby Pip przedstawiła się w dwóch wierszach?",
+      "hint": "Pod pierwszym print dopisz w nowym wierszu print(\"Mam na imię Pip!\").",
+      "checks": [
+        {"input": [], "output": "Cześć, dinozaurze!\n"}
+      ],
+      "art": "",
+      "alt": ""
+    },
+    {
+      "chapter": "Pierwsze kroki",
+      "title": "Miejsce na słowa i liczby",
+      "pip": "W plecaku mam jedną kanapkę i trzy kamyki. Zgadnij, co miało tam trafić.",
+      "body": [
+        "Tekst w podwójnym cudzysłowie nazywamy napisem. Liczby zapisujemy bez cudzysłowu. Przecinkami oddziel to, co chcesz wypisać w jednym wierszu.",
+        "Wiersz zaczynający się od # to komentarz. Możesz w nim zostawić wskazówkę dla kogoś, kto później przeczyta twój kod. Dinoscript pomija komentarze."
+      ],
+      "code": "# Pip zagląda do kieszeni.\nprint(\"Kamyki w kieszeni: \", 3)\nprint(\"Gdy podniosę jeszcze dwa: \", 3 + 2)\n",
+      "challenge": "Zapisz 3 + 2 w podwójnym cudzysłowie i uruchom program ponownie. Co się zmieniło? Dopisz komentarz o tym, skąd wzięły się kamyki.",
+      "hint": "W cudzysłowie Dinoscript widzi napis 3 + 2. Bez cudzysłowu dodaje liczby i wypisuje 5.",
+      "checks": [
+        {"input": [], "output": "Kamyki w kieszeni: 3\nGdy podniosę jeszcze dwa: 5\n"}
+      ],
+      "art": "",
+      "alt": ""
+    },
+    {
+      "chapter": "Pierwsze kroki",
+      "title": "Zapisz wynik za pomocą let",
+      "pip": "Kilka jagód policzę na pazurach. Przy większej liczbie przyda mi się zmienna.",
+      "body": [
+        "Zmienna to nazwa, pod którą przechowujesz wartość. Pierwszy wiersz zapisuje 4 w zmiennej o nazwie jagody.",
+        "Następny wiersz odczytuje tę wartość, dodaje 3 i zapisuje nowy wynik pod tą samą nazwą. Ostatni wiersz znów odczytuje wartość."
+      ],
+      "code": "let jagody = 4\nlet jagody = jagody + 3\nprint(\"Mam \", jagody, \" jagód.\")\n",
+      "challenge": "Pip zjada dwie jagody, zanim je przeliczy. Dopisz nad print wiersz, który odejmie dwie jagody. Ile powinno zostać?",
+      "hint": "Wpisz let jagody = jagody - 2. Powinno zostać 5 jagód.",
+      "checks": [
+        {"input": [], "output": "Mam 7 jagód.\n"}
+      ],
+      "art": "",
+      "alt": ""
+    },
+    {
+      "chapter": "Pierwsze kroki",
+      "title": "Poproś o odpowiedź",
+      "pip": "Wpisz 4, a obiecuję, że policzę wszystkie cztery dinozaury. Nawet jeśli są tylko w mojej wyobraźni.",
+      "body": [
+        "Polecenie print pokazuje pytanie. Puste nawiasy w readint() oznaczają, że niczego do nich nie wpisujesz. Funkcja czeka, aż podasz liczbę całkowitą.",
+        "Kliknij Uruchom. Gdy w panelu Wynik pojawi się pole, wpisz odpowiedź i naciśnij Enter. Jeśli program wciąż czeka, możesz kliknąć Zatrzymaj."
+      ],
+      "code": "print(\"Ile dinozaurów przyjdzie na piknik?\")\nlet goscie = readint()\nprint(\"Potrzebne talerzyki z liści: \", goscie * 2)\n",
+      "challenge": "Uruchom program dla 4 gości. Potem zmień go tak, żeby każdy gość potrzebował trzech talerzyków. Sprawdź też, co będzie przy 0 gości.",
+      "hint": "W pierwszej wersji programu dla 4 gości potrzeba 8 talerzyków. Po trzy na osobę to 12.",
+      "checks": [
+        {"input": ["4"], "output": "Ile dinozaurów przyjdzie na piknik?\nPotrzebne talerzyki z liści: 8\n"},
+        {"input": ["0"], "output": "Ile dinozaurów przyjdzie na piknik?\nPotrzebne talerzyki z liści: 0\n"}
+      ],
+      "art": "",
+      "alt": ""
+    },
+    {
+      "chapter": "Pierwsze kroki",
+      "title": "Zdecyduj, co się wydarzy",
+      "pip": "Żeby przejść przez strumień na piknik, potrzebuję przynajmniej dwóch kamieni.",
+      "body": [
+        "Instrukcja if sprawdza, czy warunek jest prawdziwy, czy fałszywy. Tutaj >= znaczy „większe lub równe”. Gdy warunek jest prawdziwy, wykona się kod po then.",
+        "Gdy warunek jest fałszywy, wykona się kod po else. Cały blok kończy się zapisem end if."
+      ],
+      "code": "let kamienie = 2\nif kamienie >= 2 then\n  print(\"Możemy przejść!\")\nelse\n  print(\"Poszukaj jeszcze jednego kamienia.\")\nend if\n",
+      "challenge": "Wypróbuj 1, 2 i 3 kamienie. Czy umiesz przewidzieć, jaki komunikat zobaczysz za każdym razem?",
+      "hint": "Przy 1 kamieniu potrzebujesz drugiego. Przy 2 albo 3 możesz przejść.",
+      "checks": [
+        {"input": [], "output": "Możemy przejść!\n"}
+      ],
+      "art": "",
+      "alt": ""
+    },
+    {
+      "chapter": "Pierwsze kroki",
+      "title": "Policz świetliki za pomocą pętli",
+      "pip": "Raz, dwa, trzy, cztery, pięć. Świetliki, nie wierćcie się!",
+      "body": [
+        "Pętla while sprawdza warunek przed każdym powtórzeniem. Działa tak długo, jak długo warunek jest prawdziwy.",
+        "Ostatni wiersz pętli zmienia wartość zmiennej swietlik. Dzięki temu warunek w końcu stanie się fałszywy. Jeśli zapomnisz zmienić liczbę, możesz kliknąć Zatrzymaj."
+      ],
+      "code": "let swietlik = 1\nwhile swietlik <= 5 do\n  print(\"Świetlik \", swietlik)\n  let swietlik = swietlik + 1\nend while\n",
+      "challenge": "Policz wstecz od 5 do 1. Zmień wartość początkową zmiennej swietlik, warunek i wiersz, który zmienia tę wartość.",
+      "hint": "Zacznij od 5, użyj warunku swietlik >= 1 i za każdym razem odejmij 1.",
+      "checks": [
+        {"input": [], "output": "Świetlik 1\nŚwietlik 2\nŚwietlik 3\nŚwietlik 4\nŚwietlik 5\n"}
+      ],
+      "art": "",
+      "alt": ""
+    },
+    {
+      "chapter": "Pierwsze kroki",
+      "title": "Napisz własną funkcję",
+      "pip": "Na podjazd dla trzech dinozaurów potrzeba sześciu cegieł. Często tak liczę.",
+      "body": [
+        "Funkcja to kilka instrukcji, którym nadajesz wspólną nazwę. Funkcja ileCegiel ma jeden parametr: goscie. Gdy wywołasz ileCegiel(3), parametr goscie ma wartość 3.",
+        "Instrukcja output wewnątrz funkcji zwraca wartość do miejsca, w którym ją wywołano. Za pomocą print pokażesz tę wartość w panelu Wynik."
+      ],
+      "code": "function ileCegiel(goscie)\n  output goscie * 2\nend function\n\nprint(ileCegiel(3))\nprint(ileCegiel(5))\n",
+      "challenge": "Na każdego dinozaura przypadają dwie cegły, a na cały podjazd jedna dodatkowa. Zmień funkcję w jednym miejscu, żeby poprawić oba wyniki.",
+      "hint": "Użyj output goscie * 2 + 1. Program powinien wypisać 7 i 11.",
+      "checks": [
+        {"input": [], "output": "6\n10\n"}
+      ],
+      "art": "",
+      "alt": ""
+    },
+    {
+      "chapter": "Pierwsze kroki",
+      "title": "Wytrop błąd",
+      "pip": "Każdy błąd zostawia ślad. Niektóre chowają się za jednym cudzysłowem.",
+      "body": [
+        "Uruchom program. Potem usuń end if i uruchom go ponownie. Przeczytaj komunikat w panelu Wynik i kliknij Przejdź do błędu.",
+        "Dinoscript przeniesie cię do wiersza, w którym zaczyna się niedomknięty blok. Dopisz end if pod wierszem z print i uruchom program jeszcze raz."
+      ],
+      "code": "let czasNaJedzenie = true\nif czasNaJedzenie then\n  print(\"Pora na przekąskę!\")\nend if\n",
+      "challenge": "Teraz usuń cudzysłów na końcu tekstu w wierszu z print. Co trzeba poprawić według nowego komunikatu?",
+      "hint": "Wstaw cudzysłów z powrotem po wykrzykniku, przed nawiasem zamykającym.",
+      "checks": [
+        {"input": [], "output": "Pora na przekąskę!\n"}
+      ],
+      "art": "",
+      "alt": ""
+    },
+    {
+      "chapter": "Gry tekstowe",
+      "title": "Rozstaje wśród paproci",
+      "pip": "Mam mapę. Według niej paproć po lewej podejrzanie przypomina tę po prawej.",
+      "body": [
+        "Liczby działają tu jak przyciski. Gra czeka, aż wybierzesz drogę. Blok if pozwala jej opowiedzieć inne zakończenie dla każdej ścieżki."
+      ],
+      "code": "print(\"1. Szlak kryształów\")\nprint(\"2. Jaskinia porośnięta mchem\")\nlet droga = readint()\nif droga = 1 then\n  print(\"Dostrzegasz bursztynowe kryształy!\")\nelse\n  if droga = 2 then\n    print(\"Nieśmiały nietoperz pokazuje ci sekretne drzwi.\")\n  else\n    print(\"Na mapie są tylko drogi 1 i 2.\")\n  end if\nend if\n",
+      "challenge": "Wypróbuj 1, 2 i 9. Potem dopisz pytanie, które zada nietoperz. Co ma się stać, jeśli gracz wpisze 1 na znak, że odpowiada „tak”?",
+      "hint": "Dodaj print i readint() w części kodu o jaskini, przed jej end if. Sprawdź odpowiedź za pomocą kolejnego if.",
+      "checks": [
+        {"input": ["1"], "output": "1. Szlak kryształów\n2. Jaskinia porośnięta mchem\nDostrzegasz bursztynowe kryształy!\n"},
+        {"input": ["2"], "output": "1. Szlak kryształów\n2. Jaskinia porośnięta mchem\nNieśmiały nietoperz pokazuje ci sekretne drzwi.\n"},
+        {"input": ["9"], "output": "1. Szlak kryształów\n2. Jaskinia porośnięta mchem\nNa mapie są tylko drogi 1 i 2.\n"}
+      ],
+      "art": "fork-in-the-ferns.png",
+      "alt": "Pip trzyma mapę na rozwidleniu. Jedna ścieżka prowadzi do bursztynowych kryształów, druga do jaskini porośniętej mchem."
+    },
+    {
+      "chapter": "Gry tekstowe",
+      "title": "Ukryta skamielina",
+      "pip": "Pod kamieniem z numerem jest skamielina. Masz cztery próby, żeby ją znaleźć.",
+      "body": [
+        "Każdy strzał kosztuje jedną próbę. Pętla działa, póki są próby i zmienna znaleziona ma wartość false. Spróbuj wygrać, a potem przegrać."
+      ],
+      "code": "let sekret = 7\nlet proby = 4\nlet znaleziona = false\nprint(\"Zgadnij numer kamienia, od 1 do 10.\")\nwhile proby > 0 and not znaleziona do\n  let liczba = readint()\n  if liczba = sekret then\n    print(\"Skamielina znaleziona!\")\n    let znaleziona = true\n  else\n    if liczba < sekret then\n      print(\"Za mało.\")\n    else\n      print(\"Za dużo.\")\n    end if\n  end if\n  let proby = proby - 1\nend while\nif not znaleziona then\n  print(\"Skamielina była pod kamieniem numer \", sekret, \".\")\nend if\n",
+      "challenge": "Niech jedna osoba zmieni sekret, gdy druga nie patrzy. Dodaj komunikat z liczbą prób, które zostały.",
+      "hint": "Tuż po odjęciu jednej próby dodaj print(\"Pozostałe próby: \", proby). Użyj if, jeśli komunikat ma się nie pojawiać po wygranej.",
+      "checks": [
+        {"input": ["3", "9", "7"], "output": "Zgadnij numer kamienia, od 1 do 10.\nZa mało.\nZa dużo.\nSkamielina znaleziona!\n"},
+        {"input": ["1", "2", "3", "4"], "output": "Zgadnij numer kamienia, od 1 do 10.\nZa mało.\nZa mało.\nZa mało.\nZa mało.\nSkamielina była pod kamieniem numer 7.\n"}
+      ],
+      "art": "",
+      "alt": ""
+    },
+    {
+      "chapter": "Gry tekstowe",
+      "title": "Pip sprzedaje przekąski",
+      "pip": "Jagodzianki są po trzy muszelki. Masz dziesięć muszelek i wielki apetyt.",
+      "body": [
+        "Funkcja oblicza koszt zamówienia. Program sprawdza, czy podana liczba nie jest ujemna. Jeśli zamówienie jest poprawne, dowiesz się, czy wystarczy ci muszelek."
+      ],
+      "code": "function koszt(bulki)\n  output bulki * 3\nend function\n\nlet muszelki = 10\nprint(\"Ile jagodzianek chcesz kupić?\")\nlet zamowienie = readint()\nlet cena = koszt(zamowienie)\nif zamowienie < 0 then\n  print(\"Podaj zero albo większą liczbę.\")\nelse\n  if cena <= muszelki then\n    print(\"Jagodzianki: \", zamowienie)\n    print(\"Pozostałe muszelki: \", muszelki - cena)\n  else\n    print(\"Brakujące muszelki: \", cena - muszelki)\n  end if\nend if\n",
+      "challenge": "Kup tyle jagodzianek, na ile cię stać. Potem wymyśl inną przekąskę i ustal jej cenę. Na ile sztuk wystarczy ci teraz muszelek?",
+      "hint": "Trzy jagodzianki kosztują 9 muszelek, więc zostanie ci jedna. Cztery kosztują 12, więc zabraknie ci dwóch.",
+      "checks": [
+        {"input": ["3"], "output": "Ile jagodzianek chcesz kupić?\nJagodzianki: 3\nPozostałe muszelki: 1\n"},
+        {"input": ["4"], "output": "Ile jagodzianek chcesz kupić?\nBrakujące muszelki: 2\n"},
+        {"input": ["-1"], "output": "Ile jagodzianek chcesz kupić?\nPodaj zero albo większą liczbę.\n"}
+      ],
+      "art": "",
+      "alt": ""
+    },
+    {
+      "chapter": "Zagadki matematyczne",
+      "title": "Koszyki na jajka",
+      "pip": "Mam 23 jajka. Do każdego koszyka mieszczą się cztery. Pomożesz mi je zapakować?",
+      "body": [
+        "Użyj //, aby policzyć pełne koszyki, a %, żeby sprawdzić, ile jajek zostanie. Spróbuj obliczyć oba wyniki dla 23 jajek przed uruchomieniem kodu."
+      ],
+      "code": "let jajka = 23\nlet pojemnosc = 4\nprint(\"Pełne koszyki: \", jajka // pojemnosc)\nprint(\"Pozostałe jajka: \", jajka % pojemnosc)\n",
+      "challenge": "Masz 23 jajka. Dobierz koszyki mieszczące od 3 do 7 jajek tak, żeby zostały dokładnie 3 jajka. Czy pasują dwie różne pojemności?",
+      "hint": "Przy pojemności 4 albo 5 zostają 3 jajka. W pierwszym wypadku zapełnisz 5 koszyków, w drugim 4.",
+      "checks": [
+        {"input": [], "output": "Pełne koszyki: 5\nPozostałe jajka: 3\n"}
+      ],
+      "art": "egg-baskets.png",
+      "alt": "Pip rozkłada nakrapiane jajka do koszyków na kocu piknikowym w słońcu."
+    },
+    {
+      "chapter": "Zagadki matematyczne",
+      "title": "Schodki z kamyków",
+      "pip": "Moje schodki są z kamyków. Na pierwszy stopień poszedł jeden kamyk, na drugi dwa i tak dalej.",
+      "body": [
+        "Program dodaje kamyki z każdego kolejnego stopnia. Dla czterech stopni oblicza 1 + 2 + 3 + 4. Razem wychodzi 10."
+      ],
+      "code": "let stopnie = 4\nlet stopien = 1\nlet suma = 0\nwhile stopien <= stopnie do\n  let suma = suma + stopien\n  let stopien = stopien + 1\nend while\nprint(\"Kamyki: \", suma)\n",
+      "challenge": "Masz dokładnie 28 kamyków. Ile pełnych stopni da się zbudować? Sprawdź to w programie i wytłumacz komuś, skąd się wziął wynik.",
+      "hint": "Sprawdź 6 stopni, a potem 7. Na sześć idzie 21 kamyków. Na kolejny potrzeba jeszcze 7.",
+      "checks": [
+        {"input": [], "output": "Kamyki: 10\n"}
+      ],
+      "art": "",
+      "alt": ""
+    },
+    {
+      "chapter": "Zagadki matematyczne",
+      "title": "Sygnał dinozaurów",
+      "pip": "Zarycz przy wielokrotności trójki. Tupnij przy wielokrotności piątki. A co z piętnastką?",
+      "body": [
+        "Liczba jest wielokrotnością 3, gdy reszta z dzielenia przez 3 wynosi zero. Ten kod już wypisuje „Ryk” przy takich liczbach. Dodaj reguły dla „Tup” oraz „Ryk i tup”."
+      ],
+      "code": "let n = 1\nwhile n <= 15 do\n  if n % 3 = 0 then\n    print(\"Ryk\")\n  else\n    print(n)\n  end if\n  let n = n + 1\nend while\n",
+      "challenge": "Niech program dla 3 wypisze „Ryk”, dla 5 „Tup”, a dla 15 „Ryk i tup”. Jeśli żadna reguła nie pasuje, wypisz samą liczbę. Gdy zadziała, sprawdź też 30.",
+      "hint": "Najpierw sprawdź oba warunki naraz za pomocą n % 3 = 0 and n % 5 = 0. Jeśli nie są spełnione jednocześnie, sprawdź każdy z osobna. Dla 30 powinno wyjść „Ryk i tup”.",
+      "checks": [
+        {"input": [], "output": "1\n2\nRyk\n4\n5\nRyk\n7\n8\nRyk\n10\n11\nRyk\n13\n14\nRyk\n"}
+      ],
+      "art": "",
+      "alt": ""
+    },
+    {
+      "chapter": "Zagadki matematyczne",
+      "title": "Pip czyta w myślach",
+      "pip": "Policz w myślach. Założę się, że i tak odgadnę twoją liczbę.",
+      "body": [
+        "Zagraj przed zajrzeniem do kodu. Naciskaj Enter przy przerwach. Podaj wynik, gdy Pip o niego zapyta.",
+        "pause() czeka na Enter, a readint() odczytuje wynik. Pip odejmuje 6, bo 10 - 4 = 6. Potem używa // 2, żeby cofnąć podwojenie."
+      ],
+      "code": "print(\"Pomyśl o liczbie całkowitej od 1 do 100. Nie zdradzaj jej!\")\nprint(\"Naciśnij Enter, żeby zacząć.\")\npause()\nprint(\"Pomnóż tę liczbę przez 2 i naciśnij Enter.\")\npause()\nprint(\"Dodaj 10 i naciśnij Enter.\")\npause()\nprint(\"Odejmij 4 i naciśnij Enter.\")\npause()\nprint(\"Jaki wynik wyszedł?\")\nlet wynik = readint()\nif wynik < 8 or wynik > 206 or wynik % 2 != 0 then\n  print(\"Sprawdź obliczenia i uruchom sztuczkę jeszcze raz.\")\nelse\n  print(\"Twoja sekretna liczba to \", (wynik - 6) // 2, \"!\")\nend if\n",
+      "challenge": "Pokaż tę sztuczkę komuś znajomemu. Potem zamiast 10 dodaj 12. Co jeszcze trzeba zmienić w kodzie, żeby sztuczka działała?",
+      "hint": "Teraz na końcu masz o 8 więcej. Odejmij 8 we wzorze i dopuść wyniki od 10 do 208.",
+      "checks": [
+        {"input": ["", "", "", "", "20"], "output": "Pomyśl o liczbie całkowitej od 1 do 100. Nie zdradzaj jej!\nNaciśnij Enter, żeby zacząć.\nPomnóż tę liczbę przez 2 i naciśnij Enter.\nDodaj 10 i naciśnij Enter.\nOdejmij 4 i naciśnij Enter.\nJaki wynik wyszedł?\nTwoja sekretna liczba to 7!\n"},
+        {"input": ["", "", "", "", "8"], "output": "Pomyśl o liczbie całkowitej od 1 do 100. Nie zdradzaj jej!\nNaciśnij Enter, żeby zacząć.\nPomnóż tę liczbę przez 2 i naciśnij Enter.\nDodaj 10 i naciśnij Enter.\nOdejmij 4 i naciśnij Enter.\nJaki wynik wyszedł?\nTwoja sekretna liczba to 1!\n"},
+        {"input": ["", "", "", "", "206"], "output": "Pomyśl o liczbie całkowitej od 1 do 100. Nie zdradzaj jej!\nNaciśnij Enter, żeby zacząć.\nPomnóż tę liczbę przez 2 i naciśnij Enter.\nDodaj 10 i naciśnij Enter.\nOdejmij 4 i naciśnij Enter.\nJaki wynik wyszedł?\nTwoja sekretna liczba to 100!\n"},
+        {"input": ["", "", "", "", "21"], "output": "Pomyśl o liczbie całkowitej od 1 do 100. Nie zdradzaj jej!\nNaciśnij Enter, żeby zacząć.\nPomnóż tę liczbę przez 2 i naciśnij Enter.\nDodaj 10 i naciśnij Enter.\nOdejmij 4 i naciśnij Enter.\nJaki wynik wyszedł?\nSprawdź obliczenia i uruchom sztuczkę jeszcze raz.\n"},
+        {"input": ["", "", "", "", "208"], "output": "Pomyśl o liczbie całkowitej od 1 do 100. Nie zdradzaj jej!\nNaciśnij Enter, żeby zacząć.\nPomnóż tę liczbę przez 2 i naciśnij Enter.\nDodaj 10 i naciśnij Enter.\nOdejmij 4 i naciśnij Enter.\nJaki wynik wyszedł?\nSprawdź obliczenia i uruchom sztuczkę jeszcze raz.\n"}
+      ],
+      "art": "",
+      "alt": ""
+    }
+  ]
+}

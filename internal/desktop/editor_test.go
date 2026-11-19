@@ -263,24 +263,29 @@ func TestDesktopEditor(t *testing.T) {
 		t.Fatalf("Save PDF did not export the bundled book: %v", err)
 	}
 
-	var languages *unison.PopupMenu[locale.Language]
-	assert("the editor should expose a language menu", func() bool {
-		app.window.ToFront()
-		for _, child := range app.window.Content().Children()[0].Children() {
-			if menu, ok := child.Self.(*unison.PopupMenu[locale.Language]); ok {
-				languages = menu
-				return true
+	languageMenu := func() *unison.PopupMenu[locale.Language] {
+		var languages *unison.PopupMenu[locale.Language]
+		assert("the editor should expose a language menu", func() bool {
+			app.window.ToFront()
+			for _, child := range app.window.Content().Children()[0].Children() {
+				if menu, ok := child.Self.(*unison.PopupMenu[locale.Language]); ok {
+					languages = menu
+					return true
+				}
 			}
-		}
-		return false
-	})
+			return false
+		})
+		return languages
+	}
+	languages := languageMenu()
 	replaceCode("print(\"Pip\", missing)")
 	run()
 	wait("Fix the error")
 	screen.Click(screen.PanelCenter(languages))
-	for range 3 {
+	for range languages.ItemCount() {
 		screen.KeyPress(unison.KeyDown, mod.None)
 	}
+	screen.KeyPress(unison.KeyUp, mod.None)
 	screen.KeyPress(unison.KeyReturn, mod.None)
 	assert("choosing Spanish should translate the editor and diagnostic while preserving code and the open lesson", func() bool {
 		return app.language == locale.Spanish && app.source.Text() == "print(\"Pip\", missing)" && app.dirty() &&
@@ -335,6 +340,25 @@ func TestDesktopEditor(t *testing.T) {
 	})
 	playMagic("Presiona Enter para continuar.", "Ingresa un número entero", "Ejecución terminada.", "¡Tu número secreto era 7!",
 		"Presiona Enter cuando estés listo.", "Multiplícalo por 2 y presiona Enter.", "Súmale 10 y presiona Enter.", "Réstale 4 y presiona Enter.")
+
+	languages = languageMenu()
+	replaceCode("print(\"Pip\", missing)")
+	run()
+	wait("Corrige el error")
+	screen.Click(screen.PanelCenter(languages))
+	for range languages.ItemCount() {
+		screen.KeyPress(unison.KeyDown, mod.None)
+	}
+	screen.KeyPress(unison.KeyReturn, mod.None)
+	assert("choosing Polish should translate the editor and diagnostic while preserving the source", func() bool {
+		return app.language == locale.Polish && app.run.Text.String() == "Uruchom  F5" &&
+			app.source.Text() == "print(\"Pip\", missing)" &&
+			strings.Contains(app.output.Text(), "Wiersz 1, kolumna 14: Nie znam jeszcze nazwy \"missing\"")
+	})
+	click(app.learn)
+	assert("Learn should open the Polish workbook", func() bool {
+		return app.reader != nil && app.reader.guide.Title == "Dinoscript z Pip"
+	})
 }
 
 type testDialogs struct {

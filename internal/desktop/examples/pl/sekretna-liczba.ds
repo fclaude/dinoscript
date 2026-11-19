@@ -1,0 +1,16 @@
+print("Pomyśl o liczbie całkowitej od 1 do 100. Nie zdradzaj jej!")
+print("Naciśnij Enter, żeby zacząć.")
+pause()
+print("Pomnóż tę liczbę przez 2 i naciśnij Enter.")
+pause()
+print("Dodaj 10 i naciśnij Enter.")
+pause()
+print("Odejmij 4 i naciśnij Enter.")
+pause()
+print("Jaki wynik wyszedł?")
+let wynik = readint()
+if wynik < 8 or wynik > 206 or wynik % 2 != 0 then
+  print("Sprawdź obliczenia i uruchom sztuczkę jeszcze raz.")
+else
+  print("Twoja sekretna liczba to ", (wynik - 6) // 2, "!")
+end if

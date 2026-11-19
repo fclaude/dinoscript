@@ -18,7 +18,7 @@ for arch in arm64 amd64; do
 done
 
 windows=build/release-artifacts/Dinoscript-windows-x64-development
-books=(Dinoscript-with-Pip.pdf Dinoscript-con-Pip.pdf)
+books=(Dinoscript-with-Pip.pdf Dinoscript-con-Pip.pdf Dinoscript-z-Pip.pdf)
 book_assets=()
 for book in "${books[@]}"; do
   cmp "$windows/$book" "book/$book"
@@ -43,12 +43,13 @@ version="${tag#v}"
 cat > "$staging/notes.md" <<'NOTES'
 Dinoscript is a free coding editor for kids. Write and run your first program with Pip the triceratops.
 
-- Open the browser playground in [English](https://dinoscript.org/play/) or [Español](https://dinoscript.org/es/play/). Your programs run on your device, and drafts are saved in your browser.
-- Try **Pip Reads Your Mind** from the Examples menu in English or Chilean Spanish. Keep your number secret until Pip reveals it.
+- Polish is now available in the desktop editor, browser playground, and all 15 workbook lessons. Choose **Polski** to try it.
+- Open the browser playground in [English](https://dinoscript.org/play/), [Español](https://dinoscript.org/es/play/), or [Polski](https://dinoscript.org/pl/play/). Your programs run on your device, and drafts are saved in your browser.
+- Try **Pip Reads Your Mind** from the Examples menu. Keep your number secret until Pip reveals it.
 - On Apple silicon, use the arm64 disk image. On Intel Macs, use the amd64 disk image. Drag Dinoscript to Applications.
 - On Windows x64, extract the ZIP and open Dinoscript.exe.
 - In the desktop editor, press F5 to run a program or F1 to learn with Pip offline.
-- Read the workbook online in [English](https://dinoscript.org/workbook.html) or [Español](https://dinoscript.org/es/workbook.html), or download a printable PDF below.
+- Read the workbook online in [English](https://dinoscript.org/workbook.html), [Español](https://dinoscript.org/es/workbook.html), or [Polski](https://dinoscript.org/pl/workbook.html), or download a printable PDF below.
 
 The Mac apps are ad-hoc signed. The Windows executable is unsigned.
 NOTES

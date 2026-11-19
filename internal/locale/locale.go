@@ -11,6 +11,7 @@ type Language string
 const (
 	English Language = "en"
 	Spanish Language = "es-CL"
+	Polish  Language = "pl"
 )
 
 var supported = []struct {
@@ -19,6 +20,7 @@ var supported = []struct {
 }{
 	{English, "English"},
 	{Spanish, "Español"},
+	{Polish, "Polski"},
 }
 
 func Languages() []Language {

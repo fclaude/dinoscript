@@ -68,6 +68,23 @@ EDITIONS = {
         "hint": "Pista de Pip",
         "notes": "Tus notas",
     },
+    "pl": {
+        "source": "book.pl.json",
+        "pdf": "Dinoscript-z-Pip.pdf",
+        "cover": "Okładka",
+        "series": "Zeszyt ćwiczeń do Dinoscript",
+        "with_pip": "z Pip",
+        "pages": "Strony {first}-{last}",
+        "license": "Copyright 2023-2026 Francisco Claude-Faust  ·  Licencja Apache 2.0",
+        "subject": "Zeszyt ćwiczeń z programowania dla dzieci · Licencja Apache 2.0",
+        "pip": "Pip mówi",
+        "enter": "Wpisz {entries}",
+        "then": ", potem ",
+        "output": "Co zobaczysz",
+        "try": "Wypróbuj",
+        "hint": "Podpowiedź od Pip",
+        "notes": "Twoje notatki",
+    },
 }
 
 

@@ -1,0 +1,9 @@
+# Sprawdź inną pozycję ciągu Fibonacciego, od 0 do 12.
+function fib(n)
+  if n <= 1 then
+    output n
+  end if
+  output fib(n - 1) + fib(n - 2)
+end function
+
+print("Liczba Fibonacciego o indeksie 8 to ", fib(8))

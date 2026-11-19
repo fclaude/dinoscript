@@ -25,6 +25,7 @@ type Diagnostic struct {
 
 var diagnosticMessages = map[locale.Language]map[string]string{
 	locale.Spanish: spanishDiagnostics,
+	locale.Polish:  polishDiagnostics,
 }
 
 func (d *Diagnostic) Error() string {

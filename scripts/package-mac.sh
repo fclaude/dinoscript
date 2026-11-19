@@ -36,13 +36,14 @@ cat > "$app/Contents/Info.plist" <<'PLIST'
     <array>
         <string>en</string>
         <string>es</string>
+        <string>pl</string>
     </array>
     <key>CFBundlePackageType</key>
     <string>APPL</string>
     <key>CFBundleVersion</key>
-    <string>0.3.1</string>
+    <string>0.5.0</string>
     <key>CFBundleShortVersionString</key>
-    <string>0.3.1</string>
+    <string>0.5.0</string>
     <key>NSHighResolutionCapable</key>
     <true/>
 </dict>
@@ -55,6 +56,6 @@ if [ "$(uname -s)" = Darwin ]; then
   trap 'rm -rf "$staging"' EXIT
   ditto "$app" "$staging/Dinoscript.app"
   ln -s /Applications "$staging/Applications"
-  cp book/Dinoscript-with-Pip.pdf book/Dinoscript-con-Pip.pdf LICENSE NOTICE release/THIRD-PARTY-NOTICES.txt "$staging/"
+  cp book/Dinoscript-with-Pip.pdf book/Dinoscript-con-Pip.pdf book/Dinoscript-z-Pip.pdf LICENSE NOTICE release/THIRD-PARTY-NOTICES.txt "$staging/"
   hdiutil create -ov -format UDZO -volname Dinoscript -srcfolder "$staging" "$output/Dinoscript-$arch.dmg"
 fi

@@ -24,6 +24,7 @@ SITE_URL = "https://dinoscript.org/"
 EDITIONS = {
     "en": ("", "book.json", "Dinoscript-with-Pip.pdf", "English"),
     "es-CL": ("es/", "book.es-CL.json", "Dinoscript-con-Pip.pdf", "Español"),
+    "pl": ("pl/", "book.pl.json", "Dinoscript-z-Pip.pdf", "Polski"),
 }
 
 
@@ -229,7 +230,7 @@ def build_edition(language, tag, book_dir, output, linux_release, play_assets):
     if linux_release is not None and not linux_downloads:
         raise ValueError("The Linux release is missing a verified package or checksum manifest")
     if language != "en" and not (book_dir / source).is_file():
-        # Older app releases shipped only the English workbook.
+        # A site edition can launch before its first bundled app release.
         book_dir = ROOT / "book"
     guide = json.loads((book_dir / source).read_text(encoding="utf-8"))
     output = output / prefix

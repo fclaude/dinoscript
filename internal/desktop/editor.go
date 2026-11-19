@@ -27,12 +27,12 @@ var lessons = []struct {
 	file      string
 	localized map[locale.Language]string
 }{
-	{"Hello, dinosaur!", "hello.ds", map[locale.Language]string{locale.Spanish: "hola.ds"}},
-	{"Make a decision", "decisions.ds", map[locale.Language]string{locale.Spanish: "decisiones.ds"}},
-	{"Count with a loop", "counting.ds", map[locale.Language]string{locale.Spanish: "contar.ds"}},
-	{"Fibonacci numbers", "fibonacci.ds", map[locale.Language]string{locale.Spanish: "serie-fibonacci.ds"}},
-	{"Is it prime?", "prime.ds", map[locale.Language]string{locale.Spanish: "primo.ds"}},
-	numberMagicExample: {"Pip Reads Your Mind", "number-magic.ds", map[locale.Language]string{locale.Spanish: "numero-secreto.ds"}},
+	{"Hello, dinosaur!", "hello.ds", map[locale.Language]string{locale.Spanish: "hola.ds", locale.Polish: "czesc.ds"}},
+	{"Make a decision", "decisions.ds", map[locale.Language]string{locale.Spanish: "decisiones.ds", locale.Polish: "decyzje.ds"}},
+	{"Count with a loop", "counting.ds", map[locale.Language]string{locale.Spanish: "contar.ds", locale.Polish: "liczenie.ds"}},
+	{"Fibonacci numbers", "fibonacci.ds", map[locale.Language]string{locale.Spanish: "serie-fibonacci.ds", locale.Polish: "ciag-fibonacciego.ds"}},
+	{"Is it prime?", "prime.ds", map[locale.Language]string{locale.Spanish: "primo.ds", locale.Polish: "liczba-pierwsza.ds"}},
+	numberMagicExample: {"Pip Reads Your Mind", "number-magic.ds", map[locale.Language]string{locale.Spanish: "numero-secreto.ds", locale.Polish: "sekretna-liczba.ds"}},
 }
 
 type editor struct {

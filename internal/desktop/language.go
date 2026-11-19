@@ -14,6 +14,7 @@ const systemLanguage locale.Language = "system"
 
 var uiMessages = map[locale.Language]map[string]string{
 	locale.Spanish: spanishUI,
+	locale.Polish:  polishUI,
 }
 
 // A status argument which must be translated with the surrounding message.

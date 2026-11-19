@@ -1,0 +1,7 @@
+# Zmień wiek na 7 i zobacz, co się stanie.
+let wiek = 10
+if wiek >= 10 then
+  print("Możesz przejechać się na dużym dinozaurze.")
+else
+  print("Spróbuj przejażdżki na małym dinozaurze.")
+end if

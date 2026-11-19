@@ -27,7 +27,7 @@ print("Hello, dinosaur!")
 - **Try another program.** Choose **Pip Reads Your Mind** or another program from **Examples**, or save your own as a `.ds` file. When a program calls `pause()`, press <kbd>Enter</kbd> to continue. When it calls `readint()`, type your answer in **Output** and press <kbd>Enter</kbd>.
 - **Keep your work organized.** Use **New** for a blank tab, **Open** to add a file, and **My files** to switch between programs. Switching tabs stops the current run. Dinoscript restores your tabs and edits when you reopen the editor.
 - **Learn with Pip.** Choose **Learn** or press <kbd>F1</kbd> to browse the illustrated lessons offline. **Try code** opens the lesson example in the editor, and **Save PDF** exports the book. The print edition also comes with the release packages.
-- **Choose your language.** The editor opens in Spanish when your system language is Spanish and in English otherwise. Use the language menu to choose English, Español, or your system language. The website opens in English at the main address, with an Español link on every page.
+- **Choose your language.** The editor follows your system language for English, Chilean Spanish, and Polish, with English as the fallback. Use the language menu to pick one yourself. The website opens in English at the main address and offers Español and Polski on every page.
 
 ## Build and test
 
@@ -45,7 +45,7 @@ On Linux, install the Ubuntu, Fedora, or Arch package and open **Dinoscript** fr
 
 The test suite covers the interpreter, workbook programs, and desktop UI. The UI tests send keyboard and mouse events through the desktop toolkit to exercise saving, reopening, draft recovery, browsing lessons, running tutorial code, and exporting the PDF. GitHub Actions runs the suite on Linux, macOS, and Windows and collects the Mac and Windows development builds. [Go and desktop checks](.github/workflows/go.yml)
 
-After editing the shared lesson sources or illustrations, run `python3 scripts/build-book.py` with ReportLab and Pillow installed to rebuild both PDFs, then run the tests. [English lessons](book/book.json) · [Spanish lessons](book/book.es-CL.json)
+After editing the shared lesson sources or illustrations, run `python3 scripts/build-book.py` with ReportLab and Pillow installed to rebuild the PDFs, then run the tests. [English lessons](book/book.json) · [Spanish lessons](book/book.es-CL.json) · [Polish lessons](book/book.pl.json)
 
 ## Package a development build
 
@@ -61,9 +61,9 @@ Use development builds for testing. The desktop plan tracks release signing, not
 
 ## Website and releases
 
-The **Go and desktop checks** workflow builds the site on every run. Pushing a `vMAJOR.MINOR.PATCH` tag publishes the tested app packages and PDF to GitHub Releases, then triggers **Publish dinoscript.org** on the default branch. Site changes on `main` also trigger deployment, and you can run the publish workflow manually from `main`. [Pages workflow](.github/workflows/pages.yml)
+The **Go and desktop checks** workflow builds the site on every run. Pushing a `vMAJOR.MINOR.PATCH` tag publishes the tested app packages and PDFs to GitHub Releases, then triggers **Publish dinoscript.org** on the default branch. Site changes on `main` also trigger deployment, and you can run the publish workflow manually from `main`. [Pages workflow](.github/workflows/pages.yml)
 
-The site uses the downloads and workbooks from the latest published Dinoscript release. If that release predates the Spanish edition, the site builds that edition from the current checkout. When the download page opens, it checks the latest Linux package release and updates all five installer and checksum links together. An hourly Pages check refreshes the static HTML when either release changes. The prebuilt links are available with JavaScript disabled or when GitHub is unavailable. [Linux package repository](https://github.com/fclaude/fclaude-packages)
+The site uses the downloads and workbooks from the latest published Dinoscript release. For a language that has yet to ship in that release, the site takes the workbook from the current checkout. When the download page opens, it checks the latest Linux package release and updates all five installer and checksum links together. An hourly Pages check refreshes the static HTML when either release changes. The prebuilt links are available with JavaScript disabled or when GitHub is unavailable. [Linux package repository](https://github.com/fclaude/fclaude-packages)
 
 In the repository’s Pages settings, use **GitHub Actions** as the publishing source and `dinoscript.org` as the custom domain. The `github-pages` environment deploys from `main`. [Pages settings](https://github.com/fclaude/dinoscript/settings/pages) · [Custom domain setup](https://docs.github.com/en/pages/configuring-a-custom-domain-for-your-github-pages-site/managing-a-custom-domain-for-your-github-pages-site)
 

@@ -9,6 +9,8 @@ func System() Language {
 	switch language & primaryLanguageMask {
 	case 0x0a: // LANG_SPANISH
 		return Spanish
+	case 0x15: // LANG_POLISH
+		return Polish
 	default:
 		return English
 	}

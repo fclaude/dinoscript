@@ -29,6 +29,11 @@ func TestLessons(t *testing.T) {
 		{"contar", "es-CL/contar.ds", "", "Dinosaurio 1\nDinosaurio 2\nDinosaurio 3\nDinosaurio 4\nDinosaurio 5\n"},
 		{"fibonacci en español", "es-CL/serie-fibonacci.ds", "", "El número de Fibonacci en la posición 8 es 21\n"},
 		{"primo", "es-CL/primo.ds", "29", "¿Qué número entero quieres revisar?\n29 es primo.\n"},
+		{"cześć", "pl/czesc.ds", "", "Cześć, dinozaurze!\n"},
+		{"decyzje", "pl/decyzje.ds", "", "Możesz przejechać się na dużym dinozaurze.\n"},
+		{"liczenie", "pl/liczenie.ds", "", "Dinozaur 1\nDinozaur 2\nDinozaur 3\nDinozaur 4\nDinozaur 5\n"},
+		{"Fibonacci po polsku", "pl/ciag-fibonacciego.ds", "", "Liczba Fibonacciego o indeksie 8 to 21\n"},
+		{"liczba pierwsza", "pl/liczba-pierwsza.ds", "29", "Którą liczbę całkowitą chcesz sprawdzić?\n29 to liczba pierwsza.\n"},
 	} {
 		t.Run(tt.name, func(t *testing.T) {
 			var output strings.Builder

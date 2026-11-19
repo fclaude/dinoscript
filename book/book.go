@@ -44,6 +44,7 @@ type Example struct {
 var editions = map[locale.Language]struct{ source, pdf string }{
 	locale.English: {"book.json", PDFFilename},
 	locale.Spanish: {"book.es-CL.json", "Dinoscript-con-Pip.pdf"},
+	locale.Polish:  {"book.pl.json", "Dinoscript-z-Pip.pdf"},
 }
 
 func edition(language locale.Language) (source, pdf string) {

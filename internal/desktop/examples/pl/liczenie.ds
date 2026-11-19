@@ -1,0 +1,6 @@
+# Zamiast 5 wpisz inną liczbę.
+let numer = 1
+while numer <= 5 do
+  print("Dinozaur ", numer)
+  let numer = numer + 1
+end while
