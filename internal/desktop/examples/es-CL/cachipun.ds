@@ -1,0 +1,22 @@
+function jugada(jugador)
+  print("Jugador ", jugador, ", ingresa tu jugada.")
+  let opcion = readint()
+  while opcion < 1 or opcion > 3 do
+    print("Elige 1, 2 o 3.")
+    let opcion = readint()
+  end while
+  output opcion
+end function
+print("¡A la cuenta de tres, muestren las manos!")
+print("1 = piedra, 2 = papel, 3 = tijera")
+let primera = jugada(1)
+let segunda = jugada(2)
+if primera = segunda then
+  print("¡Empate!")
+else
+  if primera = segunda % 3 + 1 then
+    print("¡Gana el jugador 1!")
+  else
+    print("¡Gana el jugador 2!")
+  end if
+end if

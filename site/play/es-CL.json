@@ -50,6 +50,7 @@
     "counting": ["Cuenta con un ciclo", "es-CL/contar.ds"],
     "fibonacci": ["Serie de Fibonacci", "es-CL/serie-fibonacci.ds"],
     "prime": ["¿Es primo?", "es-CL/primo.ds"],
-    "number-magic": ["Pip lee tu mente", "es-CL/numero-secreto.ds"]
+    "number-magic": ["Pip lee tu mente", "es-CL/numero-secreto.ds"],
+    "rock-paper-scissors": ["Cachipún", "es-CL/cachipun.ds"]
   }
 }

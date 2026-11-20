@@ -513,6 +513,93 @@
       ],
       "art": "",
       "alt": ""
+    },
+    {
+      "chapter": "Pip's workshop",
+      "title": "Rock, Paper, Scissors",
+      "pip": "I'll be the referee. It's hard to make scissors with a hoof.",
+      "body": [
+        "Make a fist for rock, a flat hand for paper, or a V with two fingers for scissors. On three, show your signs together. Then take turns entering your moves."
+      ],
+      "code": "function move(player)\n  print(\"Player \", player, \", enter your move.\")\n  let pick = readint()\n  while pick < 1 or pick > 3 do\n    print(\"Choose 1, 2, or 3.\")\n    let pick = readint()\n  end while\n  output pick\nend function\nprint(\"On three, both show your hands!\")\nprint(\"1 = rock, 2 = paper, 3 = scissors\")\nlet first = move(1)\nlet second = move(2)\nif first = second then\n  print(\"Tie!\")\nelse\n  if first = second % 3 + 1 then\n    print(\"Player 1 wins!\")\n  else\n    print(\"Player 2 wins!\")\n  end if\nend if\n",
+      "challenge": "Invent three new hand signs and give them names. Change the menu, then teach a friend how to play your version.",
+      "hint": "Paper covers rock, scissors cut paper, and rock beats scissors. When player 2 throws scissors, 3 % 3 + 1 gives 1. Rock wins!",
+      "checks": [
+        {
+          "input": [
+            "1",
+            "3"
+          ],
+          "output": "On three, both show your hands!\n1 = rock, 2 = paper, 3 = scissors\nPlayer 1, enter your move.\nPlayer 2, enter your move.\nPlayer 1 wins!\n"
+        },
+        {
+          "input": [
+            "1",
+            "1"
+          ],
+          "output": "On three, both show your hands!\n1 = rock, 2 = paper, 3 = scissors\nPlayer 1, enter your move.\nPlayer 2, enter your move.\nTie!\n"
+        },
+        {
+          "input": [
+            "1",
+            "2"
+          ],
+          "output": "On three, both show your hands!\n1 = rock, 2 = paper, 3 = scissors\nPlayer 1, enter your move.\nPlayer 2, enter your move.\nPlayer 2 wins!\n"
+        },
+        {
+          "input": [
+            "2",
+            "1"
+          ],
+          "output": "On three, both show your hands!\n1 = rock, 2 = paper, 3 = scissors\nPlayer 1, enter your move.\nPlayer 2, enter your move.\nPlayer 1 wins!\n"
+        },
+        {
+          "input": [
+            "2",
+            "2"
+          ],
+          "output": "On three, both show your hands!\n1 = rock, 2 = paper, 3 = scissors\nPlayer 1, enter your move.\nPlayer 2, enter your move.\nTie!\n"
+        },
+        {
+          "input": [
+            "2",
+            "3"
+          ],
+          "output": "On three, both show your hands!\n1 = rock, 2 = paper, 3 = scissors\nPlayer 1, enter your move.\nPlayer 2, enter your move.\nPlayer 2 wins!\n"
+        },
+        {
+          "input": [
+            "3",
+            "1"
+          ],
+          "output": "On three, both show your hands!\n1 = rock, 2 = paper, 3 = scissors\nPlayer 1, enter your move.\nPlayer 2, enter your move.\nPlayer 2 wins!\n"
+        },
+        {
+          "input": [
+            "3",
+            "2"
+          ],
+          "output": "On three, both show your hands!\n1 = rock, 2 = paper, 3 = scissors\nPlayer 1, enter your move.\nPlayer 2, enter your move.\nPlayer 1 wins!\n"
+        },
+        {
+          "input": [
+            "3",
+            "3"
+          ],
+          "output": "On three, both show your hands!\n1 = rock, 2 = paper, 3 = scissors\nPlayer 1, enter your move.\nPlayer 2, enter your move.\nTie!\n"
+        },
+        {
+          "input": [
+            "0",
+            "2",
+            "4",
+            "1"
+          ],
+          "output": "On three, both show your hands!\n1 = rock, 2 = paper, 3 = scissors\nPlayer 1, enter your move.\nChoose 1, 2, or 3.\nPlayer 2, enter your move.\nChoose 1, 2, or 3.\nPlayer 1 wins!\n"
+        }
+      ],
+      "art": "",
+      "alt": ""
     }
   ]
 }

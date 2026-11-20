@@ -1,0 +1,22 @@
+function ruch(gracz)
+  print("Gracz ", gracz, ", podaj swój ruch.")
+  let wybor = readint()
+  while wybor < 1 or wybor > 3 do
+    print("Wybierz 1, 2 lub 3.")
+    let wybor = readint()
+  end while
+  output wybor
+end function
+print("Na trzy pokażcie gesty!")
+print("1 = kamień, 2 = papier, 3 = nożyce")
+let pierwszy = ruch(1)
+let drugi = ruch(2)
+if pierwszy = drugi then
+  print("Remis!")
+else
+  if pierwszy = drugi % 3 + 1 then
+    print("Wygrywa gracz 1!")
+  else
+    print("Wygrywa gracz 2!")
+  end if
+end if

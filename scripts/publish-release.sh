@@ -43,7 +43,7 @@ version="${tag#v}"
 cat > "$staging/notes.md" <<'NOTES'
 Dinoscript is a free coding editor for kids. Write and run your first program with Pip the triceratops.
 
-- In **Pip's workshop** (lessons 16–19), draw an egg comic, compose a stomp song, and turn ticket numbers into band names. Bring your creations together in a show where the audience picks the act. The four lessons are in the app, online workbook, and printable books in all three languages.
+- Play **Rock, Paper, Scissors** with a friend. Show your hands together, enter your moves, and let Pip referee. Open the game from **Examples** or try lesson 20 to invent your own hand signs. [Play in English](https://dinoscript.org/play/?lesson=20) · [Jugar al cachipún](https://dinoscript.org/es/play/?lesson=20) · [Zagraj w kamień, papier, nożyce](https://dinoscript.org/pl/play/?lesson=20)
 - Open the browser playground in [English](https://dinoscript.org/play/), [Español](https://dinoscript.org/es/play/), or [Polski](https://dinoscript.org/pl/play/). Your programs run on your device, and drafts are saved in your browser.
 - Try **Pip Reads Your Mind** from the Examples menu. Keep your number secret until Pip reveals it.
 - On Apple silicon, use the arm64 disk image. On Intel Macs, use the amd64 disk image. Drag Dinoscript to Applications.

@@ -20,7 +20,10 @@ import (
 //go:embed examples/*.ds examples/*/*.ds
 var examples embed.FS
 
-const numberMagicExample = 5
+const (
+	numberMagicExample       = 5
+	rockPaperScissorsExample = 6
+)
 
 var lessons = []struct {
 	title     string
@@ -32,7 +35,8 @@ var lessons = []struct {
 	{"Count with a loop", "counting.ds", map[locale.Language]string{locale.Spanish: "contar.ds", locale.Polish: "liczenie.ds"}},
 	{"Fibonacci numbers", "fibonacci.ds", map[locale.Language]string{locale.Spanish: "serie-fibonacci.ds", locale.Polish: "ciag-fibonacciego.ds"}},
 	{"Is it prime?", "prime.ds", map[locale.Language]string{locale.Spanish: "primo.ds", locale.Polish: "liczba-pierwsza.ds"}},
-	numberMagicExample: {"Pip Reads Your Mind", "number-magic.ds", map[locale.Language]string{locale.Spanish: "numero-secreto.ds", locale.Polish: "sekretna-liczba.ds"}},
+	numberMagicExample:       {"Pip Reads Your Mind", "number-magic.ds", map[locale.Language]string{locale.Spanish: "numero-secreto.ds", locale.Polish: "sekretna-liczba.ds"}},
+	rockPaperScissorsExample: {"Rock, Paper, Scissors", "rock-paper-scissors.ds", map[locale.Language]string{locale.Spanish: "cachipun.ds", locale.Polish: "kamien-papier-nozyce.ds"}},
 }
 
 type editor struct {

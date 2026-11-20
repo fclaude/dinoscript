@@ -10,6 +10,7 @@ var polishUI = map[string]string{
 	"Fibonacci numbers":                    "Liczby Fibonacciego",
 	"Is it prime?":                         "Czy to liczba pierwsza?",
 	"Pip Reads Your Mind":                  "Pip czyta w myślach",
+	"Rock, Paper, Scissors":                "Kamień, papier, nożyce",
 	"Learn":                                "Lekcje",
 	"Smaller text":                         "Zmniejsz tekst",
 	"Larger text":                          "Powiększ tekst",

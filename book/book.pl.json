@@ -383,6 +383,93 @@
       ],
       "art": "",
       "alt": ""
+    },
+    {
+      "chapter": "Pracownia Pip",
+      "title": "Kamień, papier, nożyce",
+      "pip": "Ktoś musi sędziować! Trudno pokazać nożyce kopytem.",
+      "body": [
+        "Pięść to kamień, otwarta dłoń to papier, a dwa palce w kształcie V to nożyce. Na trzy pokażcie gesty jednocześnie. Potem kolejno wpiszcie swoje ruchy."
+      ],
+      "code": "function ruch(gracz)\n  print(\"Gracz \", gracz, \", podaj swój ruch.\")\n  let wybor = readint()\n  while wybor < 1 or wybor > 3 do\n    print(\"Wybierz 1, 2 lub 3.\")\n    let wybor = readint()\n  end while\n  output wybor\nend function\nprint(\"Na trzy pokażcie gesty!\")\nprint(\"1 = kamień, 2 = papier, 3 = nożyce\")\nlet pierwszy = ruch(1)\nlet drugi = ruch(2)\nif pierwszy = drugi then\n  print(\"Remis!\")\nelse\n  if pierwszy = drugi % 3 + 1 then\n    print(\"Wygrywa gracz 1!\")\n  else\n    print(\"Wygrywa gracz 2!\")\n  end if\nend if\n",
+      "challenge": "Wymyślcie trzy własne gesty i nadajcie im nazwy. Zmieńcie menu, a potem nauczcie kogoś grać w waszą wersję.",
+      "hint": "Papier owija kamień, nożyce tną papier, a kamień tępi nożyce. Gdy gracz 2 pokaże nożyce, 3 % 3 + 1 daje 1. Wygrywa kamień!",
+      "checks": [
+        {
+          "input": [
+            "1",
+            "3"
+          ],
+          "output": "Na trzy pokażcie gesty!\n1 = kamień, 2 = papier, 3 = nożyce\nGracz 1, podaj swój ruch.\nGracz 2, podaj swój ruch.\nWygrywa gracz 1!\n"
+        },
+        {
+          "input": [
+            "1",
+            "1"
+          ],
+          "output": "Na trzy pokażcie gesty!\n1 = kamień, 2 = papier, 3 = nożyce\nGracz 1, podaj swój ruch.\nGracz 2, podaj swój ruch.\nRemis!\n"
+        },
+        {
+          "input": [
+            "1",
+            "2"
+          ],
+          "output": "Na trzy pokażcie gesty!\n1 = kamień, 2 = papier, 3 = nożyce\nGracz 1, podaj swój ruch.\nGracz 2, podaj swój ruch.\nWygrywa gracz 2!\n"
+        },
+        {
+          "input": [
+            "2",
+            "1"
+          ],
+          "output": "Na trzy pokażcie gesty!\n1 = kamień, 2 = papier, 3 = nożyce\nGracz 1, podaj swój ruch.\nGracz 2, podaj swój ruch.\nWygrywa gracz 1!\n"
+        },
+        {
+          "input": [
+            "2",
+            "2"
+          ],
+          "output": "Na trzy pokażcie gesty!\n1 = kamień, 2 = papier, 3 = nożyce\nGracz 1, podaj swój ruch.\nGracz 2, podaj swój ruch.\nRemis!\n"
+        },
+        {
+          "input": [
+            "2",
+            "3"
+          ],
+          "output": "Na trzy pokażcie gesty!\n1 = kamień, 2 = papier, 3 = nożyce\nGracz 1, podaj swój ruch.\nGracz 2, podaj swój ruch.\nWygrywa gracz 2!\n"
+        },
+        {
+          "input": [
+            "3",
+            "1"
+          ],
+          "output": "Na trzy pokażcie gesty!\n1 = kamień, 2 = papier, 3 = nożyce\nGracz 1, podaj swój ruch.\nGracz 2, podaj swój ruch.\nWygrywa gracz 2!\n"
+        },
+        {
+          "input": [
+            "3",
+            "2"
+          ],
+          "output": "Na trzy pokażcie gesty!\n1 = kamień, 2 = papier, 3 = nożyce\nGracz 1, podaj swój ruch.\nGracz 2, podaj swój ruch.\nWygrywa gracz 1!\n"
+        },
+        {
+          "input": [
+            "3",
+            "3"
+          ],
+          "output": "Na trzy pokażcie gesty!\n1 = kamień, 2 = papier, 3 = nożyce\nGracz 1, podaj swój ruch.\nGracz 2, podaj swój ruch.\nRemis!\n"
+        },
+        {
+          "input": [
+            "0",
+            "2",
+            "4",
+            "1"
+          ],
+          "output": "Na trzy pokażcie gesty!\n1 = kamień, 2 = papier, 3 = nożyce\nGracz 1, podaj swój ruch.\nWybierz 1, 2 lub 3.\nGracz 2, podaj swój ruch.\nWybierz 1, 2 lub 3.\nWygrywa gracz 1!\n"
+        }
+      ],
+      "art": "",
+      "alt": ""
     }
   ]
 }

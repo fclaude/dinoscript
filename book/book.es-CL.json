@@ -428,6 +428,93 @@
       ],
       "art": "",
       "alt": ""
+    },
+    {
+      "chapter": "Taller de Pip",
+      "title": "Cachipún",
+      "pip": "¡Yo hago de árbitro! Con una pata cuesta hacer la tijera.",
+      "body": [
+        "Cierren el puño para piedra, abran la mano para papel o formen una V para tijera. A la cuenta de tres, muestren su jugada. Ingresen los números por turno."
+      ],
+      "code": "function jugada(jugador)\n  print(\"Jugador \", jugador, \", ingresa tu jugada.\")\n  let opcion = readint()\n  while opcion < 1 or opcion > 3 do\n    print(\"Elige 1, 2 o 3.\")\n    let opcion = readint()\n  end while\n  output opcion\nend function\nprint(\"¡A la cuenta de tres, muestren las manos!\")\nprint(\"1 = piedra, 2 = papel, 3 = tijera\")\nlet primera = jugada(1)\nlet segunda = jugada(2)\nif primera = segunda then\n  print(\"¡Empate!\")\nelse\n  if primera = segunda % 3 + 1 then\n    print(\"¡Gana el jugador 1!\")\n  else\n    print(\"¡Gana el jugador 2!\")\n  end if\nend if\n",
+      "challenge": "Inventen tres gestos y pónganles nombres. Cambien el menú y enséñenle a alguien a jugar esta versión del cachipún.",
+      "hint": "El papel envuelve la piedra, la tijera corta el papel y la piedra rompe la tijera. Si el jugador 2 saca tijera, 3 % 3 + 1 da 1. ¡La piedra gana!",
+      "checks": [
+        {
+          "input": [
+            "1",
+            "3"
+          ],
+          "output": "¡A la cuenta de tres, muestren las manos!\n1 = piedra, 2 = papel, 3 = tijera\nJugador 1, ingresa tu jugada.\nJugador 2, ingresa tu jugada.\n¡Gana el jugador 1!\n"
+        },
+        {
+          "input": [
+            "1",
+            "1"
+          ],
+          "output": "¡A la cuenta de tres, muestren las manos!\n1 = piedra, 2 = papel, 3 = tijera\nJugador 1, ingresa tu jugada.\nJugador 2, ingresa tu jugada.\n¡Empate!\n"
+        },
+        {
+          "input": [
+            "1",
+            "2"
+          ],
+          "output": "¡A la cuenta de tres, muestren las manos!\n1 = piedra, 2 = papel, 3 = tijera\nJugador 1, ingresa tu jugada.\nJugador 2, ingresa tu jugada.\n¡Gana el jugador 2!\n"
+        },
+        {
+          "input": [
+            "2",
+            "1"
+          ],
+          "output": "¡A la cuenta de tres, muestren las manos!\n1 = piedra, 2 = papel, 3 = tijera\nJugador 1, ingresa tu jugada.\nJugador 2, ingresa tu jugada.\n¡Gana el jugador 1!\n"
+        },
+        {
+          "input": [
+            "2",
+            "2"
+          ],
+          "output": "¡A la cuenta de tres, muestren las manos!\n1 = piedra, 2 = papel, 3 = tijera\nJugador 1, ingresa tu jugada.\nJugador 2, ingresa tu jugada.\n¡Empate!\n"
+        },
+        {
+          "input": [
+            "2",
+            "3"
+          ],
+          "output": "¡A la cuenta de tres, muestren las manos!\n1 = piedra, 2 = papel, 3 = tijera\nJugador 1, ingresa tu jugada.\nJugador 2, ingresa tu jugada.\n¡Gana el jugador 2!\n"
+        },
+        {
+          "input": [
+            "3",
+            "1"
+          ],
+          "output": "¡A la cuenta de tres, muestren las manos!\n1 = piedra, 2 = papel, 3 = tijera\nJugador 1, ingresa tu jugada.\nJugador 2, ingresa tu jugada.\n¡Gana el jugador 2!\n"
+        },
+        {
+          "input": [
+            "3",
+            "2"
+          ],
+          "output": "¡A la cuenta de tres, muestren las manos!\n1 = piedra, 2 = papel, 3 = tijera\nJugador 1, ingresa tu jugada.\nJugador 2, ingresa tu jugada.\n¡Gana el jugador 1!\n"
+        },
+        {
+          "input": [
+            "3",
+            "3"
+          ],
+          "output": "¡A la cuenta de tres, muestren las manos!\n1 = piedra, 2 = papel, 3 = tijera\nJugador 1, ingresa tu jugada.\nJugador 2, ingresa tu jugada.\n¡Empate!\n"
+        },
+        {
+          "input": [
+            "0",
+            "2",
+            "4",
+            "1"
+          ],
+          "output": "¡A la cuenta de tres, muestren las manos!\n1 = piedra, 2 = papel, 3 = tijera\nJugador 1, ingresa tu jugada.\nElige 1, 2 o 3.\nJugador 2, ingresa tu jugada.\nElige 1, 2 o 3.\n¡Gana el jugador 1!\n"
+        }
+      ],
+      "art": "",
+      "alt": ""
     }
   ]
 }

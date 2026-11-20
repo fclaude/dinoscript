@@ -10,6 +10,7 @@ var spanishUI = map[string]string{
 	"Fibonacci numbers":                    "Números de Fibonacci",
 	"Is it prime?":                         "¿Es primo?",
 	"Pip Reads Your Mind":                  "Pip te lee la mente",
+	"Rock, Paper, Scissors":                "Cachipún",
 	"Learn":                                "Aprender",
 	"Smaller text":                         "Reducir el tamaño del texto",
 	"Larger text":                          "Aumentar el tamaño del texto",

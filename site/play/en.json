@@ -50,6 +50,7 @@
     "counting": ["Count with a loop", "counting.ds"],
     "fibonacci": ["Fibonacci numbers", "fibonacci.ds"],
     "prime": ["Is it prime?", "prime.ds"],
-    "number-magic": ["Pip Reads Your Mind", "number-magic.ds"]
+    "number-magic": ["Pip Reads Your Mind", "number-magic.ds"],
+    "rock-paper-scissors": ["Rock, Paper, Scissors", "rock-paper-scissors.ds"]
   }
 }

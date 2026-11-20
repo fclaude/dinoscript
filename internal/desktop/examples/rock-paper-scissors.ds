@@ -1,0 +1,22 @@
+function move(player)
+  print("Player ", player, ", enter your move.")
+  let pick = readint()
+  while pick < 1 or pick > 3 do
+    print("Choose 1, 2, or 3.")
+    let pick = readint()
+  end while
+  output pick
+end function
+print("On three, both show your hands!")
+print("1 = rock, 2 = paper, 3 = scissors")
+let first = move(1)
+let second = move(2)
+if first = second then
+  print("Tie!")
+else
+  if first = second % 3 + 1 then
+    print("Player 1 wins!")
+  else
+    print("Player 2 wins!")
+  end if
+end if

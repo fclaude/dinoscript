@@ -50,6 +50,7 @@
     "counting": ["Policz z pętlą", "pl/liczenie.ds"],
     "fibonacci": ["Liczby Fibonacciego", "pl/ciag-fibonacciego.ds"],
     "prime": ["Czy to liczba pierwsza?", "pl/liczba-pierwsza.ds"],
-    "number-magic": ["Pip czyta w myślach", "pl/sekretna-liczba.ds"]
+    "number-magic": ["Pip czyta w myślach", "pl/sekretna-liczba.ds"],
+    "rock-paper-scissors": ["Kamień, papier, nożyce", "pl/kamien-papier-nozyce.ds"]
   }
 }

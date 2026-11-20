@@ -52,7 +52,7 @@ func TestLessons(t *testing.T) {
 	}
 }
 
-func TestNumberMagicWorkbookCode(t *testing.T) {
+func TestWorkbookExamples(t *testing.T) {
 	for _, language := range locale.Languages() {
 		t.Run(string(language), func(t *testing.T) {
 			guide, err := book.LoadLanguage(language)
@@ -60,9 +60,11 @@ func TestNumberMagicWorkbookCode(t *testing.T) {
 				t.Fatal(err)
 			}
 			app := editor{language: language}
-			_, source := app.sample(numberMagicExample)
-			if !slices.ContainsFunc(guide.Pages, func(lesson book.Lesson) bool { return lesson.Code == source }) {
-				t.Fatal("the bundled example and workbook code differ")
+			for _, index := range []int{numberMagicExample, rockPaperScissorsExample} {
+				name, source := app.sample(index)
+				if !slices.ContainsFunc(guide.Pages, func(lesson book.Lesson) bool { return lesson.Code == source }) {
+					t.Errorf("%s differs from the workbook code", name)
+				}
 			}
 		})
 	}
