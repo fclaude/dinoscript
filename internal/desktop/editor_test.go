@@ -2,6 +2,7 @@ package desktop
 
 import (
 	"bytes"
+	"fmt"
 	"os"
 	"path/filepath"
 	"slices"
@@ -283,7 +284,7 @@ print(121)`)
 	click(reader.next)
 	click(reader.previous)
 	assert("Next and Previous should move one lesson at a time", func() bool {
-		return reader.page == 1 && reader.status.String() == "Lesson 1 of 15"
+		return reader.page == 1 && reader.status.String() == fmt.Sprintf("Lesson 1 of %d", len(reader.guide.Pages))
 	})
 	click(reader.tryCode)
 	assert("Try code should open the lesson separately and give the editor focus", func() bool {
@@ -336,7 +337,7 @@ print(121)`)
 		return app.language == locale.Spanish && app.source.Text() == "print(\"Pip\", missing)" && app.dirty() &&
 			app.run.Text.String() == "Ejecutar  F5" && app.source.Accessibility.Name == "Código" &&
 			strings.Contains(app.output.Text(), "Línea 1, columna 14: Todavía no conozco \"missing\"") &&
-			app.jump.Enabled() && app.reader == reader && reader.page == 1 && reader.status.String() == "Lección 1 de 15"
+			app.jump.Enabled() && app.reader == reader && reader.page == 1 && reader.status.String() == fmt.Sprintf("Lección 1 de %d", len(reader.guide.Pages))
 	})
 	click(app.learn)
 	click(reader.save)

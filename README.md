@@ -29,6 +29,8 @@ print("Hello, dinosaur!")
 - **Learn with Pip.** Choose **Learn** or press <kbd>F1</kbd> to browse the illustrated lessons offline. **Try code** opens the lesson example in the editor, and **Save PDF** exports the book. The print edition also comes with the release packages.
 - **Choose your language.** The editor follows your system language for English, Chilean Spanish, and Polish, with English as the fallback. Use the language menu to pick one yourself. The website opens in English at the main address and offers Español and Polski on every page.
 
+**Pip's workshop** starts at lesson 16. Draw a comic that hatches when the reader presses Enter, write a four-beat stomp song, and turn ticket numbers into silly band names. In the last lesson, put your band on the poster and let the audience vote on which act to see. [Open the workshop](https://dinoscript.org/workbook.html#lesson-16)
+
 ## Build and test
 
 The desktop build requires Go 1.27.3 or later. From the repository root, start the editor, run the bundled hello program in a terminal, or run the test suite.

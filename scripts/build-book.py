@@ -32,6 +32,7 @@ CHAPTER_COLORS = [
     ("#125B58", "#E4F1E8"),
     ("#984728", "#FAE8D9"),
     ("#5D487E", "#EEE7F7"),
+    ("#345784", "#E5EEF9"),
 ]
 EDITIONS = {
     "en": {
@@ -157,8 +158,8 @@ def cover(c, book, chapters, edition):
         accent, tint = CHAPTER_COLORS[i]
         number = edition["pages"].format(first=entries[0][0], last=entries[-1][0])
         rectangle(c, x, 48, card_width, 42, tint, 9)
-        text(c, x + 11, 72, name, "Roboto-Bold", 12, accent)
-        text(c, x + 11, 57, number, "Roboto", 10, SOFT)
+        paragraph(c, x + 10, 87, name, card_width - 20, size=11.5, font="Roboto-Bold", leading=12, color=accent)
+        text(c, x + 10, 54, number, "Roboto", 10, SOFT)
     text(c, MARGIN, 29, edition["license"], "Roboto", 8.5, SOFT)
     c.showPage()
 

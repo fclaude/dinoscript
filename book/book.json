@@ -1,6 +1,6 @@
 {
   "title": "Dinoscript with Pip",
-  "subtitle": "Write your first program, make three games, and solve math puzzles.",
+  "subtitle": "Make games, solve math puzzles, and put on a show with code.",
   "author": "Francisco Claude-Faust",
   "cover_art": "pip-at-the-computer.png",
   "cover_alt": "Pip, a little green triceratops with a yellow scarf, sits at a computer among ferns.",
@@ -390,6 +390,125 @@
             "208"
           ],
           "output": "Think of a whole number from 1 to 100. Keep it secret!\nPress Enter when you're ready.\nMultiply it by 2, then press Enter.\nAdd 10, then press Enter.\nSubtract 4, then press Enter.\nWhat number did you arrive at?\nCheck your math, then run the trick again.\n"
+        }
+      ],
+      "art": "",
+      "alt": ""
+    },
+    {
+      "chapter": "Pip's workshop",
+      "title": "Draw an egg comic",
+      "pip": "Something inside this egg just knocked. Should I knock back?",
+      "body": [
+        "Draw an egg with the keys on your keyboard. Each print adds a line to the comic. Run it and press Enter when you're ready to meet whoever is inside."
+      ],
+      "code": "print(\"(   )\")\nprint(\"Tap tap. Press Enter to tap back.\")\npause()\nprint(\"(o v o)\")\nprint(\"Who ordered the wake-up call?\")\n",
+      "challenge": "Give the hatchling a different face and a first line of its own. Then add a third panel. What could make those eyes go wide?",
+      "hint": "Try (O v O) for a startled face. Put another pause() just before your new panel so the reader gets to turn the page.",
+      "checks": [
+        {
+          "input": [
+            ""
+          ],
+          "output": "(   )\nTap tap. Press Enter to tap back.\n(o v o)\nWho ordered the wake-up call?\n"
+        }
+      ],
+      "art": "",
+      "alt": ""
+    },
+    {
+      "chapter": "Pip's workshop",
+      "title": "Compose a stomp song",
+      "pip": "My left foot plays the big drum. My right foot is still auditioning.",
+      "body": [
+        "Each line in Output is one beat for you to play. Stomp for BOOM and tap a finger for tik. Pat out the song you expect, then run it and follow the score."
+      ],
+      "code": "function riff(sound, beats)\n  while beats > 0 do\n    print(sound)\n    let beats = beats - 1\n  end while\nend function\n\nriff(\"BOOM\", 2)\nriff(\"tik\", 1)\n",
+      "challenge": "Write a four-beat song with a clap somewhere in it. Play it for someone with the screen hidden. Can they tap it back? Move the clap and try again.",
+      "hint": "riff(\"clap\", 1) adds one beat wherever you put the call. Count the beats in the calls at the bottom to see when you have four.",
+      "checks": [
+        {
+          "input": [],
+          "output": "BOOM\nBOOM\ntik\n"
+        }
+      ],
+      "art": "",
+      "alt": ""
+    },
+    {
+      "chapter": "Pip's workshop",
+      "title": "Name the band",
+      "pip": "Our drummer wants to be a Beetle. Our singer has strong feelings about pickles.",
+      "body": [
+        "Every ticket gets a band name. An even number turns Sleepy into Disco. A multiple of three turns Beetles into Pickles. Predict the name on ticket 6, then try it."
+      ],
+      "code": "print(\"Pick a ticket number.\")\nlet ticket = readint()\nlet first = \"Sleepy\"\nlet last = \"Beetles\"\nif ticket % 2 = 0 then\n  let first = \"Disco\"\nend if\nif ticket % 3 = 0 then\n  let last = \"Pickles\"\nend if\nprint(\"The \", first, \" \", last)\n",
+      "challenge": "Invent four words for your own band names. Make a ticket for each possible band. Can two different ticket numbers get you into the same gig?",
+      "hint": "Try tickets 1, 2, 3, and 6 to meet all four bands. Then compare tickets 1 and 7. What do their numbers have in common?",
+      "checks": [
+        {
+          "input": [
+            "6"
+          ],
+          "output": "Pick a ticket number.\nThe Disco Pickles\n"
+        },
+        {
+          "input": [
+            "1"
+          ],
+          "output": "Pick a ticket number.\nThe Sleepy Beetles\n"
+        },
+        {
+          "input": [
+            "2"
+          ],
+          "output": "Pick a ticket number.\nThe Disco Beetles\n"
+        },
+        {
+          "input": [
+            "3"
+          ],
+          "output": "Pick a ticket number.\nThe Sleepy Pickles\n"
+        },
+        {
+          "input": [
+            "7"
+          ],
+          "output": "Pick a ticket number.\nThe Sleepy Beetles\n"
+        }
+      ],
+      "art": "",
+      "alt": ""
+    },
+    {
+      "chapter": "Pip's workshop",
+      "title": "Host the hatchling show",
+      "pip": "The curtain is a very big leaf. Give me a shout when it's time to lift it.",
+      "body": [
+        "You're in charge of tonight's show. Run it twice and vote for a different act each time. Any other number gives the audience a turn on stage."
+      ],
+      "code": "print(\"Tonight only: The Sleepy Beetles!\")\nprint(\"Vote! 1 = egg comic, 2 = stomp song.\")\nlet vote = readint()\nif vote = 1 then\n  print(\"(   )  Tap tap. Press Enter.\")\n  pause()\n  print(\"(o v o)  Ta-da!\")\nelse\n  if vote = 2 then\n    print(\"BOOM BOOM tik!\")\n  else\n    print(\"The stage is yours. Take a bow!\")\n  end if\nend if\n",
+      "challenge": "Put your band on the poster in the first line. Give it your comic or your four-beat song. Invent a surprise act for vote 3 and hand the keyboard to your audience.",
+      "hint": "For the song, copy the riff function above the poster and put your calls where the song plays. Try votes 1, 2, and 3 at rehearsal.",
+      "checks": [
+        {
+          "input": [
+            "1",
+            ""
+          ],
+          "output": "Tonight only: The Sleepy Beetles!\nVote! 1 = egg comic, 2 = stomp song.\n(   )  Tap tap. Press Enter.\n(o v o)  Ta-da!\n"
+        },
+        {
+          "input": [
+            "2"
+          ],
+          "output": "Tonight only: The Sleepy Beetles!\nVote! 1 = egg comic, 2 = stomp song.\nBOOM BOOM tik!\n"
+        },
+        {
+          "input": [
+            "3"
+          ],
+          "output": "Tonight only: The Sleepy Beetles!\nVote! 1 = egg comic, 2 = stomp song.\nThe stage is yours. Take a bow!\n"
         }
       ],
       "art": "",

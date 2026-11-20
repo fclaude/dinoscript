@@ -1,6 +1,6 @@
 {
   "title": "Dinoscript z Pip",
-  "subtitle": "Napisz swój pierwszy program, stwórz trzy gry i rozwiąż zagadki matematyczne.",
+  "subtitle": "Twórz gry, rozwiązuj zagadki matematyczne i urządź przedstawienie za pomocą kodu.",
   "author": "Francisco Claude-Faust",
   "cover_art": "pip-at-the-computer.png",
   "cover_alt": "Pip, mały zielony triceratops w żółtej chustce, siedzi przed komputerem wśród paproci.",
@@ -261,6 +261,125 @@
         {"input": ["", "", "", "", "206"], "output": "Pomyśl o liczbie całkowitej od 1 do 100. Nie zdradzaj jej!\nNaciśnij Enter, żeby zacząć.\nPomnóż tę liczbę przez 2 i naciśnij Enter.\nDodaj 10 i naciśnij Enter.\nOdejmij 4 i naciśnij Enter.\nJaki wynik wyszedł?\nTwoja sekretna liczba to 100!\n"},
         {"input": ["", "", "", "", "21"], "output": "Pomyśl o liczbie całkowitej od 1 do 100. Nie zdradzaj jej!\nNaciśnij Enter, żeby zacząć.\nPomnóż tę liczbę przez 2 i naciśnij Enter.\nDodaj 10 i naciśnij Enter.\nOdejmij 4 i naciśnij Enter.\nJaki wynik wyszedł?\nSprawdź obliczenia i uruchom sztuczkę jeszcze raz.\n"},
         {"input": ["", "", "", "", "208"], "output": "Pomyśl o liczbie całkowitej od 1 do 100. Nie zdradzaj jej!\nNaciśnij Enter, żeby zacząć.\nPomnóż tę liczbę przez 2 i naciśnij Enter.\nDodaj 10 i naciśnij Enter.\nOdejmij 4 i naciśnij Enter.\nJaki wynik wyszedł?\nSprawdź obliczenia i uruchom sztuczkę jeszcze raz.\n"}
+      ],
+      "art": "",
+      "alt": ""
+    },
+    {
+      "chapter": "Pracownia Pip",
+      "title": "Narysuj komiks o jajku",
+      "pip": "Ktoś zapukał od środka. Odpukać?",
+      "body": [
+        "Narysuj jajko znakami z klawiatury. Każde print dodaje do komiksu jeden wiersz. Uruchom program. Gdy zechcesz zobaczyć, kto jest w środku, naciśnij Enter."
+      ],
+      "code": "print(\"(   )\")\nprint(\"Puk, puk. Naciśnij Enter, żeby odpukać.\")\npause()\nprint(\"(o v o)\")\nprint(\"Kto nastawił budzik?\")\n",
+      "challenge": "Zmień minę malucha i wymyśl, co powie zaraz po wykluciu. Potem dorysuj trzeci kadr. Co mogło sprawić, że maluch zrobił wielkie oczy?",
+      "hint": "Wielkie O w buzi (O v O) wyglądają jak zdziwione oczy. Tuż przed nowym kadrem wstaw jeszcze jedno pause(), żeby czytelnik mógł przewrócić stronę.",
+      "checks": [
+        {
+          "input": [
+            ""
+          ],
+          "output": "(   )\nPuk, puk. Naciśnij Enter, żeby odpukać.\n(o v o)\nKto nastawił budzik?\n"
+        }
+      ],
+      "art": "",
+      "alt": ""
+    },
+    {
+      "chapter": "Pracownia Pip",
+      "title": "Ułóż tupany rytm",
+      "pip": "Moja lewa łapa gra na bębnie. Prawa dopiero ćwiczy.",
+      "body": [
+        "Każdy wiersz w panelu Wynik to jedno uderzenie. Na BUM tupnij, a na tik stuknij palcem w stół. Spróbuj zagrać rytm z kodu. Uruchom program i sprawdź, czy tak samo go zagrasz, patrząc na wynik."
+      ],
+      "code": "function rytm(dzwiek, ile)\n  while ile > 0 do\n    print(dzwiek)\n    let ile = ile - 1\n  end while\nend function\n\nrytm(\"BUM\", 2)\nrytm(\"tik\", 1)\n",
+      "challenge": "Ułóż rytm z czterech uderzeń. Jednym z nich ma być klaśnięcie. Zagraj go komuś, kto nie widzi ekranu. Czy powtórzy go ze słuchu? Przesuń klaśnięcie i spróbujcie jeszcze raz.",
+      "hint": "rytm(\"klask\", 1) dodaje jedno klaśnięcie w wybranym miejscu. Dodaj liczby z wywołań na dole i sprawdź, czy razem dają cztery.",
+      "checks": [
+        {
+          "input": [],
+          "output": "BUM\nBUM\ntik\n"
+        }
+      ],
+      "art": "",
+      "alt": ""
+    },
+    {
+      "chapter": "Pracownia Pip",
+      "title": "Wymyśl nazwę zespołu",
+      "pip": "Perkusista chce być żukiem. Piosenkarka wolałaby być ogórkiem.",
+      "body": [
+        "Na każdym bilecie widnieje nazwa zespołu. Parzysty numer zmienia pierwsze słowo. Wielokrotność trójki zmienia drugie. Zgadnij, jaki zespół wypadnie na bilecie numer 6, i sprawdź."
+      ],
+      "code": "print(\"Wybierz numer biletu.\")\nlet bilet = readint()\nlet jakie = \"Senne\"\nlet co = \"Żuki\"\nif bilet % 2 = 0 then\n  let jakie = \"Skoczne\"\nend if\nif bilet % 3 = 0 then\n  let co = \"Ogórki\"\nend if\nprint(jakie, \" \", co)\n",
+      "challenge": "Wymyśl cztery własne słowa do układania nazw. Narysuj bilet na koncert każdego zespołu. Czy z dwoma różnymi numerami można trafić na ten sam koncert?",
+      "hint": "Sprawdź bilety 1, 2, 3 i 6, żeby poznać wszystkie cztery zespoły. Potem porównaj bilety 1 i 7. Co łączy te liczby?",
+      "checks": [
+        {
+          "input": [
+            "6"
+          ],
+          "output": "Wybierz numer biletu.\nSkoczne Ogórki\n"
+        },
+        {
+          "input": [
+            "1"
+          ],
+          "output": "Wybierz numer biletu.\nSenne Żuki\n"
+        },
+        {
+          "input": [
+            "2"
+          ],
+          "output": "Wybierz numer biletu.\nSkoczne Żuki\n"
+        },
+        {
+          "input": [
+            "3"
+          ],
+          "output": "Wybierz numer biletu.\nSenne Ogórki\n"
+        },
+        {
+          "input": [
+            "7"
+          ],
+          "output": "Wybierz numer biletu.\nSenne Żuki\n"
+        }
+      ],
+      "art": "",
+      "alt": ""
+    },
+    {
+      "chapter": "Pracownia Pip",
+      "title": "Poprowadź przedstawienie",
+      "pip": "Za kurtynę służy nam wielki liść. Daj znać, kiedy go podnieść!",
+      "body": [
+        "Dziś ty prowadzisz przedstawienie. Uruchom program dwa razy i za każdym razem zagłosuj na inny występ. Każda liczba poza 1 i 2 zaprasza na scenę kogoś z widowni."
+      ],
+      "code": "print(\"Tylko dziś: Senne Żuki!\")\nprint(\"Głosuj! 1 = komiks, 2 = tupany rytm.\")\nlet glos = readint()\nif glos = 1 then\n  print(\"(   )  Puk, puk. Naciśnij Enter.\")\n  pause()\n  print(\"(o v o)  Ta-dam!\")\nelse\n  if glos = 2 then\n    print(\"BUM BUM tik!\")\n  else\n    print(\"Scena jest twoja! Ukłoń się publiczności.\")\n  end if\nend if\n",
+      "challenge": "Wpisz nazwę swojego zespołu na afiszu w pierwszym wierszu. Pokaż swój komiks albo zagraj rytm z czterech uderzeń. Wymyśl niespodziankę dla tych, którzy wpiszą 3, i oddaj klawiaturę widowni.",
+      "hint": "Aby zagrać swój rytm, skopiuj funkcję rytm nad afisz. W miejscu piosenki wstaw wywołania funkcji. Na próbie sprawdź głosy 1, 2 i 3.",
+      "checks": [
+        {
+          "input": [
+            "1",
+            ""
+          ],
+          "output": "Tylko dziś: Senne Żuki!\nGłosuj! 1 = komiks, 2 = tupany rytm.\n(   )  Puk, puk. Naciśnij Enter.\n(o v o)  Ta-dam!\n"
+        },
+        {
+          "input": [
+            "2"
+          ],
+          "output": "Tylko dziś: Senne Żuki!\nGłosuj! 1 = komiks, 2 = tupany rytm.\nBUM BUM tik!\n"
+        },
+        {
+          "input": [
+            "3"
+          ],
+          "output": "Tylko dziś: Senne Żuki!\nGłosuj! 1 = komiks, 2 = tupany rytm.\nScena jest twoja! Ukłoń się publiczności.\n"
+        }
       ],
       "art": "",
       "alt": ""

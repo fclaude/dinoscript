@@ -1,6 +1,6 @@
 {
   "title": "Dinoscript con Pip",
-  "subtitle": "Escribe tu primer programa, crea tres juegos y resuelve desafíos matemáticos.",
+  "subtitle": "Crea juegos, resuelve desafíos matemáticos y monta un espectáculo con código.",
   "author": "Francisco Claude-Faust",
   "cover_art": "pip-at-the-computer.png",
   "cover_alt": "Pip, un pequeño tricerátops verde con un pañuelo amarillo, está frente a un computador entre los helechos.",
@@ -305,6 +305,125 @@
             "208"
           ],
           "output": "Piensa en un número entero del 1 al 100. ¡No me lo digas!\nPresiona Enter cuando estés listo.\nMultiplícalo por 2 y presiona Enter.\nSúmale 10 y presiona Enter.\nRéstale 4 y presiona Enter.\n¿A qué número llegaste?\nRevisa tus cálculos y vuelve a probar el truco.\n"
+        }
+      ],
+      "art": "",
+      "alt": ""
+    },
+    {
+      "chapter": "Taller de Pip",
+      "title": "Dibuja una historieta con un huevo",
+      "pip": "Alguien golpeó la cáscara desde adentro. ¿Le contesto?",
+      "body": [
+        "Dibuja un huevo con las teclas del computador. Cada print agrega una línea a la historieta. Ejecuta el programa y presiona Enter cuando quieras conocer a quien está adentro."
+      ],
+      "code": "print(\"(   )\")\nprint(\"Toc, toc. Presiona Enter para contestar.\")\npause()\nprint(\"(o v o)\")\nprint(\"¿Quién puso el despertador?\")\n",
+      "challenge": "Cámbiale la cara a la cría e inventa lo primero que dice al salir. Luego dibuja una tercera viñeta. ¿Qué podría hacer que abriera unos ojos enormes?",
+      "hint": "Prueba con (O v O) para mostrar su sorpresa. Pon otro pause() justo antes de la nueva viñeta para que quien lea pueda dar vuelta la página.",
+      "checks": [
+        {
+          "input": [
+            ""
+          ],
+          "output": "(   )\nToc, toc. Presiona Enter para contestar.\n(o v o)\n¿Quién puso el despertador?\n"
+        }
+      ],
+      "art": "",
+      "alt": ""
+    },
+    {
+      "chapter": "Taller de Pip",
+      "title": "Compón un ritmo con los pies",
+      "pip": "Mi pata izquierda toca el bombo. La derecha todavía está en la audición.",
+      "body": [
+        "Cada línea de Salida es un pulso que puedes marcar. Golpea el suelo con el pie cuando diga PUM y da un golpecito con un dedo cuando diga tic. Prueba el ritmo que imaginas y luego sigue lo que dice el programa."
+      ],
+      "code": "function ritmo(sonido, pulsos)\n  while pulsos > 0 do\n    print(sonido)\n    let pulsos = pulsos - 1\n  end while\nend function\n\nritmo(\"PUM\", 2)\nritmo(\"tic\", 1)\n",
+      "challenge": "Inventa un ritmo de cuatro pulsos que incluya una palmada. Tócalo sin mostrar la pantalla. ¿Puede alguien repetirlo de oído? Cambia de lugar la palmada y vuelve a probar.",
+      "hint": "ritmo(\"plas\", 1) agrega una palmada donde pongas esa llamada. Suma los pulsos de las llamadas que están al final hasta llegar a cuatro.",
+      "checks": [
+        {
+          "input": [],
+          "output": "PUM\nPUM\ntic\n"
+        }
+      ],
+      "art": "",
+      "alt": ""
+    },
+    {
+      "chapter": "Taller de Pip",
+      "title": "Ponle nombre a la banda",
+      "pip": "El baterista quiere ser escarabajo. La cantante prefiere los pepinillos.",
+      "body": [
+        "Cada entrada lleva el nombre de una banda. Si el número es par, Dormilones cambia a Bailarines. Si es múltiplo de tres, Escarabajos cambia a Pepinillos. ¿Qué banda te tocará con la entrada 6? Pruébala."
+      ],
+      "code": "print(\"Elige el número de tu entrada.\")\nlet entrada = readint()\nlet grupo = \"Escarabajos\"\nlet rasgo = \"Dormilones\"\nif entrada % 2 = 0 then\n  let rasgo = \"Bailarines\"\nend if\nif entrada % 3 = 0 then\n  let grupo = \"Pepinillos\"\nend if\nprint(\"Los \", grupo, \" \", rasgo)\n",
+      "challenge": "Inventa cuatro palabras que puedas combinar para formar nombres de bandas. Dibuja una entrada para cada banda. ¿Con qué dos números distintos puedes ir al mismo recital?",
+      "hint": "Prueba las entradas 1, 2, 3 y 6 para conocer a las cuatro bandas. Luego compara la 1 con la 7. ¿Qué tienen en común esos números?",
+      "checks": [
+        {
+          "input": [
+            "6"
+          ],
+          "output": "Elige el número de tu entrada.\nLos Pepinillos Bailarines\n"
+        },
+        {
+          "input": [
+            "1"
+          ],
+          "output": "Elige el número de tu entrada.\nLos Escarabajos Dormilones\n"
+        },
+        {
+          "input": [
+            "2"
+          ],
+          "output": "Elige el número de tu entrada.\nLos Escarabajos Bailarines\n"
+        },
+        {
+          "input": [
+            "3"
+          ],
+          "output": "Elige el número de tu entrada.\nLos Pepinillos Dormilones\n"
+        },
+        {
+          "input": [
+            "7"
+          ],
+          "output": "Elige el número de tu entrada.\nLos Escarabajos Dormilones\n"
+        }
+      ],
+      "art": "",
+      "alt": ""
+    },
+    {
+      "chapter": "Taller de Pip",
+      "title": "Que empiece la función",
+      "pip": "El telón es una hoja gigante. Avísame cuando haya que levantarla.",
+      "body": [
+        "Hoy diriges el espectáculo. Ejecuta el programa dos veces y vota por un acto distinto cada vez. Con cualquier número entero distinto de 1 o 2, el público sube al escenario."
+      ],
+      "code": "print(\"¡Solo por hoy: Los Escarabajos Dormilones!\")\nprint(\"¡Vota! 1 = historieta, 2 = ritmo con los pies.\")\nlet voto = readint()\nif voto = 1 then\n  print(\"(   )  Toc, toc. Presiona Enter.\")\n  pause()\n  print(\"(o v o)  ¡Tarán!\")\nelse\n  if voto = 2 then\n    print(\"¡PUM PUM tic!\")\n  else\n    print(\"¡El escenario es tuyo! Saluda al público.\")\n  end if\nend if\n",
+      "challenge": "Pon tu banda en el cartel de la primera línea. Preséntala con tu historieta o tu ritmo de cuatro pulsos. Inventa una sorpresa para el voto 3 y pásale el teclado al público.",
+      "hint": "Para tocar tu ritmo, copia la función ritmo antes del cartel y pon tus llamadas donde suena la canción. En el ensayo, prueba los votos 1, 2 y 3.",
+      "checks": [
+        {
+          "input": [
+            "1",
+            ""
+          ],
+          "output": "¡Solo por hoy: Los Escarabajos Dormilones!\n¡Vota! 1 = historieta, 2 = ritmo con los pies.\n(   )  Toc, toc. Presiona Enter.\n(o v o)  ¡Tarán!\n"
+        },
+        {
+          "input": [
+            "2"
+          ],
+          "output": "¡Solo por hoy: Los Escarabajos Dormilones!\n¡Vota! 1 = historieta, 2 = ritmo con los pies.\n¡PUM PUM tic!\n"
+        },
+        {
+          "input": [
+            "3"
+          ],
+          "output": "¡Solo por hoy: Los Escarabajos Dormilones!\n¡Vota! 1 = historieta, 2 = ritmo con los pies.\n¡El escenario es tuyo! Saluda al público.\n"
         }
       ],
       "art": "",
